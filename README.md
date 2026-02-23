@@ -1,12 +1,5 @@
 # VideoGameDB
 
-Video Game Database application with API endpoints that support **JSON** and **XML**
-
-This application was developed to support my Udemy courses:
-
-- [REST Assured Fundamentals](https://www.udemy.com/course/rest-assured-fundamentals/)
-- [Gatling Fundamentals for Stress, Load & Performance Testing](https://www.udemy.com/course/gatling-fundamentals/)
-
 ## Tech Stack
 
 | Component              | Version       |
