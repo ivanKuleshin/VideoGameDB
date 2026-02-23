@@ -110,7 +110,7 @@ public class VideoGameResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete even video game IDs", description = "Deletes up to 5 video games with even IDs per request")
     public Response deleteEvenVideoGames() {
-        String sql = "DELETE FROM VIDEOGAME WHERE id IN (SELECT TOP 5 id FROM VIDEOGAME WHERE MOD(id, 2) = 0)";
+        String sql = "DELETE FROM VIDEOGAME WHERE id IN (SELECT id FROM VIDEOGAME WHERE MOD(id, 2) = 0 LIMIT 5)";
         int deletedCount = jdbc.getJdbcTemplate().update(sql);
         return Response.ok(Map.of("status", "Deleted " + deletedCount + " records with even IDs")).build();
     }
