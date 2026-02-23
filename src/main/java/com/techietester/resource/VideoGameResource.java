@@ -1,99 +1,101 @@
 package com.techietester.resource;
 
 import com.techietester.model.VideoGame;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.techietester.model.VideoGameList;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Path("/videogames")
-@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,})
-@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,})
-@Api(value = "Video Games")
+@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Tag(name = "Video Games")
 public class VideoGameResource {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private static final String SQL_SELECT_ALL   = "SELECT * FROM VIDEOGAME";
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM VIDEOGAME WHERE id = :videoGameId";
+    private static final String SQL_INSERT       = "INSERT INTO VIDEOGAME VALUES (:id, :name, :releaseDate, :reviewScore, :category, :rating)";
+    private static final String SQL_UPDATE       = "UPDATE VIDEOGAME SET name = :name, released_on = :releaseDate, review_score = :reviewScore, category = :category, rating = :rating WHERE id = :id";
+    private static final String SQL_DELETE       = "DELETE FROM VIDEOGAME WHERE id = :videoGameId";
+
+    private static final VideoGameMapper MAPPER = new VideoGameMapper();
+
+    private final NamedParameterJdbcTemplate jdbc;
 
     @Autowired
-    public VideoGameResource(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public VideoGameResource(NamedParameterJdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
     @GET
-    @ApiOperation(value = "Get List of all Video Games", notes = "Returns all the videos games in the DB", response = VideoGame.class, responseContainer = "List")
-    public List<VideoGame> listVideoGames() {
-
-        String sql = "select * from VIDEOGAME";
-
-        return namedParameterJdbcTemplate.query(sql, new VideoGameMapper());
+    @Operation(summary = "Get all video games", description = "Returns all video games in the database")
+    public VideoGameList listVideoGames() {
+        return new VideoGameList(jdbc.query(SQL_SELECT_ALL, MAPPER));
     }
 
     @GET
     @Path("/{videoGameId}")
-    @ApiOperation(value = "Get a single video game by ID", notes = "Returns the details of a single game by ID", response = VideoGame.class)
+    @Operation(summary = "Get a video game by ID", description = "Returns a single video game by its ID")
     public VideoGame getVideoGame(
-            @ApiParam(value = "The video game ID", required = true) @PathParam("videoGameId") Integer videoGameId)
-    {
-        String sql = "select * from VIDEOGAME where id=:videoGameId";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("videoGameId", videoGameId);
-        return namedParameterJdbcTemplate.query(sql, namedParameters, new VideoGameMapper()).get(0);
+            @Parameter(description = "The video game ID", required = true)
+            @PathParam("videoGameId") int videoGameId) {
+        SqlParameterSource params = new MapSqlParameterSource("videoGameId", videoGameId);
+        return jdbc.query(SQL_SELECT_BY_ID, params, MAPPER).getFirst();
     }
 
     @POST
-    @ApiOperation(value = "Add a new video game", notes = "Add a new video game to the DB")
-    public String createVideoGame(final VideoGame videoGame) {
-        String sql = "insert into VIDEOGAME values(:id, :name, :releaseDate, :reviewScore, :category, :rating)";
-        SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(videoGame);
-        this.namedParameterJdbcTemplate.update(sql, namedParameters);
+    @Operation(summary = "Add a new video game", description = "Adds a new video game to the database")
+    public String createVideoGame(VideoGame videoGame) {
+        jdbc.update(SQL_INSERT, new BeanPropertySqlParameterSource(videoGame));
         return "{\"status\": \"Record Added Successfully\"}";
     }
 
     @PUT
     @Path("/{videoGameId}")
-    @ApiOperation(value = "Update a video game", notes = "Update an existing video game in the DB by specifying a new body ", response = VideoGame.class)
-    public VideoGame editVideoGame(final VideoGame videoGame, @PathParam("videoGameId") Integer videoGameId ) {
-        String sql = "update VIDEOGAME set id=:id, name=:name, released_on=:releaseDate, review_score=:reviewScore, category=:category, rating=:rating where id=:id";
-        SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(videoGame);
-        this.namedParameterJdbcTemplate.update(sql, namedParameters);
-
-        sql = "select * from VIDEOGAME where id=:videoGameId";
-        SqlParameterSource namedParameters2 = new MapSqlParameterSource("videoGameId", videoGameId);
-        return namedParameterJdbcTemplate.query(sql, namedParameters2, new VideoGameMapper()).get(0);
+    @Operation(summary = "Update a video game", description = "Updates an existing video game by ID")
+    public VideoGame editVideoGame(VideoGame videoGame, @PathParam("videoGameId") int videoGameId) {
+        jdbc.update(SQL_UPDATE, new BeanPropertySqlParameterSource(videoGame));
+        SqlParameterSource params = new MapSqlParameterSource("videoGameId", videoGameId);
+        return jdbc.query(SQL_SELECT_BY_ID, params, MAPPER).getFirst();
     }
 
     @DELETE
     @Path("/{videoGameId}")
-    @ApiOperation(value = "Delete a video game", notes = "Deletes a video game from the DB by ID")
+    @Operation(summary = "Delete a video game", description = "Deletes a video game from the database by ID")
     public String deleteVideoGame(
-            @ApiParam(value = "The video game ID", required = true) @PathParam("videoGameId") Integer videoGameId)
-    {
-        String sql = "delete from VIDEOGAME where id =:videoGameId";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("videoGameId", videoGameId);
-        this.namedParameterJdbcTemplate.update(sql, namedParameters);
+            @Parameter(description = "The video game ID", required = true)
+            @PathParam("videoGameId") int videoGameId) {
+        SqlParameterSource params = new MapSqlParameterSource("videoGameId", videoGameId);
+        jdbc.update(SQL_DELETE, params);
         return "{\"status\": \"Record Deleted Successfully\"}";
     }
 
-
     private static final class VideoGameMapper implements RowMapper<VideoGame> {
+        @Override
         public VideoGame mapRow(ResultSet rs, int rowNum) throws SQLException {
-
             VideoGame videoGame = new VideoGame();
             videoGame.setId(rs.getInt("id"));
             videoGame.setName(rs.getString("name"));
-            videoGame.setReleaseDate(rs.getDate("released_on"));
+            videoGame.setReleaseDate(rs.getObject("released_on", LocalDate.class));
             videoGame.setReviewScore(rs.getInt("review_score"));
             videoGame.setCategory(rs.getString("category"));
             videoGame.setRating(rs.getString("rating"));

@@ -1,40 +1,46 @@
 package com.techietester.app;
 
 import com.techietester.resource.VideoGameResource;
-import io.swagger.jaxrs.config.BeanConfig;
-import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.oas.integration.SwaggerConfiguration;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.jaxb.internal.JaxbAutoDiscoverable;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.MediaType;
+import java.util.Set;
 
 @Component
-@ApplicationPath("/app")
 public class AppResourceConfig extends ResourceConfig {
 
     public AppResourceConfig() {
-
-        packages("in.techietester.resource", "in.techietester.app");
+        // JAX-RS resource
         register(VideoGameResource.class);
 
-        configureSwagger();
-    }
+        // XML serialization via JAXB
+        register(JaxbAutoDiscoverable.class);
 
-    private void configureSwagger() {
-        register(ApiListingResource.class);
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion("1.0.0");
-        beanConfig.setSchemes(new String[] { "http", "https" });
-        beanConfig.setBasePath("/app");
-        beanConfig.setTitle("Video Game Database - Test Application");
-        beanConfig.setDescription("https://github.com/TechieTester/VideoGameDB");
-        beanConfig.getSwagger().addConsumes(MediaType.APPLICATION_JSON);
-        beanConfig.getSwagger().addProduces(MediaType.APPLICATION_JSON);
-        beanConfig.setContact("James Willett");
-        beanConfig.setResourcePackage("com.techietester.resource");
-        beanConfig.setPrettyPrint(false);
-        beanConfig.setScan();
-    }
+        // JSON serialization via Jackson
+        register(JacksonFeature.class);
 
+        // OpenAPI spec endpoint
+        OpenAPI openAPI = new OpenAPI()
+                .info(new Info()
+                        .title("Video Game DB API")
+                        .description("REST API for managing video games")
+                        .version("1.0"))
+                .addServersItem(new Server().url("/app").description("Default"));
+
+        SwaggerConfiguration config = new SwaggerConfiguration()
+                .openAPI(openAPI)
+                .prettyPrint(true)
+                .resourcePackages(Set.of("com.techietester.resource"));
+
+        OpenApiResource openApiResource = new OpenApiResource();
+        openApiResource.openApiConfiguration(config);
+        register(openApiResource);
+    }
 }

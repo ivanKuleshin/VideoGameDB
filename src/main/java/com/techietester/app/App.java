@@ -6,7 +6,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.techietester.app", "com.techietester.config"})
+@ComponentScan(basePackages = "com.techietester")
 public class App extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

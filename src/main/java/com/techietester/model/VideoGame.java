@@ -1,16 +1,14 @@
 package com.techietester.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
-import java.util.List;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.time.LocalDate;
 
 @XmlRootElement
 public class VideoGame {
 
     private int id;
     private String name;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private int reviewScore;
     private String category;
     private String rating;
@@ -31,11 +29,11 @@ public class VideoGame {
         this.name = name;
     }
 
-    public Date getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -47,15 +45,19 @@ public class VideoGame {
         this.reviewScore = reviewScore;
     }
 
-    @XmlAttribute
-    public String getCategory() { return category; }
+    public String getCategory() {
+        return category;
+    }
 
-    public void setCategory(String category) { this.category = category; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    @XmlAttribute
-    public String getRating() { return rating; }
+    public String getRating() {
+        return rating;
+    }
 
-    public void setRating(String rating) { this.rating = rating; }
-
-
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
 }
