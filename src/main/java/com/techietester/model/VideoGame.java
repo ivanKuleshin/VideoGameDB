@@ -1,16 +1,29 @@
 package com.techietester.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 
 @XmlRootElement
+@Schema(description = "Represents a video game in the database")
 public class VideoGame {
 
+    @Schema(description = "Unique identifier", example = "1")
     private int id;
+
+    @Schema(description = "Title of the video game", example = "The Legend of Zelda")
     private String name;
+
+    @Schema(description = "Release date", example = "1986-02-21")
     private LocalDate releaseDate;
+
+    @Schema(description = "Review score out of 100", example = "95")
     private int reviewScore;
+
+    @Schema(description = "Genre category", example = "Action-Adventure")
     private String category;
+
+    @Schema(description = "Age rating", example = "E")
     private String rating;
 
     public int getId() {

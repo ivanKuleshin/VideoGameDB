@@ -14,6 +14,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -24,6 +25,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Path("/videogames")
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -101,5 +103,15 @@ public class VideoGameResource {
             videoGame.setRating(rs.getString("rating"));
             return videoGame;
         }
+    }
+
+    @DELETE
+    @Path("/delete-even")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Delete even video game IDs", description = "Deletes up to 5 video games with even IDs per request")
+    public Response deleteEvenVideoGames() {
+        String sql = "DELETE FROM VIDEOGAME WHERE id IN (SELECT TOP 5 id FROM VIDEOGAME WHERE MOD(id, 2) = 0)";
+        int deletedCount = jdbc.getJdbcTemplate().update(sql);
+        return Response.ok(Map.of("status", "Deleted " + deletedCount + " records with even IDs")).build();
     }
 }

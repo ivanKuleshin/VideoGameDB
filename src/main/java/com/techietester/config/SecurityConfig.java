@@ -59,7 +59,6 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/swagger-ui.html",
                     "/webjars/**",
-                    "/index.html",
                     // OpenAPI JSON served by Jersey
                     "/app/openapi.json",
                     "/app/openapi.yaml"
