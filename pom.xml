@@ -22,17 +22,39 @@
 
     <properties>
         <java.version>21</java.version>
-        <!-- Override Spring Framework to fix CVE-2025-41249, CVE-2025-41234, CVE-2025-41242, CVE-2025-22233 -->
         <spring-framework.version>6.2.12</spring-framework.version>
-        <!-- Override Tomcat to fix CVE-2025-66614, CVE-2026-24733 and all earlier Tomcat CVEs -->
         <tomcat.version>10.1.52</tomcat.version>
-        <!-- Override Logback to fix CVE-2025-11226, CVE-2026-1225 -->
         <logback.version>1.5.25</logback.version>
-        <!-- Override AssertJ to fix CVE-2026-24400 -->
         <assertj.version>3.27.7</assertj.version>
-        <!-- Override Commons Lang3 to fix CVE-2025-48924 -->
         <commons-lang3.version>3.18.0</commons-lang3.version>
+        <checkstyle.config.location>${maven.multiModuleProjectDirectory}/codestyle/checkStyle.xml
+        </checkstyle.config.location>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
 

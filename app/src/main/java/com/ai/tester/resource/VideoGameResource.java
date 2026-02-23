@@ -35,8 +35,11 @@ public class VideoGameResource {
 
     private static final String SQL_SELECT_ALL = "SELECT * FROM VIDEOGAME";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM VIDEOGAME WHERE id = :videoGameId";
-    private static final String SQL_INSERT = "INSERT INTO VIDEOGAME VALUES (:id, :name, :releaseDate, :reviewScore, :category, :rating)";
-    private static final String SQL_UPDATE = "UPDATE VIDEOGAME SET name = :name, released_on = :releaseDate, review_score = :reviewScore, category = :category, rating = :rating WHERE id = :id";
+    private static final String SQL_INSERT =
+        "INSERT INTO VIDEOGAME VALUES (:id, :name, :releaseDate, :reviewScore, :category, :rating)";
+    private static final String SQL_UPDATE =
+        "UPDATE VIDEOGAME SET name = :name, released_on = :releaseDate, review_score = :reviewScore, category = :category, " +
+            "rating = :rating WHERE id = :id";
     private static final String SQL_DELETE = "DELETE FROM VIDEOGAME WHERE id = :videoGameId";
 
     private static final VideoGameMapper MAPPER = new VideoGameMapper();
@@ -58,8 +61,8 @@ public class VideoGameResource {
     @Path("/{videoGameId}")
     @Operation(summary = "Get a video game by ID", description = "Returns a single video game by its ID")
     public VideoGame getVideoGame(
-            @Parameter(description = "The video game ID", required = true)
-            @PathParam("videoGameId") int videoGameId) {
+        @Parameter(description = "The video game ID", required = true)
+        @PathParam("videoGameId") int videoGameId) {
         SqlParameterSource params = new MapSqlParameterSource("videoGameId", videoGameId);
         return jdbc.query(SQL_SELECT_BY_ID, params, MAPPER).getFirst();
     }
@@ -84,8 +87,8 @@ public class VideoGameResource {
     @Path("/{videoGameId}")
     @Operation(summary = "Delete a video game", description = "Deletes a video game from the database by ID")
     public String deleteVideoGame(
-            @Parameter(description = "The video game ID", required = true)
-            @PathParam("videoGameId") int videoGameId) {
+        @Parameter(description = "The video game ID", required = true)
+        @PathParam("videoGameId") int videoGameId) {
         SqlParameterSource params = new MapSqlParameterSource("videoGameId", videoGameId);
         jdbc.update(SQL_DELETE, params);
         return "{\"status\": \"Record Deleted Successfully\"}";

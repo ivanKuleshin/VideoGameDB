@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,33 +17,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    /**
-     * Password encoder – BCrypt is the recommended standard.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Single in-memory user: test / test
-     */
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         UserDetails user = User.builder()
-                .username("test")
-                .password(encoder.encode("test"))
-                .roles("USER")
-                .build();
+            .username("test")
+            .password(encoder.encode("test"))
+            .roles("USER")
+            .build();
         return new InMemoryUserDetailsManager(user);
     }
 
-    /**
-     * Security filter chain:
-     *  - Swagger UI and OpenAPI spec are publicly accessible
-     *  - H2 console is publicly accessible (dev convenience)
-     *  - Everything else requires HTTP Basic authentication
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -52,7 +41,7 @@ public class SecurityConfig {
             )
             // Allow H2 console frames (it uses iframes)
             .headers(headers -> headers
-                .frameOptions(frame -> frame.sameOrigin())
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
             )
             .authorizeHttpRequests(auth -> auth
                 // Public: Swagger UI page and its assets
