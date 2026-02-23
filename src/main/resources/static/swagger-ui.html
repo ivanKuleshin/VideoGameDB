@@ -17,7 +17,9 @@
             dom_id: '#swagger-ui',
             presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
             layout: "StandaloneLayout",
-            validatorUrl: null
+            validatorUrl: null,
+            persistAuthorization: true,
+            withCredentials: true
         });
     };
 </script>

@@ -14,10 +14,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
@@ -31,11 +31,11 @@ import java.time.LocalDate;
 @Tag(name = "Video Games")
 public class VideoGameResource {
 
-    private static final String SQL_SELECT_ALL   = "SELECT * FROM VIDEOGAME";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM VIDEOGAME";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM VIDEOGAME WHERE id = :videoGameId";
-    private static final String SQL_INSERT       = "INSERT INTO VIDEOGAME VALUES (:id, :name, :releaseDate, :reviewScore, :category, :rating)";
-    private static final String SQL_UPDATE       = "UPDATE VIDEOGAME SET name = :name, released_on = :releaseDate, review_score = :reviewScore, category = :category, rating = :rating WHERE id = :id";
-    private static final String SQL_DELETE       = "DELETE FROM VIDEOGAME WHERE id = :videoGameId";
+    private static final String SQL_INSERT = "INSERT INTO VIDEOGAME VALUES (:id, :name, :releaseDate, :reviewScore, :category, :rating)";
+    private static final String SQL_UPDATE = "UPDATE VIDEOGAME SET name = :name, released_on = :releaseDate, review_score = :reviewScore, category = :category, rating = :rating WHERE id = :id";
+    private static final String SQL_DELETE = "DELETE FROM VIDEOGAME WHERE id = :videoGameId";
 
     private static final VideoGameMapper MAPPER = new VideoGameMapper();
 
