@@ -10,3 +10,5 @@ gen_java
 build
 bin
 target
+
+/app/src/main/resources/swagger-ui/dist/
