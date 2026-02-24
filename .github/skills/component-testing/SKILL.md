@@ -12,10 +12,12 @@ description: Complete guide for implementing component tests for Spring Boot app
 
 ## Class Structure
 
-1. Extend **BaseApiTest** as parent class by default
+1. Extend **ApiBaseTest** as parent class by default — provides `httpClient` and `dbClient` via `@Autowired`
 2. Use Additional Base class like **GetAllGamesBaseTest** for each endpoint to reuse some common methods
 3. Each test class should cover the entire endpoint functionality, despite one endpoint is covered with more than 1 Jira
    ticket
+4. Annotate every test class with `@Log4j2` and `@TestInstance(TestInstance.Lifecycle.PER_CLASS)`
+5. Spring Boot context is started with `@SpringBootTest(webEnvironment = RANDOM_PORT)` and `@ActiveProfiles("test")` — already inherited from `ApiBaseTest`, do not repeat
 
 ## Main Rules
 
