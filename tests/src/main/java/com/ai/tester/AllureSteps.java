@@ -1,15 +1,15 @@
 package com.ai.tester;
 
 import io.qameta.allure.Allure;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.function.Executable;
 
 import java.util.concurrent.Callable;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllureSteps {
-
-    private AllureSteps() {
-    }
 
     public static void logStep(Logger log, String stepName, Executable action) {
         log.info("Step: {}", stepName);

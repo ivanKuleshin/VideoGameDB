@@ -1,4 +1,4 @@
-package com.ai.tester.model.api;
+package com.ai.tester.model.api.json;
 
 import lombok.Data;
 

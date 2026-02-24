@@ -1,9 +1,11 @@
 package com.ai.tester.getAllGames;
 
 import com.ai.tester.AllureSteps;
-import com.ai.tester.model.api.GetAllGamesResponseModel;
-import com.ai.tester.model.api.VideoGameApiModel;
+import com.ai.tester.model.api.json.GetAllGamesResponseModel;
+import com.ai.tester.model.api.json.VideoGameApiModel;
+import com.ai.tester.model.api.xml.GetAllGamesXmlResponseModel;
 import com.ai.tester.model.db.VideoGameDbModel;
+import com.ai.tester.util.XmlUtil;
 import io.qameta.allure.TmsLink;
 import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
@@ -33,14 +35,15 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
     @DisplayName("GetAllGames – Check that all games are returned successfully")
     void getAllVideoGamesPositiveTest() {
         // Given
-        List<VideoGameDbModel> allVideoGames = AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
-            List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
-            Assertions.assertThat(allVideoGamesList)
-                .as("Response should contain at least one game")
-                .isNotEmpty();
+        List<VideoGameDbModel> allVideoGames =
+            AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
+                List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
+                Assertions.assertThat(allVideoGamesList)
+                    .as("Response should contain at least one game")
+                    .isNotEmpty();
 
-            return allVideoGamesList;
-        });
+                return allVideoGamesList;
+            });
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -66,16 +69,42 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
             });
     }
 
-    private List<VideoGameApiModel> prepareExpectedAllGamesResponseList(List<VideoGameDbModel> allVideoGames) {
-        return allVideoGames.stream()
-            .map(dbModel -> new VideoGameApiModel(
-                dbModel.getId(),
-                dbModel.getName(),
-                dbModel.getReleaseDateAsString(),
-                dbModel.getReviewScore(),
-                dbModel.getCategory(),
-                dbModel.getRating()
-            ))
-            .toList();
+    @Test
+    @TmsLink("XSP-96")
+    @DisplayName("GetAllGames – Response is valid XML when Accept: application/xml")
+    void getAllVideoGamesXmlResponseTest() {
+        // When
+        Response response = AllureSteps.logStepAndReturn(log,
+            "Send GET request to get games with Accept: application/xml header",
+            () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.XML));
+
+        // Then
+        AllureSteps.logStep(log, "Verify response status code is 200",
+            () -> assertThat(response.getStatusCode())
+                .as("Response status code should be 200")
+                .isEqualTo(200));
+
+        AllureSteps.logStep(log, "Verify response Content-Type is application/xml",
+            () -> assertThat(response.getContentType())
+                .as("Response Content-Type should be application/xml")
+                .contains("application/xml"));
+
+        AllureSteps.logStep(log,
+            "Verify response body is valid XML with <videoGames> root element containing <videoGame> children",
+            () -> {
+                GetAllGamesXmlResponseModel xmlResponse =
+                    XmlUtil.parse(response.getBody().asString(), GetAllGamesXmlResponseModel.class);
+
+                assertThat(xmlResponse.getVideoGames())
+                    .as("XML <videoGames> should contain at least one <videoGame> child element")
+                    .isNotEmpty();
+
+                List<VideoGameApiModel> expectedList = prepareExpectedAllGamesResponseList(dbClient.getAllVideoGames());
+                List<VideoGameApiModel> actualList = prepareExpectedAllGamesXmlResponseList(xmlResponse.getVideoGames());
+
+                assertThat(actualList)
+                    .as("XML response list content should match database list content")
+                    .containsExactlyInAnyOrderElementsOf(expectedList);
+            });
     }
 }

@@ -51,6 +51,12 @@
             <artifactId>jersey-media-jaxb</artifactId>
         </dependency>
 
+        <!-- JAXB runtime implementation (removed from JDK since Java 11) -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
         <!-- Jersey JSON serialization via Jackson -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>

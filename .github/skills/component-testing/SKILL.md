@@ -7,26 +7,30 @@ description: Complete guide for implementing component tests for Spring Boot app
 
 ## Test Location
 
-- Use test location - `src/test/java/com/ai/tester` (unless explicitly specified otherwise)
-- Organize by endpoint name, like `getAllGames`
+- Use test location - `tests/src/test/java/com/ai/tester` (unless explicitly specified otherwise)
+- Organize by endpoint name, like `getAllGames` - `GetAllGamesComponentTest`
 
 ## Class Structure
 
-1. Extend **BaseApiTest** as parent class
-2. Each test class should cover the entire endpoint functionality, despite one endpoint is covered with more than 1 Jira
+1. Extend **BaseApiTest** as parent class by default
+2. Use Additional Base class like **GetAllGamesBaseTest** for each endpoint to reuse some common methods
+3. Each test class should cover the entire endpoint functionality, despite one endpoint is covered with more than 1 Jira
    ticket
 
 ## Main Rules
 
 1. Use JUnit 5
 2. Use only AssertJ for assertions
-3. Use soft assertions or POJO classes assertions
+3. Use soft assertions or POJO classes assertions with methods like `prepareExpectedAllGamesResponseList` to build
+   expected result
 4. Test Data should be declared outside the TC, use JUnit5 like @MethodSource, @CsvSource, etc
 5. Use Lombok for POJO classes and in entire TAF
 6. For POJO classes do not use primitive data types
 7. Validate there are no hardcoded values in the test
 8. Maintainable and reusable code is a must
 9. Follow the given/when/then structure in test methods
+10. Use `AllureSteps` class for reporting steps, use example from `getAllVideoGamesPositiveTest` test
+11. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
 
 ### Formatting and Structure
 

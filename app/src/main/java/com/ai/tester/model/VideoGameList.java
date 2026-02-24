@@ -17,7 +17,7 @@ public class VideoGameList {
         this.videoGames = videoGames;
     }
 
-    @XmlElement(name = "videoGames")
+    @XmlElement(name = "videoGame")
     public List<VideoGame> getVideoGames() {
         return videoGames;
     }

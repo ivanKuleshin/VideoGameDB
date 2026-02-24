@@ -13,6 +13,8 @@ Test Automation Framework (TAF) for component testing of Spring Boot application
 - Reusability of the code is a must, avoid code duplication
 - Keep lines concise, break long method chains
 - No wildcard imports
+- Use Lombok as much as possible to reduce boilerplate code
+- Never use 'throws', always handle exceptions with try-catch blocks and throw RuntimeException in catch block
 
 ---
 

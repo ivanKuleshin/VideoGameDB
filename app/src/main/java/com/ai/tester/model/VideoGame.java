@@ -2,6 +2,7 @@ package com.ai.tester.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 @XmlRootElement
@@ -42,6 +43,7 @@ public class VideoGame {
         this.name = name;
     }
 
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
