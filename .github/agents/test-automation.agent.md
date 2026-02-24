@@ -33,8 +33,7 @@ component testing in SpringBoot environment.
 - Map each Xray step to code with comments
 - Allure steps may be different from Xray steps, use your judgment to map them correctly
 - Implement ALL steps sequentially without skipping
-- Run only implemented tests for verification, not the entire suite
-- If some checkstyle issues - abort running tests
+- Ignore some checkstyle issues - notify the user
 
 ### 4. Validation
 

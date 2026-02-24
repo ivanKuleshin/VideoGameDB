@@ -118,4 +118,5 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
                     .containsExactlyInAnyOrderElementsOf(expectedList);
             });
     }
+
 }

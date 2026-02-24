@@ -16,8 +16,9 @@ description: Complete guide for implementing component tests for Spring Boot app
 2. Use Additional Base class like **GetAllGamesBaseTest** for each endpoint to reuse some common methods
 3. Each test class should cover the entire endpoint functionality, despite one endpoint is covered with more than 1 Jira
    ticket
-4. Annotate every test class with `@Log4j2` and `@TestInstance(TestInstance.Lifecycle.PER_CLASS)`
-5. Spring Boot context is started with `@SpringBootTest(webEnvironment = RANDOM_PORT)` and `@ActiveProfiles("test")` — already inherited from `ApiBaseTest`, do not repeat
+4. Annotate every test class with `@Log4j2` to have logger available
+5. Spring Boot context is started with `@SpringBootTest(webEnvironment = RANDOM_PORT)` and `@ActiveProfiles("test")` —
+   already inherited from `ApiBaseTest`, do not repeat
 
 ## Main Rules
 
@@ -30,9 +31,13 @@ description: Complete guide for implementing component tests for Spring Boot app
 6. For POJO classes do not use primitive data types
 7. Validate there are no hardcoded values in the test
 8. Maintainable and reusable code is a must
-9. Follow the given/when/then structure in test methods like in `GetAllGamesComponentTest`
-10. Use `AllureSteps` class for reporting steps, use example from `getAllVideoGamesPositiveTest` test
+9. Follow the given/when/then structure in test methods like in `GetAllGamesComponentTest`. Where Given is to data
+   preparation(DB calls, expected result builders, etc.), When is to action (HTTP request) and Then is to assertions and
+   verifications. This structure should be followed in all test methods, even if it seems a bit redundant for simple
+   cases. It helps to maintain consistency and readability across the entire test suite.
+10. Use `AllureSteps` class for reporting steps — see patterns below
 11. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
+12. You need to verify the content of the response even if it's missed in the Jira/Xray 
 
 ### Formatting and Structure
 
@@ -56,4 +61,75 @@ description: Complete guide for implementing component tests for Spring Boot app
 - **Test Methods**: Descriptive names explaining scenario (e.g., `getAllVideoGamesPositiveTest`)
 - **Test Naming**: Use `@DisplayName` for human-readable test descriptions, it should contain short summary of the test
   case, no expected result specified
+
+---
+
+## Code Patterns
+
+### AllureSteps — void step
+
+```java
+AllureSteps.logStep(log, "Verify response status code is 200",
+    () -> assertThat(response.getStatusCode())
+        .as("Response status code should be 200")
+        .isEqualTo(200));
+```
+
+### AllureSteps — step with return value
+
+```java
+Response response = AllureSteps.logStepAndReturn(log,
+    "Send GET request to get all video games",
+    () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
+```
+
+### @TmsLink — single ticket
+
+```java
+
+@Test
+@TmsLink("XSP-91")
+@DisplayName("...")
+void myTest() { ...}
+```
+
+### @TmsLinks — multiple tickets
+
+```java
+
+@Test
+@TmsLinks({
+    @TmsLink("XSP-91"),
+    @TmsLink("XSP-92")
+})
+@DisplayName("...")
+void myTest() { ...}
+```
+
+### AssertJ — always include `.as()` message
+
+```java
+assertThat(actual)
+    .as("Descriptive failure message")
+    .isEqualTo(expected);
+```
+
+### Given/When/Then structure
+
+```java
+void myTest() {
+    // Given
+    SomeModel data = AllureSteps.logStepAndReturn(log, "Prepare test data", () -> {
+        // setup and return
+    });
+
+    // When
+    Response response = AllureSteps.logStepAndReturn(log, "Send HTTP request", () ->
+        httpClient.get(ENDPOINT.getPath(), ContentType.JSON));
+
+    // Then
+    AllureSteps.logStep(log, "Verify ...", () ->
+        assertThat(response.getStatusCode()).as("...").isEqualTo(200));
+}
+```
 
