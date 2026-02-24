@@ -10,6 +10,7 @@ Test Automation Framework (TAF) for component testing of Spring Boot application
 # Coding Principles
 - Follow clean code and SOLID principles
 - Prioritize readability and maintainability
+- Reusability of the code is a must, avoid code duplication
 - Keep lines concise, break long method chains
 - No wildcard imports
 

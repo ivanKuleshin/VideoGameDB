@@ -1,4 +1,4 @@
-package com.ai.tester.client;
+package com.ai.tester.client.http;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.ErrorLoggingFilter;

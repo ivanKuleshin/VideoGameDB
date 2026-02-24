@@ -14,19 +14,18 @@ component testing in SpringBoot environment.
 ### 1. Research Phase
 
 - Get the Jira ticket number from the user if not provided
-- Fetch Jira issue details using `com.atlassian/atlassian-mcp-server/getJiraIssue`
-- Fetch all manual test steps from Xray MCP using `mcp_xray_get_test_case`
-- If any Xray step is null, fetch parent test via `callTestIssueId` and combine steps
+- Do not check `app/src/main/java/com/ai/tester` folder for source code, it's a black box testing, except explicitly asked
+- Fetch Jira issue details using `atlassian-mcp`
+- Fetch all manual test steps using `xray-mcp` 
+- If any Xray step is null, fetch parent test and combine steps
 - Before implementing parent test steps, check if they are already implemented in the codebase
-- **Dynamic Example Discovery**: Search for 2-3 recent test classes in the target folder to use as reference:
+- **Dynamic Example Discovery**: Search for 2-3 recent test classes in the target folder to use as reference
 
 ### 2. Clarification
 
-[//]: # (TODO: fill clarification questions)
+- If any test steps are unclear, ask the user for clarification before implementation
 
 ### 3. Implementation
-
-[//]: # (TODO: add skills)
 
 - **Read the appropriate skill file** before implementing
 - Follow all rules from `copilot-instructions.md`
@@ -38,3 +37,4 @@ component testing in SpringBoot environment.
 ### 4. Validation
 
 - Run `get_errors` to check for compilation issues
+- Revalidate your output before finishing, you may miss some main rules or requirements
