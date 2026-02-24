@@ -109,7 +109,7 @@ public class VideoGameResource {
     }
 
     @DELETE
-    @Path("/delete-even")
+    @Path("/delete-even-games")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete even video game IDs", description = "Deletes up to 5 video games with even IDs per request")
     public Response deleteEvenVideoGames() {
