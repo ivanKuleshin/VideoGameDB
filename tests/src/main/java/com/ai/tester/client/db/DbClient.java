@@ -1,6 +1,6 @@
 package com.ai.tester.client.db;
 
-import com.ai.tester.model.VideoGameDbModel;
+import com.ai.tester.model.db.VideoGameDbModel;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.ai.tester.client.db;
 
-import com.ai.tester.model.VideoGameDbModel;
+import com.ai.tester.model.db.VideoGameDbModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

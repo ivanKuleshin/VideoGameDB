@@ -1,19 +1,22 @@
-package com.ai.tester.model;
+package com.ai.tester.model.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 
 @Data
-public class VideoGameDbModel {
+@NoArgsConstructor
+@AllArgsConstructor
+public class VideoGameApiModel {
 
     private Integer id;
     private String name;
 
-    @JsonProperty("RELEASED_ON")
+    @JsonProperty("releaseDate")
     private String releaseDate;
 
-    @JsonProperty("REVIEW_SCORE")
+    @JsonProperty("reviewScore")
     private Integer reviewScore;
 
     private String category;
