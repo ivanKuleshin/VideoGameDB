@@ -73,6 +73,17 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
     @TmsLink("XSP-96")
     @DisplayName("GetAllGames – Response is valid XML when Accept: application/xml")
     void getAllVideoGamesXmlResponseTest() {
+        // Given
+        List<VideoGameDbModel> allVideoGames =
+            AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
+                List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
+                Assertions.assertThat(allVideoGamesList)
+                    .as("Response should contain at least one game")
+                    .isNotEmpty();
+
+                return allVideoGamesList;
+            });
+
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to get games with Accept: application/xml header",
@@ -99,7 +110,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
                     .as("XML <videoGames> should contain at least one <videoGame> child element")
                     .isNotEmpty();
 
-                List<VideoGameApiModel> expectedList = prepareExpectedAllGamesResponseList(dbClient.getAllVideoGames());
+                List<VideoGameApiModel> expectedList = prepareExpectedAllGamesResponseList(allVideoGames);
                 List<VideoGameApiModel> actualList = prepareExpectedAllGamesXmlResponseList(xmlResponse.getVideoGames());
 
                 assertThat(actualList)

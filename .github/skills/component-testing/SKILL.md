@@ -28,7 +28,7 @@ description: Complete guide for implementing component tests for Spring Boot app
 6. For POJO classes do not use primitive data types
 7. Validate there are no hardcoded values in the test
 8. Maintainable and reusable code is a must
-9. Follow the given/when/then structure in test methods
+9. Follow the given/when/then structure in test methods like in `GetAllGamesComponentTest`
 10. Use `AllureSteps` class for reporting steps, use example from `getAllVideoGamesPositiveTest` test
 11. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
 
