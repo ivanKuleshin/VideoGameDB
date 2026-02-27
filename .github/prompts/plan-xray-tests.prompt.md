@@ -1,5 +1,5 @@
 ---
-mode: 'plan'
+agent: 'plan'
 description: 'Read an existing XSP Story and plan one Xray Test issue per AC with detailed steps — ready for create-xray-tests to implement'
 ---
 

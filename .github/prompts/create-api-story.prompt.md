@@ -1,6 +1,5 @@
 ---
-mode: 'agent'
-tools: ['read_file', 'com.atlassian/atlassian-mcp-server/getAccessibleAtlassianResources', 'com.atlassian/atlassian-mcp-server/createJiraIssue']
+agent: 'agent'
 description: 'Create a Jira Story in XSP from a reviewed plan produced by plan-api-story'
 ---
 

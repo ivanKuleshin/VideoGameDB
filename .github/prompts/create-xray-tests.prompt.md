@@ -1,6 +1,5 @@
 ---
-mode: 'agent'
-tools: ['com.atlassian/atlassian-mcp-server/getAccessibleAtlassianResources', 'com.atlassian/atlassian-mcp-server/createJiraIssue', 'xray/add_test_step', 'xray/get_test_case']
+agent: 'agent'
 description: 'Create Xray Test issues in XSP and populate 4-step test steps from a reviewed plan produced by plan-xray-tests'
 ---
 

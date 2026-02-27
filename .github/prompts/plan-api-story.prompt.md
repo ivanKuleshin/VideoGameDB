@@ -1,5 +1,5 @@
 ---
-mode: 'plan'
+agent: 'plan'
 description: 'Analyse a Spring Boot JAX-RS endpoint and produce a detailed plan for a Jira Story including all sections and Acceptance Criteria — ready for create-api-story to implement'
 ---
 
