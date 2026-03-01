@@ -13,3 +13,4 @@ target
 
 /app/src/main/resources/swagger-ui/dist/
 /tests/.allure/
+/skills-lock.json
