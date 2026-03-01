@@ -1,6 +1,6 @@
 package com.ai.tester.getAllGames;
 
-import com.ai.tester.AllureSteps;
+import com.ai.tester.allure.AllureSteps;
 import com.ai.tester.model.api.json.GetAllGamesResponseModel;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.GetAllGamesXmlResponseModel;

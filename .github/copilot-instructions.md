@@ -41,3 +41,7 @@ Test Automation Framework (TAF) for component testing of Spring Boot application
 - Do not add custom comments and Javadoc if not asked
 - Code should be self-explanatory through clear naming and structure
 
+# Final MD files
+
+- Do not create multiple MD files when you need to summarize changes, your steps, etc., unless I ask you to do so.
+

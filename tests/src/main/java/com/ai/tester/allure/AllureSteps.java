@@ -1,4 +1,4 @@
-package com.ai.tester;
+package com.ai.tester.allure;
 
 import io.qameta.allure.Allure;
 import lombok.AccessLevel;

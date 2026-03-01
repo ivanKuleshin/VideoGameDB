@@ -37,8 +37,13 @@ All project-wide conventions from `copilot-instructions.md` apply. This skill ad
    verifications. This structure should be followed in all test methods, even if it seems a bit redundant for simple
    cases. It helps to maintain consistency and readability across the entire test suite.
 6. Use `AllureSteps` class for reporting steps — see patterns below
-7. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
-8. You need to verify the content of the response even if it's missed in the Jira/Xray
+7. Use `CommonSteps` class for reusable verification logic (database, response content checks)
+8. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
+9. You need to verify the content of the response even if it's missed in the Jira/Xray
+
+### Test Data Management: Fixture Approach
+
+Use **enum-based fixtures** to eliminate test data boilerplate, like `VideoGameTestDataFixtures`
 
 ### Test-Specific Naming
 

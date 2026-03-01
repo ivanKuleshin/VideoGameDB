@@ -5,6 +5,7 @@ import com.ai.tester.client.db.DbClient;
 import com.ai.tester.client.http.HttpClient;
 import com.ai.tester.config.DbClientConfig;
 import com.ai.tester.config.HttpClientConfig;
+import com.ai.tester.steps.CommonSteps;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,4 +23,7 @@ public abstract class ApiBaseTest {
 
     @Autowired
     protected DbClient dbClient;
+
+    @Autowired
+    protected CommonSteps commonSteps;
 }
