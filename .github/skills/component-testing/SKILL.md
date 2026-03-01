@@ -41,6 +41,7 @@ All project-wide conventions from `copilot-instructions.md` apply. This skill ad
 8. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
 9. You need to verify the content of the response even if it's missed in the Jira/Xray
 10. Make sure in Allure step no mentions of endpoint names at all, it's hardcoded data
+11. Always fetch game from DB as a test date, use fixtures for cases when you need to insert data
 
 ### Test Data Management: Fixture Approach
 
