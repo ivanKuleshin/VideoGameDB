@@ -1,5 +1,4 @@
 ---
-agent: 'agent'
 description: 'Create a Jira Story in XSP from a reviewed plan produced by plan-api-story'
 ---
 

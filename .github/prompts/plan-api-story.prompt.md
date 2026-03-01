@@ -1,5 +1,4 @@
 ---
-agent: 'plan'
 description: 'Analyse a Spring Boot JAX-RS endpoint and produce a detailed plan for a Jira Story including all sections and Acceptance Criteria — ready for create-api-story to implement'
 ---
 
@@ -13,7 +12,7 @@ passed to `create-api-story` for implementation.
 
 ## Inputs
 
-- Endpoint source file: `${file}`
+- Endpoint source file: `${input:endpointFile:path to endpoint source file}`
 - Security config: [SecurityConfig.java](../../app/src/main/java/com/ai/tester/config/SecurityConfig.java)
 - Data model: [VideoGame.java](../../app/src/main/java/com/ai/tester/model/VideoGame.java)
 - Database schema: [schema.sql](../../app/src/main/resources/schema.sql)

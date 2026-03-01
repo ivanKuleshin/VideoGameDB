@@ -1,5 +1,4 @@
 ---
-agent: 'agent'
 description: 'Create Xray Test issues in XSP and populate 4-step test steps from a reviewed plan produced by plan-xray-tests'
 ---
 

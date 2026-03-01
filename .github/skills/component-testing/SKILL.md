@@ -1,6 +1,9 @@
 ---
 name: component-testing
-description: Complete guide for implementing component tests for Spring Boot applications.
+description: >-
+  Guide for implementing component tests for Spring Boot applications.
+  Use this when asked to create, write, or implement automated test cases,
+  component tests, or API tests.
 ---
 
 # Component Tests Implementation Guide
@@ -22,114 +25,30 @@ description: Complete guide for implementing component tests for Spring Boot app
 
 ## Main Rules
 
-1. Use JUnit 5
-2. Use only AssertJ for assertions
-3. Use soft assertions or POJO classes assertions with methods like `prepareExpectedAllGamesResponseList` to build
+All project-wide conventions from `copilot-instructions.md` apply. This skill adds test-specific rules:
+
+1. Use soft assertions or POJO classes assertions with methods like `prepareExpectedAllGamesResponseList` to build
    expected result
-4. Test Data should be declared outside the TC, use JUnit5 like @MethodSource, @CsvSource, etc
-5. Use Lombok for POJO classes and in entire TAF
-6. For POJO classes do not use primitive data types
-7. Validate there are no hardcoded values in the test
-8. Maintainable and reusable code is a must
-9. Follow the given/when/then structure in test methods like in `GetAllGamesComponentTest`. Where Given is to data
+2. Test Data should be declared outside the TC, use JUnit5 like @MethodSource, @CsvSource, etc
+3. For POJO classes do not use primitive data types
+4. Validate there are no hardcoded values in the test
+5. Follow the given/when/then structure in test methods like in `GetAllGamesComponentTest`. Where Given is to data
    preparation(DB calls, expected result builders, etc.), When is to action (HTTP request) and Then is to assertions and
    verifications. This structure should be followed in all test methods, even if it seems a bit redundant for simple
    cases. It helps to maintain consistency and readability across the entire test suite.
-10. Use `AllureSteps` class for reporting steps — see patterns below
-11. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
-12. You need to verify the content of the response even if it's missed in the Jira/Xray 
+6. Use `AllureSteps` class for reporting steps — see patterns below
+7. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
+8. You need to verify the content of the response even if it's missed in the Jira/Xray
 
-### Formatting and Structure
+### Test-Specific Naming
 
-- **Package Naming**: Lowercase, domain-based organization (e.g., `client`, `getAllGames`)
-- **Class Organization**: Fields first, constructors, public methods, protected methods, private methods
-- **Line Length**: Keep lines concise and readable, break long method chains
-- **Indentation**: Consistent 4-space indentation (enforced by CheckStyle)
-- **Import Organization**: No wildcard imports, organized by package hierarchy
-
-### Naming Conventions
-
-- **Classes**: PascalCase with descriptive names (e.g., `BaseApiTest`, `HttpClient`, `GetAllGamesTest`)
-- **Methods**: camelCase with verb prefixes indicating action
-    - `prepare*()` - for test data preparation methods
-    - `create*()` - for object creation/factory methods
-    - `validate*()` - for validation methods
-    - `get*()` - for retrieval methods
-    - `check*()` - for boolean condition checks
-- **Variables**: camelCase, descriptive names avoiding abbreviations except domain-specific
-- **Constants**: UPPER_SNAKE_CASE for static final fields
 - **Test Methods**: Descriptive names explaining scenario (e.g., `getAllVideoGamesPositiveTest`)
-- **Test Naming**: Use `@DisplayName` for human-readable test descriptions, it should contain short summary of the test
+- Use `@DisplayName` for human-readable test descriptions, it should contain short summary of the test
   case, no expected result specified
 
 ---
 
 ## Code Patterns
 
-### AllureSteps — void step
-
-```java
-AllureSteps.logStep(log, "Verify response status code is 200",
-    () -> assertThat(response.getStatusCode())
-        .as("Response status code should be 200")
-        .isEqualTo(200));
-```
-
-### AllureSteps — step with return value
-
-```java
-Response response = AllureSteps.logStepAndReturn(log,
-    "Send GET request to get all video games",
-    () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
-```
-
-### @TmsLink — single ticket
-
-```java
-
-@Test
-@TmsLink("XSP-91")
-@DisplayName("...")
-void myTest() { ...}
-```
-
-### @TmsLinks — multiple tickets
-
-```java
-
-@Test
-@TmsLinks({
-    @TmsLink("XSP-91"),
-    @TmsLink("XSP-92")
-})
-@DisplayName("...")
-void myTest() { ...}
-```
-
-### AssertJ — always include `.as()` message
-
-```java
-assertThat(actual)
-    .as("Descriptive failure message")
-    .isEqualTo(expected);
-```
-
-### Given/When/Then structure
-
-```java
-void myTest() {
-    // Given
-    SomeModel data = AllureSteps.logStepAndReturn(log, "Prepare test data", () -> {
-        // setup and return
-    });
-
-    // When
-    Response response = AllureSteps.logStepAndReturn(log, "Send HTTP request", () ->
-        httpClient.get(ENDPOINT.getPath(), ContentType.JSON));
-
-    // Then
-    AllureSteps.logStep(log, "Verify ...", () ->
-        assertThat(response.getStatusCode()).as("...").isEqualTo(200));
-}
-```
-
+See [code-patterns.md](examples/code-patterns.md) for AllureSteps, @TmsLink, AssertJ, and Given/When/Then
+examples.
