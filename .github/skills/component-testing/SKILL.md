@@ -40,6 +40,7 @@ All project-wide conventions from `copilot-instructions.md` apply. This skill ad
 7. Use `CommonSteps` class for reusable verification logic (database, response content checks)
 8. Use `@TmsLink` or `@TmsLinks` to link test cases from Jira to code
 9. You need to verify the content of the response even if it's missed in the Jira/Xray
+10. Make sure in Allure step no mentions of endpoint names at all, it's hardcoded data
 
 ### Test Data Management: Fixture Approach
 
