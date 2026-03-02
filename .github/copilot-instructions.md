@@ -6,8 +6,6 @@ Test Automation Framework (TAF) for component testing of Spring Boot application
 
 - `tests/src/main/java` — shared test infrastructure (clients, models, builders, utils, steps)
 - `tests/src/test/java` — test classes and their configuration (`@Configuration` beans)
-- Test classes are picked up by Surefire via `**/*ComponentTest.class` pattern
-- Each API operation has its own package (e.g. `getAllGames/`) containing a `*BaseTest` and a `*ComponentTest`
 
 # Technology Stack
 
@@ -27,6 +25,7 @@ Test Automation Framework (TAF) for component testing of Spring Boot application
 - Prioritize readability and maintainability
 - Use Lombok as much as possible to reduce boilerplate code
 - Never use `throws`, always handle exceptions with try-catch blocks and throw `RuntimeException` in catch block
+- Do not create code if it's not going to be used, avoid Boat Anchor anti-pattern
 
 # Naming Conventions
 

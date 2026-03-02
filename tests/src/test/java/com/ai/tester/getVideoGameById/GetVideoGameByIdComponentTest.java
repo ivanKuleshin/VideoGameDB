@@ -13,9 +13,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Random;
-
 import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,14 +26,8 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     void getVideoGameByIdPositiveTest() {
         // Given
         VideoGameDbModel videoGame =
-            AllureSteps.logStepAndReturn(log, "Get random video game from database", () -> {
-                List<VideoGameDbModel> allGames = dbClient.getAllVideoGames();
-                Assertions.assertThat(allGames)
-                    .as("Database should contain at least one video game")
-                    .isNotEmpty();
-
-                return allGames.get(new Random().nextInt(allGames.size()));
-            });
+            AllureSteps.logStepAndReturn(log, "Get first video game from database",
+                this::getFirstVideoGameFromDatabase);
 
         Integer gameId = videoGame.getId();
 
@@ -68,14 +59,8 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     void getVideoGameByIdXmlResponseTest() {
         // Given
         VideoGameDbModel videoGame =
-            AllureSteps.logStepAndReturn(log, "Get random video game from database", () -> {
-                List<VideoGameDbModel> allGames = dbClient.getAllVideoGames();
-                Assertions.assertThat(allGames)
-                    .as("Database should contain at least one video game")
-                    .isNotEmpty();
-
-                return allGames.get(new Random().nextInt(allGames.size()));
-            });
+            AllureSteps.logStepAndReturn(log, "Get first video game from database",
+                this::getFirstVideoGameFromDatabase);
 
         Integer gameId = videoGame.getId();
 

@@ -4,7 +4,7 @@ description: 'Analyse a Spring Boot JAX-RS endpoint and produce a detailed plan 
 
 ## Goal
 
-You are acting as a **Technical Business Analyst**. Analyse the provided endpoint source file and supporting files, then
+You are acting as a **Technical Business Analyst**. Analyze the provided endpoint source file and supporting files, then
 **plan** a complete Jira Story in the format defined below.
 
 Do **not** create anything in Jira — output the full planned story content as Markdown so it can be reviewed and then
@@ -103,12 +103,12 @@ Write each AC in **Given / When / Then** format. Must include:
 - ✅ XML content type (at least once)
 - ✅ Missing `Authorization` header → `401`
 - ✅ Invalid credentials (`wrong`/`wrong`) → `401`
-- ✅ Non-existent ID → `404` (write correct expected behaviour regardless of current code bugs)
+- ✅ Non-existent ID → `404` (write correct expected behavior regardless of current code bugs)
 - ✅ Non-integer path param → `404` or `400` (if path param exists)
 - ✅ All endpoint-specific edge cases (duplicate PK, body id vs path param, DB defaults, etc.)
 
 > **AC writing rules:**
-> - Expected results = correct/desired behaviour only
+> - Expected results = correct/desired behavior only
 > - Flag known bugs with `> ⚠️ Known issue` blockquote **below** the AC — never inside the Expected result
 > - Hardcode `test`/`test` in every AC that requires auth
 
@@ -119,7 +119,7 @@ Bullet list of related endpoints not covered by this story.
 ## Planning Rules
 
 1. Read **all** input files before producing output
-2. Do **not** assume or invent behaviour — derive everything from source code
+2. Do **not** assume or invent behavior — derive everything from source code
 3. Do **not** create any Jira issues
 4. Output the full planned story as Markdown
 5. End with a note: _"Review complete. Run `create-api-story` to create this story in Jira."_

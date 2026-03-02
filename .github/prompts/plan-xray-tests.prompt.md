@@ -108,7 +108,7 @@ Rules:
 
 Action: describe what is verified (status code, response body, headers, DB state)
 
-**Expected result = correct/desired behaviour only — never document bugs here**
+**Expected result = correct/desired behavior only — never document bugs here**
 
 Use these patterns:
 
@@ -146,7 +146,7 @@ For write operations, always include a DB verification SQL in the Data field of 
 3. Do **not** create any Jira issues or call any write MCP tools
 4. Each AC gets exactly one test case with several steps
 5. Use isolated test data IDs starting from `101` for write/update/delete tests
-6. Expected results = correct behaviour only; note known bugs separately below the table if needed
+6. Expected results = correct behavior only; note known bugs separately below the table if needed
 7. End with: _"Plan complete. Review the test cases above, then run `create-xray-tests` to implement."_
 8. Provide a detailed TC by steps output to the user, they should be able to review the TCs
 
