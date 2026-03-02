@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,8 @@ public class H2DbClient implements DbClient {
 
     private static final String SELECT_ALL = "SELECT * FROM VIDEOGAME";
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE ID = ?";
+    private static final String INSERT = "INSERT INTO VIDEOGAME VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_BY_ID = "DELETE FROM VIDEOGAME WHERE ID = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
@@ -46,6 +49,34 @@ public class H2DbClient implements DbClient {
         } catch (DataAccessException e) {
             log.error("Database error fetching game id={}", id, e);
             throw new RuntimeException("Failed to fetch video game from database", e);
+        }
+    }
+
+    @Override
+    public void insertVideoGame(VideoGameDbModel videoGame) {
+        try {
+            log.debug("Inserting video game id={} into DB", videoGame.getId());
+            jdbcTemplate.update(INSERT,
+                videoGame.getId(),
+                videoGame.getName(),
+                new Date(videoGame.getReleaseDate()),
+                videoGame.getReviewScore(),
+                videoGame.getCategory(),
+                videoGame.getRating());
+        } catch (DataAccessException e) {
+            log.error("Database error inserting game id={}", videoGame.getId(), e);
+            throw new RuntimeException("Failed to insert video game into database", e);
+        }
+    }
+
+    @Override
+    public void deleteVideoGameById(int id) {
+        try {
+            log.debug("Deleting video game by id={} from DB", id);
+            jdbcTemplate.update(DELETE_BY_ID, id);
+        } catch (DataAccessException e) {
+            log.error("Database error deleting game id={}", id, e);
+            throw new RuntimeException("Failed to delete video game from database", e);
         }
     }
 

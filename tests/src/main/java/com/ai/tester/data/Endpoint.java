@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum Endpoint {
 
     VIDEOGAMES("/videogames"),
+    VIDEOGAME_BY_ID(VIDEOGAMES.path + "/%d"),
     DELETE_EVEN_GAMES(VIDEOGAMES.path + "/delete-even");
 
     private final String path;

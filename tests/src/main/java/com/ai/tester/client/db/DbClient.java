@@ -10,5 +10,9 @@ public interface DbClient {
     List<VideoGameDbModel> getAllVideoGames();
 
     Optional<VideoGameDbModel> getVideoGameById(int id);
+
+    void insertVideoGame(VideoGameDbModel videoGame);
+
+    void deleteVideoGameById(int id);
 }
 
