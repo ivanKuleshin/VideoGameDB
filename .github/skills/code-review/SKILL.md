@@ -207,20 +207,6 @@ Review code against your project standards including:
   - Use Spring JDBC with JdbcTemplate for H2 database
   - Use Jackson for JSON/XML serialization
 
-## Quick Review Mode vs Comprehensive Review
-
-**Quick Review** (~5-10 minutes)
-- Focus on structure, naming, obvious issues
-- Report 3-5 key findings
-
-**Comprehensive Review** (~15-30 minutes)
-- Full checklist coverage
-- Detailed analysis of each section
-- Performance and security review
-- 10-20 findings with recommendations
-
-Ask user which mode is preferred or perform comprehensive by default.
-
 ## Best Practices for Reviewers
 
 1. **Be Constructive** - Frame feedback as suggestions for improvement, not criticism
