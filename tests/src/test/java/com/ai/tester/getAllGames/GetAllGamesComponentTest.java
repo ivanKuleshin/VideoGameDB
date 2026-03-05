@@ -4,6 +4,7 @@ import com.ai.tester.allure.AllureSteps;
 import com.ai.tester.model.api.json.GetAllGamesResponseModel;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.GetAllGamesXmlResponseModel;
+import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.XmlUtil;
 import io.qameta.allure.TmsLink;
@@ -11,7 +12,6 @@ import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
         List<VideoGameDbModel> allVideoGames =
             AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
                 List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
-                Assertions.assertThat(allVideoGamesList)
+                assertThat(allVideoGamesList)
                     .as("Response should contain at least one game")
                     .isNotEmpty();
 
@@ -52,7 +52,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
-            () -> Assertions.assertThat(response.getStatusCode()).isEqualTo(200));
+            () -> assertThat(response.getStatusCode()).isEqualTo(200));
 
 
         AllureSteps.logStep(log, "Verify response list content matches database list content",
@@ -77,7 +77,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
         List<VideoGameDbModel> allVideoGames =
             AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
                 List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
-                Assertions.assertThat(allVideoGamesList)
+                assertThat(allVideoGamesList)
                     .as("Response should contain at least one game")
                     .isNotEmpty();
 
@@ -110,10 +110,9 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
                     .as("XML <videoGames> should contain at least one <videoGame> child element")
                     .isNotEmpty();
 
-                List<VideoGameApiModel> expectedList = prepareExpectedAllGamesResponseList(allVideoGames);
-                List<VideoGameApiModel> actualList = prepareExpectedAllGamesXmlResponseList(xmlResponse.getVideoGames());
+                List<VideoGameXmlModel> expectedList = prepareExpectedAllGamesXmlResponseList(allVideoGames);
 
-                assertThat(actualList)
+                assertThat(xmlResponse.getVideoGames())
                     .as("XML response list content should match database list content")
                     .containsExactlyInAnyOrderElementsOf(expectedList);
             });

@@ -66,7 +66,7 @@ Perform comprehensive review across these dimensions:
 **Test Quality (for test code reviews)**
 - Given/When/Then structure adherence
 - Test isolation and independence
-- Proper use of fixtures and test data
+- Proper use of fixtures and test data is fetched from DB
 - Meaningful assertions
 - AllureSteps usage for reporting
 - Avoidance of hardcoded values
@@ -134,7 +134,7 @@ Provide structured feedback:
 - [ ] AllureSteps used for step reporting
 - [ ] @TmsLink annotations present and correct
 - [ ] CommonSteps used for verification logic
-- [ ] Fixtures used for test data (VideoGameTestDataFixtures)
+- [ ] Fixtures used for test data (VideoGameTestDataFixtures) or data is fetched from DB
 - [ ] Meaningful @DisplayName annotations
 - [ ] Proper assertion patterns (soft assertions, AssertJ)
 

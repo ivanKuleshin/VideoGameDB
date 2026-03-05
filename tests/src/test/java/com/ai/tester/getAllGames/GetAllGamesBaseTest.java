@@ -22,16 +22,18 @@ public class GetAllGamesBaseTest extends ApiBaseTest {
             .toList();
     }
 
-    protected List<VideoGameApiModel> prepareExpectedAllGamesXmlResponseList(List<VideoGameXmlModel> xmlVideoGames) {
-        return xmlVideoGames.stream()
-            .map(xmlModel -> new VideoGameApiModel(
-                xmlModel.getId(),
-                xmlModel.getName(),
-                xmlModel.getReleaseDate(),
-                xmlModel.getReviewScore(),
-                xmlModel.getCategory(),
-                xmlModel.getRating()
-            ))
+    protected List<VideoGameXmlModel> prepareExpectedAllGamesXmlResponseList(List<VideoGameDbModel> allVideoGames) {
+        return allVideoGames.stream()
+            .map(dbModel -> {
+                VideoGameXmlModel xmlModel = new VideoGameXmlModel();
+                xmlModel.setId(dbModel.getId());
+                xmlModel.setName(dbModel.getName());
+                xmlModel.setReleaseDate(dbModel.getReleaseDateAsString());
+                xmlModel.setReviewScore(dbModel.getReviewScore());
+                xmlModel.setCategory(dbModel.getCategory());
+                xmlModel.setRating(dbModel.getRating());
+                return xmlModel;
+            })
             .toList();
     }
 }

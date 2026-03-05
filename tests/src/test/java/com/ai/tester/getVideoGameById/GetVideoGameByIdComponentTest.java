@@ -9,7 +9,6 @@ import io.qameta.allure.TmsLink;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +37,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
-            () -> Assertions.assertThat(response.getStatusCode())
+            () -> assertThat(response.getStatusCode())
                 .as("Response status code should be 200 OK")
                 .isEqualTo(200));
 
@@ -71,12 +70,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
-            () -> Assertions.assertThat(response.getStatusCode())
+            () -> assertThat(response.getStatusCode())
                 .as("Response status code should be 200 OK")
                 .isEqualTo(200));
 
         AllureSteps.logStep(log, "Verify response Content-Type is application/xml",
-            () -> Assertions.assertThat(response.getContentType())
+            () -> assertThat(response.getContentType())
                 .as("Response Content-Type should be application/xml")
                 .contains("application/xml"));
 
