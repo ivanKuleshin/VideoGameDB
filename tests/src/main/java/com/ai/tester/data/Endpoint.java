@@ -7,7 +7,7 @@ public enum Endpoint {
 
     VIDEOGAMES("/videogames"),
     VIDEOGAME_BY_ID(VIDEOGAMES.path + "/%d"),
-    DELETE_EVEN_GAMES(VIDEOGAMES.path + "/delete-even");
+    DELETE_EVEN_GAMES(VIDEOGAMES.path + "/delete-even-games");
 
     private final String path;
 
