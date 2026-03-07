@@ -30,7 +30,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
         AllureSteps.logStep(log, "Insert test video game: " + PRIMARY_GAME.getName(),
             () -> dbClient.insertVideoGame(PRIMARY_GAME.getGameData()));
 
-        commonSteps.verifyGameExistsInDatabase(log, dbClient, PRIMARY_GAME.getId(), PRIMARY_GAME.getName());
+        commonSteps.verifyGameExistsInDatabase(log, PRIMARY_GAME.getId(), PRIMARY_GAME.getName());
 
         try {
             // When
@@ -52,7 +52,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
                         .isEqualTo(EXPECTED_DELETE_STATUS);
                 });
 
-            commonSteps.verifyGameNotExistsInDatabase(log, dbClient, PRIMARY_GAME.getId());
+            commonSteps.verifyGameNotExistsInDatabase(log, PRIMARY_GAME.getId());
         } finally {
             dbClient.deleteVideoGameById(PRIMARY_GAME.getId());
         }
@@ -66,7 +66,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
         AllureSteps.logStep(log, "Insert test video game: " + SECONDARY_GAME.getName(),
             () -> dbClient.insertVideoGame(SECONDARY_GAME.getGameData()));
 
-        commonSteps.verifyGameExistsInDatabase(log, dbClient, SECONDARY_GAME.getId(), SECONDARY_GAME.getName());
+        commonSteps.verifyGameExistsInDatabase(log, SECONDARY_GAME.getId(), SECONDARY_GAME.getName());
 
         try {
             // When
@@ -95,7 +95,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
                         .doesNotContain(SECONDARY_GAME.getId());
                 });
 
-            commonSteps.verifyGameNotExistsInDatabase(log, dbClient, SECONDARY_GAME.getId());
+            commonSteps.verifyGameNotExistsInDatabase(log, SECONDARY_GAME.getId());
         } finally {
             dbClient.deleteVideoGameById(SECONDARY_GAME.getId());
         }
