@@ -63,6 +63,7 @@ jobs:
           name: allure-results
           path: tests/target/allure-results/
           retention-days: 30
+          overwrite: true
 
       - name: Upload Surefire Reports
         if: always()
@@ -111,7 +112,7 @@ jobs:
           branch: gh-pages
           folder: allure-report
           target-folder: pr-${{ github.event.number }}
-          clean: false
+          clean: true
 
       - name: Add Allure Report link to job summary
         run: |
