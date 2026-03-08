@@ -82,3 +82,11 @@ jobs:
           publish_dir: allure-report
           enable_jekyll: false
 
+      - name: Post Allure Report Link to PR
+        if: always() && github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            📊 **Allure Test Report** is ready!
+            👉 https://ivankuleshin.github.io/VideoGameDB/
+
