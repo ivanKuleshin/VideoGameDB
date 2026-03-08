@@ -102,7 +102,7 @@ jobs:
         run: |
           wget -qO allure.tgz https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
           tar -zxf allure.tgz
-          cp -r gh-pages/history tests/target/allure-results/history 2>/dev/null || true
+          cp -r gh-pages/pr-${{ github.event.number }}/history tests/target/allure-results/history 2>/dev/null || true
           allure-2.32.0/bin/allure generate tests/target/allure-results -o allure-report --clean
           touch allure-report/.nojekyll
 
@@ -113,6 +113,7 @@ jobs:
           folder: allure-report
           target-folder: pr-${{ github.event.number }}
           clean: true
+          force: true
 
       - name: Add Allure Report link to job summary
         run: |
