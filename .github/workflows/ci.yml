@@ -1,11 +1,12 @@
 name: CI Pipeline
 
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
-      - 'feature/**'
-      - 'fix/**'
-      - 'chore/**'
+      - master
 
 permissions:
   contents: write
@@ -59,7 +60,7 @@ jobs:
           retention-days: 30
 
       - name: Load Allure Report History
-        if: always()
+        if: always() && github.event_name == 'push'
         uses: actions/checkout@v4
         with:
           ref: gh-pages
@@ -67,7 +68,7 @@ jobs:
         continue-on-error: true
 
       - name: Generate Allure Report
-        if: always()
+        if: always() && github.event_name == 'push'
         run: |
           wget -qO allure.tgz https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
           tar -zxf allure.tgz
@@ -75,7 +76,7 @@ jobs:
           allure-2.32.0/bin/allure generate tests/target/allure-results -o allure-report --clean
 
       - name: Deploy Allure Report to GitHub Pages
-        if: always()
+        if: always() && github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -84,7 +85,7 @@ jobs:
           enable_jekyll: false
 
       - name: Add Allure Report link to job summary
-        if: always()
+        if: always() && github.event_name == 'push'
         run: |
           echo "## 📊 Allure Report" >> $GITHUB_STEP_SUMMARY
           echo "🔗 [Open Allure Report](https://ivankuleshin.github.io/VideoGameDB/)" >> $GITHUB_STEP_SUMMARY
