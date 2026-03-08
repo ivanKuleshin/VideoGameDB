@@ -54,20 +54,27 @@ jobs:
             tests/target/checkstyle-result.xml
           retention-days: 30
 
-      - name: Install Allure CLI
+      - name: Load Allure Report History
         if: always()
-        run: |
-          npm install -g allure-commandline
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
 
-      - name: Generate Allure Report
+      - name: Generate Allure Report with History
         if: always()
-        run: |
-          allure generate tests/target/allure-results/ -o allure-report --clean
+        uses: simple-elf/allure-report-action@v1.7
+        with:
+          allure_results: tests/target/allure-results
+          allure_history: allure-history
+          keep_reports: 20
 
       - name: Deploy Allure Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
+          publish_branch: gh-pages
+          publish_dir: allure-history
 
