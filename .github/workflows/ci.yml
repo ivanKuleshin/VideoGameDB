@@ -63,9 +63,9 @@ jobs:
       - name: Load Allure Report History
         if: always()
         run: |
-          git fetch origin gh-pages:gh-pages 2>/dev/null || true
-          mkdir -p gh-pages
-          git --work-tree=gh-pages checkout gh-pages -- . 2>/dev/null || true
+          git clone --depth 1 --branch gh-pages --single-branch \
+            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
+            gh-pages 2>/dev/null || mkdir -p gh-pages
         continue-on-error: true
 
       - name: Generate Allure Report
