@@ -54,3 +54,27 @@ jobs:
             tests/target/checkstyle-result.xml
           retention-days: 30
 
+      - name: Load Allure Report History
+        if: always()
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          wget -qO allure.tgz https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+          tar -zxf allure.tgz
+          cp -r gh-pages/history tests/target/allure-results/history 2>/dev/null || true
+          allure-2.32.0/bin/allure generate tests/target/allure-results -o allure-report --clean
+
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-report
+
