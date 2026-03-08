@@ -2,9 +2,13 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ '**' ]
-  pull_request:
-    branches: [ '**' ]
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+      - 'chore/**'
+
+permissions:
+  contents: write
 
 jobs:
   build-and-test:
@@ -79,3 +83,8 @@ jobs:
           publish_dir: allure-report
           enable_jekyll: false
 
+      - name: Add Allure Report link to job summary
+        if: always()
+        run: |
+          echo "## 📊 Allure Report" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [Open Allure Report](https://ivankuleshin.github.io/VideoGameDB/)" >> $GITHUB_STEP_SUMMARY
