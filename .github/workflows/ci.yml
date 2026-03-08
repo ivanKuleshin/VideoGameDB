@@ -62,10 +62,10 @@ jobs:
 
       - name: Load Allure Report History
         if: always()
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
+        run: |
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
+          mkdir -p gh-pages
+          git --work-tree=gh-pages checkout gh-pages -- . 2>/dev/null || true
         continue-on-error: true
 
       - name: Generate Allure Report
@@ -75,6 +75,7 @@ jobs:
           tar -zxf allure.tgz
           cp -r gh-pages/history tests/target/allure-results/history 2>/dev/null || true
           allure-2.32.0/bin/allure generate tests/target/allure-results -o allure-report --clean
+          touch allure-report/.nojekyll
 
       - name: Deploy Allure Report to GitHub Pages (push to master)
         if: always() && github.event_name == 'push'
