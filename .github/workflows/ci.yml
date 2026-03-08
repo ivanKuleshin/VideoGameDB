@@ -54,3 +54,18 @@ jobs:
             tests/target/checkstyle-result.xml
           retention-days: 30
 
+      - name: Publish Allure Report to GitHub Pages
+        if: always()
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: tests/target/allure-results/
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+
