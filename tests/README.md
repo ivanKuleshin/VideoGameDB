@@ -56,7 +56,7 @@ Surefire picks up test classes matching `**/*ComponentTest.class`.
 
 ## Prerequisites
 
-- Java 17+
+- Java 21+
 - Maven 3.9+
 - The `app` module does **not** need to be built separately — the `tests` build triggers `mvn install` in the `app`
   module automatically during the `generate-resources` phase.
@@ -137,4 +137,3 @@ mvn checkstyle:checkstyle -pl tests
 
 The report is written to `tests/target/checkstyle-result.xml`.  
 Violations with severity `error` will fail the build during `checkstyle:check`.
-

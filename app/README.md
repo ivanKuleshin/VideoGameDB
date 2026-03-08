@@ -41,13 +41,13 @@ app/
 | Component           | Version |
 |---------------------|---------|
 | Java                | 21      |
-| Spring Boot         | 3.4.3   |
+| Spring Boot         | 3.5.3   |
 | Jersey (JAX-RS)     | 3.1.x   |
-| Spring JDBC         | 6.x     |
+| Spring JDBC         | 6.2.x   |
 | H2 Database         | 2.3.232 |
 | Swagger UI (webjar) | 5.18.2  |
 | Spring Security     | 6.x     |
-| Jackson             | 2.17.x  |
+| Jackson             | 2.18.x  |
 
 ## Running the Application
 
@@ -109,7 +109,7 @@ Response (JSON):
       "id": 1,
       "name": "The Legend of Zelda",
       "releaseDate": "1986-02-21",
-      "reviewScore": 9.5,
+      "reviewScore": 95,
       "category": "Adventure",
       "rating": "E"
     }
@@ -148,12 +148,12 @@ The schema is initialized from `src/main/resources/schema.sql` on startup:
 ```sql
 CREATE TABLE VIDEOGAME
 (
-    id           INT PRIMARY KEY,
-    name         VARCHAR(255) NOT NULL,
-    released_on  DATE         NOT NULL,
-    review_score DECIMAL(3, 1),
-    category     VARCHAR(100),
-    rating       VARCHAR(10)
+    ID           INT          PRIMARY KEY,
+    NAME         VARCHAR(100) DEFAULT '',
+    RELEASED_ON  DATE,
+    REVIEW_SCORE INT,
+    CATEGORY     VARCHAR(100),
+    RATING       VARCHAR(100)
 );
 ```
 
@@ -265,4 +265,3 @@ Verify you're using the correct credentials:
 - **Password**: `test`
 
 Make sure your HTTP client includes Basic Auth headers (most tools handle this automatically with `-u` flag).
-
