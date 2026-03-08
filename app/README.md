@@ -264,4 +264,4 @@ Verify you're using the correct credentials:
 - **Username**: `test`
 - **Password**: `test`
 
-Make sure your HTTP client includes Basic Auth headers (most tools handle this automatically with `-u` flag).
+Make sure your HTTP client includes Basic Auth headers
