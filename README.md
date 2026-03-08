@@ -5,7 +5,7 @@
 | Component              | Version       |
 |------------------------|---------------|
 | Java                   | 21            |
-| Spring Boot            | 3.4.3         |
+| Spring Boot            | 3.5.3         |
 | Jersey (JAX-RS)        | Jakarta EE 10 |
 | H2 Database            | 2.3.232       |
 | swagger-jaxrs2-jakarta | 2.2.28        |
@@ -14,16 +14,12 @@
 ## Requirements
 
 - **Java 21** or higher
-- **Maven 3.9+** or **Gradle 8+**
+- **Maven 3.9+**
 
 ## Running the Application
 
 ```bash
-# Maven
 mvn spring-boot:run
-
-# Gradle
-./gradlew bootRun
 ```
 
 ## Endpoints
