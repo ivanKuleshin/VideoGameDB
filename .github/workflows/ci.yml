@@ -78,24 +78,20 @@ jobs:
 
       - name: Deploy Allure Report to GitHub Pages (push to master)
         if: always() && github.event_name == 'push'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-report
-          keep_files: true
-          enable_jekyll: false
+          branch: gh-pages
+          folder: allure-report
+          clean: false
 
       - name: Deploy Allure Report to GitHub Pages (pull request)
         if: always() && github.event_name == 'pull_request'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-report
-          destination_dir: pr-${{ github.event.number }}
-          keep_files: true
-          enable_jekyll: false
+          branch: gh-pages
+          folder: allure-report
+          target-folder: pr-${{ github.event.number }}
+          clean: false
 
       - name: Add Allure Report link to job summary (push to master)
         if: always() && github.event_name == 'push'
