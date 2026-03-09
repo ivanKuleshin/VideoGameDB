@@ -13,7 +13,7 @@ AllureSteps.logStep(log, "Verify response status code is 200",
 
 ```
 Response response = AllureSteps.logStepAndReturn(log,
-    "Send request to retrieve all video games",
+    "Send GET request to retrieve all video games",
     () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
 ```
 
@@ -61,7 +61,7 @@ void myTest() {
     });
 
     // When
-    Response response = AllureSteps.logStepAndReturn(log, "Send request to retrieve video game by ID", () ->
+    Response response = AllureSteps.logStepAndReturn(log, "Send GET request to retrieve video game by ID", () ->
         httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), gameId), ContentType.JSON));
 
     // Then
