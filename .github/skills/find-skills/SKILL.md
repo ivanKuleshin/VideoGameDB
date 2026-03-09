@@ -1,22 +1,11 @@
 ---
 name: find-skills
-description: Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill.
+description: Helps users discover, list, and install agent skills. Use this skill whenever the user asks "how do I do X", "find a skill for X", "is there a skill that can...", "what skills do I have", "what's installed", or expresses interest in extending agent capabilities. Also trigger this skill when the user mentions a specialized domain (testing, deployment, design, PR reviews, etc.) and wonders if there's automated help available — even if they don't say the word "skill". When in doubt, use this skill.
 ---
 
 # Find Skills
 
-This skill helps you discover and install skills from the open agent skills ecosystem.
-
-## When to Use This Skill
-
-Use this skill when the user:
-
-- Asks "how do I do X" where X might be a common task with an existing skill
-- Says "find a skill for X" or "is there a skill for X"
-- Asks "can you do X" where X is a specialized capability
-- Expresses interest in extending agent capabilities
-- Wants to search for tools, templates, or workflows
-- Mentions they wish they had help with a specific domain (design, testing, deployment, etc.)
+This skill helps you discover, list, and install skills from the open agent skills ecosystem.
 
 ## What is the Skills CLI?
 
@@ -32,17 +21,41 @@ that extend agent capabilities with specialized knowledge, workflows, and tools.
 
 **Browse skills at:** https://skills.sh/
 
-## How to Help Users Find Skills
+## Listing Installed Skills
 
-### Step 1: Understand What They Need
+When the user asks what skills are currently installed (e.g. "what skills do I have?", "list my skills", "what's installed"):
 
-When a user asks for help with something, identify:
+1. Read `skills-lock.json` in the project root — it contains all installed skills with their sources.
+2. Format the list clearly for the user:
 
+```
+You have 4 skills installed:
+
+- find-skills       (vercel-labs/skills)
+- skill-creator     (anthropics/skills)
+- spring-boot-engineer (jeffallan/claude-skills)
+- unit-test-wiremock-rest-api (giuseppe-trisciuoglio/developer-kit)
+
+To check for updates: npx skills check
+To update all:        npx skills update
+```
+
+3. Note the difference between skills in `skills-lock.json` (installed/tracked) and skills present in `.github/skills/` (available in workspace context).
+
+## Finding and Installing Skills
+
+### Step 1: Check What's Already Installed
+
+Before searching, read `skills-lock.json` to see if a relevant skill is already installed. If a suitable skill exists, tell the user rather than suggesting a duplicate installation.
+
+### Step 2: Understand What They Need
+
+Identify:
 1. The domain (e.g., React, testing, design, deployment)
 2. The specific task (e.g., writing tests, creating animations, reviewing PRs)
-3. Whether this is a common enough task that a skill likely exists
+3. Whether this is common enough that a skill likely exists
 
-### Step 2: Search for Skills
+### Step 3: Search for Skills
 
 Run the find command with a relevant query:
 
@@ -65,15 +78,15 @@ vercel-labs/agent-skills@vercel-react-best-practices
 └ https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices
 ```
 
-### Step 3: Present Options to the User
+### Step 4: Present Options to the User
 
-When you find relevant skills, present them to the user with:
+When you find relevant skills, present them with:
 
 1. The skill name and what it does
 2. The install command they can run
 3. A link to learn more at skills.sh
 
-Example response:
+Example:
 
 ```
 I found a skill that might help! The "vercel-react-best-practices" skill provides
@@ -85,15 +98,16 @@ npx skills add vercel-labs/agent-skills@vercel-react-best-practices
 Learn more: https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices
 ```
 
-### Step 4: Offer to Install
+### Step 5: Offer to Install
 
-If the user wants to proceed, you can install the skill for them:
+If the user wants to proceed, install the skill:
 
 ```bash
 npx skills add <owner/repo@skill> -g -y
 ```
 
 The `-g` flag installs globally (user-level) and `-y` skips confirmation prompts.
+Always mention these flags so the user understands what's happening.
 
 ## Common Skill Categories
 
@@ -108,12 +122,6 @@ When searching, consider these common categories:
 | Code Quality    | review, lint, refactor, best-practices   |
 | Design          | ui, ux, design-system, accessibility     |
 | Productivity    | workflow, automation, git                |
-
-## Tips for Effective Searches
-
-1. **Use specific keywords**: "react testing" is better than just "testing"
-2. **Try alternative terms**: If "deploy" doesn't work, try "deployment" or "ci-cd"
-3. **Check popular sources**: Many skills come from `vercel-labs/agent-skills` or `ComposioHQ/awesome-claude-skills`
 
 ## When No Skills Are Found
 
