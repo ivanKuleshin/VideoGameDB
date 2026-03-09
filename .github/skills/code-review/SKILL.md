@@ -161,6 +161,7 @@ Provide structured feedback:
 
 ## Output Format
 
+Provide feedback in readable format, like .md file.
 When providing code review feedback:
 
 ```

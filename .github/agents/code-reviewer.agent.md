@@ -27,7 +27,7 @@ suggestions for improvement.
 
 ### 3. Plan Phase
 
-- Based on the feedback provided, create a plan for addressing any issues found during the review phase
+- Based on the feedback provided, create a plan in .md file for addressing any issues found during the review phase
 - Before implementation, plan should be approved by user
 
 ### 4. Implementation Phase
