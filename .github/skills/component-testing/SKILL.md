@@ -35,7 +35,8 @@ This skill adds test-specific rules:
 2. Validate there are no hardcoded values in the test, like game IDs, names, dates, http statuses, etc. Scores must
    always come from DB queries or fixture constants, never as inline literals
 3. Use `AllureSteps` class for reporting steps — see patterns below
-4. Use `CommonSteps` class for reusable verification logic (database, response content checks)
+4. Use `CommonSteps` class for reusable verification logic (database, response content checks). This class's methods
+   already contain Allure steps, but check each method individually to ensure the presence of Allure steps.
 5. You need to verify the content of the response even if it's missed in the Jira/Xray
 6. Allure step descriptions must describe **what is being verified**, not **which endpoint is called** — step text
    is a testing concern, not a routing concern. The step description should be readable without knowing the endpoint:

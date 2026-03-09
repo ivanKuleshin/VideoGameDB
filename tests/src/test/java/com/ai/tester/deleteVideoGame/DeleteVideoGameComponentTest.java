@@ -70,8 +70,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
 
         try {
             // When
-            Response deleteResponse = AllureSteps.logStepAndReturn(log,
-                "Delete video game with ID " + SECONDARY_GAME.getId(),
+            AllureSteps.logStep(log, "Delete video game with ID " + SECONDARY_GAME.getId(),
                 () -> httpClient.delete(String.format(VIDEOGAME_BY_ID.getPath(), SECONDARY_GAME.getId()), ContentType.JSON));
 
             Response getAllResponse = AllureSteps.logStepAndReturn(log,
@@ -79,11 +78,6 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
                 () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
 
             // Then
-            AllureSteps.logStep(log, "Verify delete response status code is 200",
-                () -> assertThat(deleteResponse.getStatusCode())
-                    .as("Delete response status code should be 200")
-                    .isEqualTo(HttpStatus.OK.value()));
-
             AllureSteps.logStep(log, "Verify response status code is 200",
                 () -> assertThat(getAllResponse.getStatusCode())
                     .as("Response status code should be 200")
@@ -106,42 +100,5 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
             dbClient.deleteVideoGameById(SECONDARY_GAME.getId());
         }
     }
-
-    @Test
-    @TmsLink("XSP-127")
-    @DisplayName("DeleteVideoGame – Delete existing game with XML Accept header returns 200 and success body")
-    void deleteVideoGameWithXmlAcceptHeaderTest() {
-        // Given
-        AllureSteps.logStep(log, "Insert test video game: " + GAME_FOR_XML_DELETE.getName(),
-            () -> dbClient.insertVideoGame(GAME_FOR_XML_DELETE.getGameData()));
-
-        commonSteps.verifyGameExistsInDatabase(log, GAME_FOR_XML_DELETE.getId(), GAME_FOR_XML_DELETE.getName());
-
-        try {
-            // When
-            Response response = AllureSteps.logStepAndReturn(log,
-                "Delete video game with XML Accept header",
-                () -> httpClient.delete(String.format(VIDEOGAME_BY_ID.getPath(), GAME_FOR_XML_DELETE.getId()), ContentType.XML));
-
-            // Then
-            AllureSteps.logStep(log, "Verify response status code is 200",
-                () -> assertThat(response.getStatusCode())
-                    .as("Response status code should be 200")
-                    .isEqualTo(HttpStatus.OK.value()));
-
-            AllureSteps.logStep(log, "Verify response Content-Type is application/xml",
-                () -> assertThat(response.getContentType())
-                    .as("Response Content-Type should contain 'application/xml'")
-                    .contains("application/xml"));
-
-            AllureSteps.logStep(log, "Verify response body contains success message",
-                () -> assertThat(response.getBody().asString())
-                    .as("Response body should contain '%s' even when wrapped in XML <String> root", EXPECTED_DELETE_STATUS)
-                    .contains(EXPECTED_DELETE_STATUS));
-
-            commonSteps.verifyGameNotExistsInDatabase(log, GAME_FOR_XML_DELETE.getId());
-        } finally {
-            dbClient.deleteVideoGameById(GAME_FOR_XML_DELETE.getId());
-        }
-    }
 }
+

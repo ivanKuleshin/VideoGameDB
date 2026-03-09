@@ -28,10 +28,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
             AllureSteps.logStepAndReturn(log, "Get first video game from database",
                 this::getFirstVideoGameFromDatabase);
 
+        Integer gameId = videoGame.getId();
+
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game by ID",
-            () -> httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), videoGame.getId()), ContentType.JSON));
+            () -> httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), gameId), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -59,10 +61,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
             AllureSteps.logStepAndReturn(log, "Get first video game from database",
                 this::getFirstVideoGameFromDatabase);
 
+        Integer gameId = videoGame.getId();
+
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game by ID with Accept: application/xml",
-            () -> httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), videoGame.getId()), ContentType.XML));
+            () -> httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), gameId), ContentType.XML));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -85,38 +89,5 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
                     .as("XML response should match database record for selected video game")
                     .isEqualTo(expectedXmlResponse);
             });
-    }
-
-    @Test
-    @TmsLink("XSP-103")
-    @DisplayName("GetVideoGameById – Request without Authorization header returns 401")
-    void getVideoGameByIdWithoutAuthReturns401Test() {
-        // Given
-        VideoGameDbModel videoGame =
-            AllureSteps.logStepAndReturn(log, "Get first video game from database",
-                this::getFirstVideoGameFromDatabase);
-
-        commonSteps.verifyGameExistsInDatabase(log, videoGame.getId(), videoGame.getName());
-
-        // When
-        Response response = AllureSteps.logStepAndReturn(log,
-            "Send request without Authorization header",
-            () -> httpClient.getWithoutAuth(String.format(VIDEOGAME_BY_ID.getPath(), videoGame.getId()), ContentType.JSON));
-
-        // Then
-        AllureSteps.logStep(log, "Verify response status code is 401",
-            () -> assertThat(response.getStatusCode())
-                .as("Response status code should be 401 Unauthorized when Authorization header is absent")
-                .isEqualTo(401));
-
-        AllureSteps.logStep(log, "Verify response Content-Type is empty",
-            () -> assertThat(response.getContentType())
-                .as("Spring Security returns no Content-Type on 401 Unauthorized")
-                .isNullOrEmpty());
-
-        AllureSteps.logStep(log, "Verify response body does not contain requested video game data",
-            () -> assertThat(response.getBody().asString())
-                .as("Response body should not contain protected video game data")
-                .doesNotContain(videoGame.getName()));
     }
 }

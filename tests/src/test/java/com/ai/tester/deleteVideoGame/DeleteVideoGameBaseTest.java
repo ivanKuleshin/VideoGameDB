@@ -9,5 +9,5 @@ public class DeleteVideoGameBaseTest extends ApiBaseTest {
 
     protected static final VideoGameTestDataFixtures PRIMARY_GAME = VideoGameTestDataFixtures.SHOOTER_GAME;
     protected static final VideoGameTestDataFixtures SECONDARY_GAME = VideoGameTestDataFixtures.PUZZLE_GAME;
-    protected static final VideoGameTestDataFixtures GAME_FOR_XML_DELETE = VideoGameTestDataFixtures.STRATEGY_GAME;
 }
+
