@@ -32,8 +32,8 @@ This skill adds test-specific rules:
 
 1. Use soft assertions or POJO classes assertions with methods like `prepareExpectedAllGamesResponseList` to build
    expected result
-2. Validate there are no hardcoded values in the test — game IDs, names, dates, scores must always come from DB
-   queries or fixture constants, never as inline literals
+2. Validate there are no hardcoded values in the test, like game IDs, names, dates, http statuses, etc. Scores must
+   always come from DB queries or fixture constants, never as inline literals
 3. Use `AllureSteps` class for reporting steps — see patterns below
 4. Use `CommonSteps` class for reusable verification logic (database, response content checks)
 5. You need to verify the content of the response even if it's missed in the Jira/Xray

@@ -12,7 +12,8 @@ public enum VideoGameTestDataFixtures {
     SHOOTER_GAME(101, "Doom Test", "1993-02-18", 81, "Shooter", "Mature"),
     PUZZLE_GAME(102, "Minecraft Test", "2011-12-05", 77, "Puzzle", "Universal"),
     ACTION_RPG(103, "Dark Souls Test", "2011-09-22", 89, "Action RPG", "Mature"),
-    INDIE_GAME(104, "Stardew Valley Test", "2016-02-26", 85, "Simulation", "Universal");
+    INDIE_GAME(104, "Stardew Valley Test", "2016-02-26", 85, "Simulation", "Universal"),
+    STRATEGY_GAME(105, "SimCity Test", "1994-09-11", 88, "Strategy", "Universal");
 
     private final int id;
     private final String name;
@@ -31,11 +32,4 @@ public enum VideoGameTestDataFixtures {
         game.setRating(this.rating);
         return game;
     }
-
-    public VideoGameDbModel getGameDataWithId(int overrideId) {
-        VideoGameDbModel game = getGameData();
-        game.setId(overrideId);
-        return game;
-    }
 }
-

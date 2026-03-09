@@ -28,6 +28,7 @@ public final class HttpClient {
     }
 
     private RequestSpecification spec;
+    private RequestSpecification noAuthSpec;
 
     private static PrintStream log4jPrintStream() {
         return new PrintStream(new OutputStream() {
@@ -57,34 +58,38 @@ public final class HttpClient {
             .setAuth(preemptive().basic(username, password))
             .addFilter(new ErrorLoggingFilter(logStream))
             .build();
+        noAuthSpec = new RequestSpecBuilder()
+            .setBaseUri(baseUri)
+            .setPort(port)
+            .setBasePath(basePath)
+            .addFilter(new ErrorLoggingFilter(logStream))
+            .build();
+    }
+
+    private void checkInitialized() {
+        if (spec == null || noAuthSpec == null) {
+            throw new IllegalStateException("HttpClient.init() must be called before use");
+        }
     }
 
     public Response get(String path, ContentType contentType) {
+        checkInitialized();
         log.debug("GET path={}, contentType={}", path, contentType);
         return given(spec)
             .accept(contentType)
             .get(path);
     }
 
-    public Response post(String path, Object body, ContentType contentType) {
-        log.debug("POST path={}, contentType={}, body={}", path, contentType, body);
-        return given(spec)
+    public Response getWithoutAuth(String path, ContentType contentType) {
+        checkInitialized();
+        log.debug("GET without auth path={}, contentType={}", path, contentType);
+        return given(noAuthSpec)
             .accept(contentType)
-            .contentType(contentType)
-            .body(body)
-            .post(path);
-    }
-
-    public Response put(String path, Object body, ContentType contentType) {
-        log.debug("PUT path={}, contentType={}, body={}", path, contentType, body);
-        return given(spec)
-            .contentType(contentType)
-            .accept(contentType)
-            .body(body)
-            .put(path);
+            .get(path);
     }
 
     public Response delete(String path, ContentType contentType) {
+        checkInitialized();
         log.debug("DELETE path={}, contentType={}", path, contentType);
         return given(spec)
             .accept(contentType)
