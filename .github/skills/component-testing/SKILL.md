@@ -17,8 +17,11 @@ description: >-
 
 1. Extend **ApiBaseTest** as parent class by default — provides `httpClient` and `dbClient` via `@Autowired`
 2. Use Additional Base class like **GetAllGamesBaseTest** for each endpoint to reuse some common methods
-3. Each test class should cover the entire endpoint functionality, despite one endpoint is covered with more than 1 Jira
-   ticket
+3. Each test class covers the **entire endpoint functionality** regardless of how many Jira tickets describe it.
+   When multiple tickets map to the same scenario (e.g., XSP-108 "returns 200" + XSP-109 "record persisted"),
+   combine them into a **single test method** annotated with `@TmsLinks({@TmsLink("XSP-108"), @TmsLink("XSP-109")})`.
+   Only split into separate methods when the tickets test genuinely different scenarios (e.g., happy path vs. 401
+   error).
 4. Annotate every test class with `@Log4j2` to have logger available
 5. Spring Boot context is started with `@SpringBootTest(webEnvironment = RANDOM_PORT)` and `@ActiveProfiles("test")` —
    already inherited from `ApiBaseTest`, do not repeat
@@ -29,13 +32,23 @@ This skill adds test-specific rules:
 
 1. Use soft assertions or POJO classes assertions with methods like `prepareExpectedAllGamesResponseList` to build
    expected result
-2. Validate there are no hardcoded values in the test
+2. Validate there are no hardcoded values in the test — game IDs, names, dates, scores must always come from DB
+   queries or fixture constants, never as inline literals
 3. Use `AllureSteps` class for reporting steps — see patterns below
 4. Use `CommonSteps` class for reusable verification logic (database, response content checks)
 5. You need to verify the content of the response even if it's missed in the Jira/Xray
-6. Make sure in Allure step no mentions of endpoint names at all, it's hardcoded data
-7. Always fetch game from DB as a test data
-8. Use fixtures for cases when you need to insert data
+6. Allure step descriptions must describe **what is being verified**, not **which endpoint is called** — step text
+   is a testing concern, not a routing concern. The step description should be readable without knowing the endpoint:
+    - ❌ `"Send GET /videogames request"` — endpoint name hardcoded
+    - ❌ `"Verify GET /videogames/{id} returns 200"` — endpoint name hardcoded
+    - ✅ `"Send GET request to retrieve all video games"` — describes intent
+    - ✅ `"Verify response status code is 200"` — describes the check
+7. Always fetch game from DB as test data — never construct expected values from inline literals
+8. Use **enum-based fixtures** (`VideoGameTestDataFixtures`) when you need to **insert** data into the DB. Fixtures
+   keep IDs and field values in one place and are reusable across tests. Never pass inline object literals to
+   `dbClient.insertVideoGame()` or build a request body from hardcoded strings.
+9. Some main logical actions should be wrapped in `AllureSteps` methods. For example: creating a test data, verification
+   of DB/response. We need to build a structured report with all main actions.
 
 ## Test Method Structure
 

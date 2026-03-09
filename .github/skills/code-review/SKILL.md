@@ -161,7 +161,8 @@ Provide structured feedback:
 
 ## Output Format
 
-When providing code review feedback:
+Provide feedback as a Markdown (.md) document.
+When providing code review feedback, use the following structure:
 
 ```
 ## Code Review: [FileName]
