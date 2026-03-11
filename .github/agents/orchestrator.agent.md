@@ -129,3 +129,4 @@ Present a summary to the user:
 6. Always pass the exact review findings from `code-reviewer` back to `test-automation` when requesting fixes
 7. Do not skip phases — even if context seems sufficient, all 5 phases must execute in order
 8. On review iteration 2, instruct `code-reviewer` to scope its review to previously flagged issues only
+9. During review, before implementation fixes, ask the user to confirm them, providing s short summary.

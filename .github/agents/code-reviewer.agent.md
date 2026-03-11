@@ -15,7 +15,8 @@ You NEVER implement fixes or modify files — review and reporting only.
 
 You receive from the orchestrator:
 
-- A list of implemented/modified files to review
+- A list of implemented/modified files to review or particular changes to review
+- Focus only on provided or asked files/changes
 - _(On iteration 2 only)_ The findings from iteration 1 and an instruction to scope review to those issues only
 
 ## Workflow

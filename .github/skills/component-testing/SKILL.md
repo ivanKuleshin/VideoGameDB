@@ -53,7 +53,7 @@ This skill adds test-specific rules:
 
 ## Test Method Structure
 
-- Follow **Given / When / Then** structure in every test method
+- Follow **Given / When / Then** structure in every test method. Mark these sections with comment
 - **Given** — data preparation: DB calls, expected result builders
 - **When** — action: HTTP request via `httpClient`
 - **Then** — assertions and verifications via AssertJ
@@ -82,5 +82,5 @@ This skill adds test-specific rules:
 
 ## Code Patterns
 
-See [code-patterns.md](examples/code-patterns.md) for AllureSteps, @TmsLink, AssertJ, and Given/When/Then
+See [code-patterns.md](references/code-patterns.md) for AllureSteps, @TmsLink, AssertJ, and Given/When/Then
 examples.

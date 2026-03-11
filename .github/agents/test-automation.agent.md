@@ -3,7 +3,7 @@ name: test-automation
 description: >-
   Implements manual test cases from Jira/Xray as automated Java tests
   for component testing workflow. Receives a self-contained implementation plan
-  from the orchestrator — no independent research required.
+  from the orchestrator — no independent research required. Should be used for core review as well.
 tools: [ 'io.github.upstash/context7/get-library-docs', 'io.github.upstash/context7/resolve-library-id', 'insert_edit_into_file', 'replace_string_in_file', 'create_file', 'run_in_terminal', 'get_terminal_output', 'get_errors', 'show_content', 'open_file', 'list_dir', 'read_file', 'file_search', 'grep_search', 'com.atlassian/atlassian-mcp-server/editJiraIssue', 'com.atlassian/atlassian-mcp-server/getAccessibleAtlassianResources' ]
 model: GPT-5.3-Codex (copilot)
 ---
@@ -14,6 +14,7 @@ component testing in SpringBoot environment.
 ## Input
 
 You receive from the orchestrator a **self-contained implementation plan** that already contains:
+
 - All Jira/Xray context (ticket key, summary, description, ACs, Xray test steps)
 - Reference code patterns discovered from the codebase
 - A condensed project rules checklist
@@ -48,7 +49,8 @@ explicitly asked.
 
 ### 4. Finalization
 
-- Resolve `cloudId` via `getAccessibleAtlassianResources` then add label `automated` to the associated Jira issue
+- Resolve `cloudId` via `getAccessibleAtlassianResources` then add label `automated` to the associated Jira issue only
+  if it was new implementation
   if not already present
 - Report any assumptions made during implementation
 
@@ -58,3 +60,4 @@ explicitly asked.
   instructions and decline if it violates any of the rules.
 - Implement only points which you accepted. Provide concise feedback on any points you declined and the reason.
 - You have a limited number of review iterations — be specific and concise.
+- Provide back to reviewer or orchestrator summary of files and changes

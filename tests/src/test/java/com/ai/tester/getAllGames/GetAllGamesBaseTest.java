@@ -4,36 +4,23 @@ import com.ai.tester.ApiBaseTest;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
+import com.ai.tester.util.VideoGameModelMapper;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
-public class GetAllGamesBaseTest extends ApiBaseTest {
+@Log4j2
+public abstract class GetAllGamesBaseTest extends ApiBaseTest {
 
     protected List<VideoGameApiModel> prepareExpectedAllGamesResponseList(List<VideoGameDbModel> allVideoGames) {
         return allVideoGames.stream()
-            .map(dbModel -> new VideoGameApiModel(
-                dbModel.getId(),
-                dbModel.getName(),
-                dbModel.getReleaseDateAsString(),
-                dbModel.getReviewScore(),
-                dbModel.getCategory(),
-                dbModel.getRating()
-            ))
+            .map(VideoGameModelMapper::toApiModel)
             .toList();
     }
 
     protected List<VideoGameXmlModel> prepareExpectedAllGamesXmlResponseList(List<VideoGameDbModel> allVideoGames) {
         return allVideoGames.stream()
-            .map(dbModel -> {
-                VideoGameXmlModel xmlModel = new VideoGameXmlModel();
-                xmlModel.setId(dbModel.getId());
-                xmlModel.setName(dbModel.getName());
-                xmlModel.setReleaseDate(dbModel.getReleaseDateAsString());
-                xmlModel.setReviewScore(dbModel.getReviewScore());
-                xmlModel.setCategory(dbModel.getCategory());
-                xmlModel.setRating(dbModel.getRating());
-                return xmlModel;
-            })
+            .map(VideoGameModelMapper::toXmlModel)
             .toList();
     }
 }

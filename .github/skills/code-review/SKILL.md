@@ -164,7 +164,7 @@ Provide structured feedback:
 **When called from the orchestrator pipeline**: always use the compact table format defined in `code-reviewer.agent.md`
 (the `| # | Severity | Location | Issue | Recommendation |` table). Do not use the verbose format below.
 
-**When used standalone** (direct user request): provide feedback as a Markdown (.md) document using this structure:
+Provide feedback as a Markdown (.md) document using this structure:
 
 ```
 ## Code Review: [FileName]
