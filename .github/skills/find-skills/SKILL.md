@@ -23,11 +23,11 @@ that extend agent capabilities with specialized knowledge, workflows, and tools.
 
 ## Listing Installed Skills
 
-When the user asks what skills are currently installed (e.g. "what skills do I have?", "list my skills", "what's installed"):
+When the user asks what skills are currently installed (e.g. "what skills do I have?", "list my skills", "what's
+installed"):
 
-1. Read `skills-lock.json` in the project root — it contains all installed skills with their sources.
-2. Format the list clearly for the user:
-
+- Read `skills-lock.json` in the project root — it contains all installed skills with their sources.
+- Format the list clearly for the user:
 ```
 You have 4 skills installed:
 
@@ -39,21 +39,31 @@ You have 4 skills installed:
 To check for updates: npx skills check
 To update all:        npx skills update
 ```
-
-3. Note the difference between skills in `skills-lock.json` (installed/tracked) and skills present in `.github/skills/` (available in workspace context).
+- Also run `npx skills check` and report whether any installed skills have updates available, rather than
+   just passively listing the command.
+- Note the difference between skills in `skills-lock.json` (installed/tracked by the CLI) and skills present
+   in `.github/skills/` (available in workspace context). Skills found in `.github/skills/` but absent from
+   `skills-lock.json` are custom/local skills not tracked by the CLI — mention this distinction if the user
+   asks why a skill isn't listed by `npx skills check`.
 
 ## Finding and Installing Skills
 
 ### Step 1: Check What's Already Installed
 
-Before searching, read `skills-lock.json` to see if a relevant skill is already installed. If a suitable skill exists, tell the user rather than suggesting a duplicate installation.
+Before searching, read `skills-lock.json` to see if a relevant skill is already installed. If a suitable skill exists,
+tell the user rather than suggesting a duplicate installation.
 
 ### Step 2: Understand What They Need
 
 Identify:
+
 1. The domain (e.g., React, testing, design, deployment)
 2. The specific task (e.g., writing tests, creating animations, reviewing PRs)
 3. Whether this is common enough that a skill likely exists
+
+If the request is ambiguous, ask one focused clarifying question before searching. For example, if the user says
+"help with tests", clarify: are they asking about writing new tests, fixing failing ones, or understanding the
+test framework? The answer shapes the query.
 
 ### Step 3: Search for Skills
 
@@ -106,22 +116,24 @@ If the user wants to proceed, install the skill:
 npx skills add <owner/repo@skill> -g -y
 ```
 
-The `-g` flag installs globally (user-level) and `-y` skips confirmation prompts.
-Always mention these flags so the user understands what's happening.
+The `-g` flag installs globally (user-level) and `-y` skips confirmation prompts. Use `-g` for personal or
+developer tools. Omit it if the skill should be tracked at the project level in `skills-lock.json` instead.
+Always mention the flags so the user understands what's happening.
 
 ## Common Skill Categories
 
 When searching, consider these common categories:
 
-| Category        | Example Queries                          |
-|-----------------|------------------------------------------|
-| Web Development | react, nextjs, typescript, css, tailwind |
-| Testing         | testing, jest, playwright, e2e           |
-| DevOps          | deploy, docker, kubernetes, ci-cd        |
-| Documentation   | docs, readme, changelog, api-docs        |
-| Code Quality    | review, lint, refactor, best-practices   |
-| Design          | ui, ux, design-system, accessibility     |
-| Productivity    | workflow, automation, git                |
+| Category        | Example Queries                                                        |
+|-----------------|------------------------------------------------------------------------|
+| This Project    | spring boot jersey, allure reporting, rest assured, h2 jdbc, jira xray |
+| Web Development | react, nextjs, typescript, css, tailwind                               |
+| Testing         | testing, jest, playwright, e2e                                         |
+| DevOps          | deploy, docker, kubernetes, ci-cd                                      |
+| Documentation   | docs, readme, changelog, api-docs                                      |
+| Code Quality    | review, lint, refactor, best-practices                                 |
+| Design          | ui, ux, design-system, accessibility                                   |
+| Productivity    | workflow, automation, git                                              |
 
 ## When No Skills Are Found
 

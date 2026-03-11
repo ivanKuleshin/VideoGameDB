@@ -1,9 +1,11 @@
 ---
 name: component-testing
 description: >-
-  Guide for implementing component tests for Spring Boot applications.
-  Use this when asked to create, write, or implement automated test cases,
-  component tests, or API tests.
+  Guide for implementing component tests for Spring Boot applications using JUnit 5, REST Assured,
+  Allure, and AssertJ. Trigger this skill whenever the user wants to add, write, fix, or review a
+  test — including casual phrases like "cover this endpoint", "add a test for X", "make sure this is
+  tested", "the test is failing", or "what's the right way to write this test". Also trigger when the
+  user asks about @TmsLink, AllureSteps, VideoGameTestDataFixtures, CommonSteps, or ApiBaseTest.
 ---
 
 # Component Tests Implementation Guide
@@ -67,12 +69,89 @@ This skill adds test-specific rules:
 - Use `@TmsLink("XSP-123")` or `@TmsLinks({@TmsLink("XSP-91"), @TmsLink("XSP-92")})` to link test cases from Jira to
   code
 
+## Quick Example
+
+Minimal end-to-end test skeleton — the reference point for all patterns in this skill:
+
+```java
+
+@Log4j2
+class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
+
+    @Test
+    @TmsLink("XSP-42")
+    @DisplayName("Get video game by ID returns correct game data")
+    void getVideoGameByIdPositiveTest() {
+        // Given
+        VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
+            "Fetch expected game from database",
+            () -> dbClient.getVideoGameById(1).orElseThrow());
+
+        // When
+        Response response = AllureSteps.logStepAndReturn(log,
+            "Send GET request to retrieve video game by ID",
+            () -> httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), 1), ContentType.JSON));
+
+        // Then
+        AllureSteps.logStep(log, "Verify response status code is 200",
+            () -> assertThat(response.getStatusCode()).as("Status code").isEqualTo(200));
+        AllureSteps.logStep(log, "Verify response body matches expected game",
+            () -> validateResponse(response, expectedGame));
+    }
+}
+```
+
 ### Test Data Management: Fixture Approach and DDT
 
 - Use **enum-based fixtures** to eliminate test data boilerplate, like `VideoGameTestDataFixtures`
-- If possible, use DDT (Data-Driven Testing)
+- Use **DDT (Data-Driven Testing)** when the same test logic applies to multiple inputs (e.g., testing
+  the same endpoint with several fixture variants). Prefer separate test methods when scenarios have
+  genuinely different expected behaviour or require different assertions.
 
-### Test-Specific Naming
+  ```
+  @ParameterizedTest
+  @MethodSource("gameFixtures")
+  @TmsLink("XSP-55")
+  @DisplayName("Create video game persists each fixture variant")
+  void createVideoGameDdtTest(VideoGameTestDataFixtures fixture) {
+      VideoGameDbModel game = fixture.getGameData();
+      try {
+          // When
+          Response response = AllureSteps.logStepAndReturn(log, "Send POST request to create video game",
+              () -> httpClient.post(VIDEOGAMES.getPath(), new VideoGameBuilder()
+                  .withId(fixture.getId()).build(), ContentType.JSON));
+
+          // Then
+          AllureSteps.logStep(log, "Verify game is persisted in database",
+              () -> commonSteps.verifyGameExistsInDatabase(game.getId()));
+      } finally {
+          dbClient.deleteVideoGameById(game.getId());
+      }
+  }
+
+  static Stream<VideoGameTestDataFixtures> gameFixtures() {
+      return Stream.of(
+          VideoGameTestDataFixtures.SHOOTER_GAME,
+          VideoGameTestDataFixtures.PUZZLE_GAME
+      );
+  }
+  ```
+
+## Common Mistakes
+
+1. **Repeating `@SpringBootTest` or `@ActiveProfiles`** — both are already inherited from `ApiBaseTest`;
+   adding them again creates a second context and slows the suite.
+2. **Inline literals for expected values** — IDs, names, scores, and dates must come from `dbClient` queries
+   or `VideoGameTestDataFixtures` constants. Hardcoded literals make tests fragile and break the no-hardcoded-values
+   rule.
+3. **Assertions outside `AllureSteps.logStep`** — bare `assertThat(...)` calls in the `// Then` block are
+   invisible in the Allure report. Every assertion must be wrapped so it appears as a named step.
+4. **Calling app internals directly** — all HTTP interactions must go through `httpClient`; all DB interactions
+   through `dbClient`. Importing or calling `VideoGameResource` or `App` classes from a test breaks black-box isolation.
+5. **Missing `try-finally` cleanup after fixture insert** — rows inserted via `dbClient.insertVideoGame()` persist
+   for the life of the Spring context. Always delete in a `finally` block to avoid polluting later tests.
+
+## Test-Specific Naming
 
 - **Test Methods**: Descriptive names explaining scenario (e.g., `getAllVideoGamesPositiveTest`)
 - Use `@DisplayName` for human-readable test descriptions, it should contain short summary of the test
@@ -82,5 +161,10 @@ This skill adds test-specific rules:
 
 ## Code Patterns
 
-See [code-patterns.md](references/code-patterns.md) for AllureSteps, @TmsLink, AssertJ, and Given/When/Then
-examples.
+See [code-patterns.md](references/code-patterns.md) for ready-to-copy snippets:
+
+- `AllureSteps.logStep` and `logStepAndReturn` usage
+- `@TmsLink` / `@TmsLinks` annotations
+- AssertJ assertions with `.as()` failure messages
+- Full Given/When/Then skeleton
+- Fixture-based request body construction (`VideoGameBuilder` + `VideoGameTestDataFixtures`)
