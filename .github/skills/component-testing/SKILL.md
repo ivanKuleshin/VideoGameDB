@@ -2,8 +2,8 @@
 name: component-testing
 description: >-
   Guide for implementing component tests for Spring Boot applications.
-  Use this when asked to create, write, or implement automated test cases,
-  component tests, or API tests.
+  Use this when asked to create, write, review or implement automated test cases,
+  component tests, or API tests. Should be used during code review.
 ---
 
 # Component Tests Implementation Guide
