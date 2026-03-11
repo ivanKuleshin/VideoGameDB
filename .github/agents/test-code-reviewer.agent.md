@@ -1,9 +1,10 @@
 ---
-name: code-reviewer
+name: test-code-reviewer
 description: >-
-  Performs code review for implemented test cases, ensuring they meet project
-  requirements and adhere to best practices. Returns structured findings to the
-  orchestrator. Never implements fixes — review and reporting only.
+  FOR TESTING ACTIVITIES ONLY. Performs code review for implemented test cases,
+  ensuring they meet project requirements and adhere to best practices. Returns
+  structured findings to the orchestrator. Never implements fixes — review and
+  reporting only.
 tools: [ 'io.github.upstash/context7/get-library-docs', 'io.github.upstash/context7/resolve-library-id', 'get_errors', 'show_content', 'open_file', 'list_dir', 'read_file', 'file_search', 'grep_search' ]
 ---
 
@@ -60,3 +61,4 @@ Always use this **compact table format** — do not use the verbose format from 
 
 - If no issues found, output `### Outcome: Clean ✅` and stop
 - Do NOT create plan files or request user approval — return findings directly to the orchestrator
+- If no orchestrator flow, open a .md file with review for user

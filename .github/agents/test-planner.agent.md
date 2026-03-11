@@ -1,9 +1,9 @@
 ---
-name: planner
+name: test-planner
 description: >-
-  Implementation planning specialist for test automation. Receives Jira/Xray context
-  and produces a detailed, step-by-step implementation plan for the test-automation agent.
-  Never implements code — planning only.
+  FOR TESTING ACTIVITIES ONLY. Implementation planning specialist for test automation.
+  Receives Jira/Xray context and produces a detailed, step-by-step implementation plan
+  for the test-automation agent. Never implements code — planning only.
 model: Claude Sonnet 4.6 (copilot)
 tools: ['read_file', 'list_dir', 'file_search', 'grep_search', 'show_content']
 ---

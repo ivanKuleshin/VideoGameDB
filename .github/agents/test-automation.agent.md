@@ -1,8 +1,8 @@
 ---
 name: test-automation
 description: >-
-  Implements manual test cases from Jira/Xray as automated Java tests
-  for component testing workflow. Receives a self-contained implementation plan
+  FOR COMPONENT TESTING ACTIVITIES ONLY. Implements manual test cases from Jira/Xray as automated
+  Java tests for component testing workflow. Receives a self-contained implementation plan
   from the orchestrator — no independent research required. Should be used for core review as well.
 tools: [ 'io.github.upstash/context7/get-library-docs', 'io.github.upstash/context7/resolve-library-id', 'insert_edit_into_file', 'replace_string_in_file', 'create_file', 'run_in_terminal', 'get_terminal_output', 'get_errors', 'show_content', 'open_file', 'list_dir', 'read_file', 'file_search', 'grep_search', 'com.atlassian/atlassian-mcp-server/editJiraIssue', 'com.atlassian/atlassian-mcp-server/getAccessibleAtlassianResources' ]
 model: GPT-5.3-Codex (copilot)
