@@ -73,7 +73,8 @@ This skill adds test-specific rules:
 
 ### Test-Specific Naming
 
-- **Test Methods**: Descriptive names explaining scenario (e.g., `getAllVideoGamesPositiveTest`)
+- **Test Methods**: Descriptive names explaining scenario (e.g., `getAllVideoGamesPositiveTest`), but the test methods
+  should not contain expected result, like `deleteAlreadyDeletedVideoGameReturns404Test`.
 - Use `@DisplayName` for human-readable test descriptions, it should contain short summary of the test
   case, no expected result specified
 
