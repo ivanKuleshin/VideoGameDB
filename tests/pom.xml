@@ -16,7 +16,6 @@
     <properties>
         <checkstyle.config.location>${project.basedir}/../codestyle/checkStyle.xml</checkstyle.config.location>
         <allure.version>2.32.0</allure.version>
-        <aspectj.version>1.9.22</aspectj.version>
     </properties>
 
     <dependencyManagement>
@@ -98,14 +97,6 @@
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit5</artifactId>
         </dependency>
-
-        <!-- AspectJ Weaver – required for Allure @Step aspects -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -122,20 +113,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
                     <includes>
                         <include>**/*ComponentTest.class</include>
                     </includes>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjweaver</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>
