@@ -23,6 +23,8 @@ applyTo: "tests/src/test/**"
 - Declare test data outside the test method — use `@MethodSource`, `@CsvSource`, etc.
 - No hardcoded values in tests — always fetch from DB or use fixtures
 - For POJO classes do not use primitive data types
+- ⚠️ **Do not use `VideoGameBuilder`** as the primary source of test data — it is considered a bad approach.
+  Always use `VideoGameTestDataFixtures` enum entries instead.
 
 ## Naming
 
@@ -38,4 +40,9 @@ applyTo: "tests/src/test/**"
 - `DbClientConfig` — wires `JdbcTemplate`, `ObjectMapper` (case-insensitive), and `DbClient`
 - `HttpClientConfig` — wires `HttpClient` singleton and initializes it on `WebServerInitializedEvent`
 - `CommonSteps` — reusable verification logic (database, response content checks, etc.)
+
+## Models management
+
+1. All requests and responses should be wrapped into POJO classes and put to the `model.api` folder.
+2. All DB tables should be we wrapped into POJO classes and put to the `model.db` folder
 

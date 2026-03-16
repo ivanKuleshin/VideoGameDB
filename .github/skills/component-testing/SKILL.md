@@ -44,7 +44,8 @@ This skill adds test-specific rules:
     - ✅ `"Send GET request to retrieve all video games"` — describes intent
     - ✅ `"Verify response status code is 200"` — describes the check
 7. Always fetch game from DB as test data — never construct expected values from inline literals
-8. Use **enum-based fixtures** (`VideoGameTestDataFixtures`) when you need to **insert** data into the DB. Fixtures
+8. ⚠️ **Do not use `VideoGameBuilder`** — it is considered a bad approach for constructing test data. Always use
+   **enum-based fixtures** (`VideoGameTestDataFixtures`) when you need to **insert** data into the DB. Fixtures
    keep IDs and field values in one place and are reusable across tests. Never pass inline object literals to
    `dbClient.insertVideoGame()` or build a request body from hardcoded strings.
 9. Some main logical actions should be wrapped in `AllureSteps` methods. For example: creating a test data, verification

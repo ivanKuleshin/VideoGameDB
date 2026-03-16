@@ -25,6 +25,8 @@ applyTo: "tests/src/main/**"
 - Test data builders live in `builder/` package
 - Use fluent `with*()` methods and a terminal `build()` returning `Map<String, Object>`
 - Builders must provide sensible defaults for all fields so tests only override what they need
+- ⚠️ **`VideoGameBuilder` is discouraged** — do not use it to construct test data for insert operations.
+  Use `VideoGameTestDataFixtures` instead.
 
 ## Endpoint Conventions
 
