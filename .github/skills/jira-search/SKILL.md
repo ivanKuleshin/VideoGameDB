@@ -10,6 +10,10 @@ description: >-
 
 # Jira Search & Interaction
 
+## Precondition
+
+Always use subagent to perform MCP calls. Use output from MCP to provide summarized answer.
+
 ## Quick Start: Always Resolve cloudId First
 
 Every Jira MCP tool requires a `cloudId`. Obtain it once at the start of any Jira interaction:
