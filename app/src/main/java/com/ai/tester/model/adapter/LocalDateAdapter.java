@@ -1,4 +1,4 @@
-package com.ai.tester.model;
+package com.ai.tester.model.adapter;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDate;

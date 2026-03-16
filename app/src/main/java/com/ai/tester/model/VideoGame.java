@@ -1,5 +1,6 @@
 package com.ai.tester.model;
 
+import com.ai.tester.model.adapter.LocalDateAdapter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -9,11 +10,13 @@ import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
+import lombok.Data;
 
 @Entity
 @Table(name = "VIDEOGAME")
 @XmlRootElement
 @Schema(description = "Represents a video game in the database")
+@Data
 public class VideoGame {
 
     @Id
@@ -25,6 +28,7 @@ public class VideoGame {
 
     @Column(name = "released_on")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @Schema(description = "Release date", example = "1986-02-21")
     private LocalDate releaseDate;
 
@@ -37,53 +41,4 @@ public class VideoGame {
 
     @Schema(description = "Age rating", example = "E")
     private String rating;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public int getReviewScore() {
-        return reviewScore;
-    }
-
-    public void setReviewScore(int reviewScore) {
-        this.reviewScore = reviewScore;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
 }

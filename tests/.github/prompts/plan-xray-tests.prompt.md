@@ -19,9 +19,9 @@ Story issue key: `${input:storyKey:e.g. XSP-115}`
 Before planning anything, read these files:
 
 - Source code: [VideoGameResource.java](../../app/src/main/java/com/ai/tester/resource/VideoGameResource.java)
-- Security config: [SecurityConfig.java](../../app/src/main/java/com/ai/tester/config/SecurityConfig.java)
-- Database schema: [schema.sql](../../app/src/main/resources/schema.sql)
-- Data model: [VideoGame.java](../../app/src/main/java/com/ai/tester/model/VideoGame.java)
+- Security config: [SecurityConfig.java](../../../app/src/main/java/com/ai/tester/config/SecurityConfig.java)
+- Database schema: [schema.sql](../../../app/src/main/resources/schema.sql)
+- Data model: [VideoGame.java](../../../app/src/main/java/com/ai/tester/model/VideoGame.java)
 
 Then fetch the Story from Jira via **Atlassian MCP** `getJiraIssue` and parse all Acceptance Criteria.
 

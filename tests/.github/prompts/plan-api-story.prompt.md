@@ -13,10 +13,10 @@ passed to `create-api-story` for implementation.
 ## Inputs
 
 - Endpoint source file: `${input:endpointFile:path to endpoint source file}`
-- Security config: [SecurityConfig.java](../../app/src/main/java/com/ai/tester/config/SecurityConfig.java)
-- Data model: [VideoGame.java](../../app/src/main/java/com/ai/tester/model/VideoGame.java)
-- Database schema: [schema.sql](../../app/src/main/resources/schema.sql)
-- Application config: [application.properties](../../app/src/main/resources/application.properties)
+- Security config: [SecurityConfig.java](../../../app/src/main/java/com/ai/tester/config/SecurityConfig.java)
+- Data model: [VideoGame.java](../../../app/src/main/java/com/ai/tester/model/VideoGame.java)
+- Database schema: [schema.sql](../../../app/src/main/resources/schema.sql)
+- Application config: [application.properties](../../../app/src/main/resources/application.properties)
 
 ## Analysis Checklist
 
