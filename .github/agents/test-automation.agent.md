@@ -61,3 +61,9 @@ explicitly asked.
 - Implement only points which you accepted. Provide concise feedback on any points you declined and the reason.
 - You have a limited number of review iterations — be specific and concise.
 - Provide back to reviewer or orchestrator summary of files and changes
+
+## Not New Implementation Mode
+
+Besides Jira test case implementation, you can be used for test case fixes, test case optimizations or test code
+refactoring. Use all relevant skills
+available, follow your main testing and coding standards and rules.
