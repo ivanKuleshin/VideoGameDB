@@ -3,7 +3,7 @@ name: test-automation
 description: '>-'
 Implements manual test cases from Jira/Xray as automated Java tests: ''
 for component testing workflow.: ''
-tools: ['io.github.upstash/context7/get-library-docs', 'io.github.upstash/context7/resolve-library-id', 'insert_edit_into_file', 'replace_string_in_file', 'create_file', 'run_in_terminal', 'get_terminal_output', 'get_errors', 'show_content', 'open_file', 'list_dir', 'read_file', 'file_search', 'grep_search', 'com.atlassian/atlassian-mcp-server/getJiraIssue', 'com.atlassian/atlassian-mcp-server/searchJiraIssuesUsingJql', 'xray/get_test_case', 'xray/search_test_cases', 'com.atlassian/atlassian-mcp-server/atlassianUserInfo', 'com.atlassian/atlassian-mcp-server/getAccessibleAtlassianResources', 'com.atlassian/atlassian-mcp-server/getConfluencePage', 'com.atlassian/atlassian-mcp-server/searchConfluenceUsingCql', 'com.atlassian/atlassian-mcp-server/getConfluenceSpaces', 'com.atlassian/atlassian-mcp-server/getPagesInConfluenceSpace', 'com.atlassian/atlassian-mcp-server/getConfluencePageFooterComments', 'com.atlassian/atlassian-mcp-server/getConfluencePageInlineComments', 'com.atlassian/atlassian-mcp-server/getConfluencePageDescendants', 'com.atlassian/atlassian-mcp-server/createConfluencePage', 'com.atlassian/atlassian-mcp-server/updateConfluencePage', 'com.atlassian/atlassian-mcp-server/createConfluenceFooterComment', 'com.atlassian/atlassian-mcp-server/createConfluenceInlineComment', 'com.atlassian/atlassian-mcp-server/editJiraIssue', 'com.atlassian/atlassian-mcp-server/createJiraIssue', 'com.atlassian/atlassian-mcp-server/getTransitionsForJiraIssue', 'com.atlassian/atlassian-mcp-server/getJiraIssueRemoteIssueLinks', 'com.atlassian/atlassian-mcp-server/getVisibleJiraProjects', 'com.atlassian/atlassian-mcp-server/getJiraProjectIssueTypesMetadata', 'com.atlassian/atlassian-mcp-server/getJiraIssueTypeMetaWithFields', 'com.atlassian/atlassian-mcp-server/addCommentToJiraIssue', 'com.atlassian/atlassian-mcp-server/transitionJiraIssue', 'com.atlassian/atlassian-mcp-server/lookupJiraAccountId', 'com.atlassian/atlassian-mcp-server/addWorklogToJiraIssue', 'com.atlassian/atlassian-mcp-server/search', 'com.atlassian/atlassian-mcp-server/fetch', 'validate_cves', 'run_subagent', 'xray/get_project_test_cases', 'com.atlassian/atlassian-mcp-server/jiraRead', 'com.atlassian/atlassian-mcp-server/jiraWrite', 'com.atlassian/atlassian-mcp-server/getConfluenceCommentChildren']
+tools: ['insert_edit_into_file', 'replace_string_in_file', 'create_file', 'run_in_terminal', 'get_terminal_output', 'get_errors', 'show_content', 'open_file', 'list_dir', 'read_file', 'file_search', 'grep_search', 'com.atlassian/atlassian-mcp-server/getJiraIssue', 'com.atlassian/atlassian-mcp-server/searchJiraIssuesUsingJql', 'xray/get_test_case', 'xray/search_test_cases', 'com.atlassian/atlassian-mcp-server/atlassianUserInfo', 'com.atlassian/atlassian-mcp-server/getAccessibleAtlassianResources', 'com.atlassian/atlassian-mcp-server/getConfluencePage', 'com.atlassian/atlassian-mcp-server/searchConfluenceUsingCql', 'com.atlassian/atlassian-mcp-server/getConfluenceSpaces', 'com.atlassian/atlassian-mcp-server/getPagesInConfluenceSpace', 'com.atlassian/atlassian-mcp-server/getConfluencePageFooterComments', 'com.atlassian/atlassian-mcp-server/getConfluencePageInlineComments', 'com.atlassian/atlassian-mcp-server/getConfluencePageDescendants', 'com.atlassian/atlassian-mcp-server/createConfluencePage', 'com.atlassian/atlassian-mcp-server/updateConfluencePage', 'com.atlassian/atlassian-mcp-server/createConfluenceFooterComment', 'com.atlassian/atlassian-mcp-server/createConfluenceInlineComment', 'com.atlassian/atlassian-mcp-server/editJiraIssue', 'com.atlassian/atlassian-mcp-server/createJiraIssue', 'com.atlassian/atlassian-mcp-server/getTransitionsForJiraIssue', 'com.atlassian/atlassian-mcp-server/getJiraIssueRemoteIssueLinks', 'com.atlassian/atlassian-mcp-server/getVisibleJiraProjects', 'com.atlassian/atlassian-mcp-server/getJiraProjectIssueTypesMetadata', 'com.atlassian/atlassian-mcp-server/getJiraIssueTypeMetaWithFields', 'com.atlassian/atlassian-mcp-server/addCommentToJiraIssue', 'com.atlassian/atlassian-mcp-server/transitionJiraIssue', 'com.atlassian/atlassian-mcp-server/lookupJiraAccountId', 'com.atlassian/atlassian-mcp-server/addWorklogToJiraIssue', 'validate_cves', 'run_subagent', 'xray/get_project_test_cases', 'com.atlassian/atlassian-mcp-server/getConfluenceCommentChildren', 'xray/create_test_case', 'xray/delete_test_case', 'xray/add_test_step', 'com.atlassian/atlassian-mcp-server/getIssueLinkTypes', 'com.atlassian/atlassian-mcp-server/createIssueLink', 'com.atlassian/atlassian-mcp-server/searchAtlassian', 'com.atlassian/atlassian-mcp-server/fetchAtlassian', 'io.github.upstash/context7/resolve-library-id', 'io.github.upstash/context7/get-library-docs']
 handoffs:
   - agent: code-reviewer
     description: '>-'
@@ -33,13 +33,13 @@ component testing in SpringBoot environment.
 
 ### 3. Implementation
 
-- **Read `.github/skills/component-testing/SKILL.md`** before implementing
+- Read `component-testing` and `db-testing` skills before implementing
 - Apply ALL rules from the skill file
-- Follow all rules from `copilot-instructions.md`
+- Follow all rules from copilot instructions
 - Map each Xray step to code
 - Allure steps may be different from Xray steps, use your judgment to map them correctly
 - Implement ALL steps sequentially without skipping
-- Ignore some checkstyle issues - notify the user
+- Ignore checkstyle issues - notify the user
 
 ### 4. Validation
 
@@ -51,3 +51,9 @@ component testing in SpringBoot environment.
 - After implementation check the code, find the similar code or logic and think how to combine some cases into one test
   method if possible.
 - Add to associated Jira issue a label `automated` when the flow is finished using `atlassian-mcp` MCP
+
+### Not New Implementation Mode
+
+Besides Jira test case implementation, you can be used for test case fixes, test case optimizations or test code
+refactoring. Use all relevant skills
+available, follow your main testing and coding standards and rules.
