@@ -35,15 +35,28 @@ mvn test -pl tests
 mvn test -pl tests -Dexec.skip=true
 ```
 
-## Shared Conventions (both modules)
+## Technology Stack
 
-- Java 21, Spring Boot 3.5.3, Maven 3.9+.
-- `app` uses Spring MVC controllers (`controller/`), service layer (`service/`), and Spring Data JPA repositories (
-  `repository/`).
-- No wildcard imports; imports organized by package hierarchy.
+- **Java 21**, **Spring Boot 3.5.3**, **Maven 3.9+**
+- `app`: Spring MVC, Spring Data JPA, H2, springdoc OpenAPI, Spring Security (HTTP Basic)
+- `tests`: JUnit 5, Spring Boot Test (`RANDOM_PORT`), REST Assured, AssertJ, Allure, Log4j2, Jackson (JSON + XML), H2, Spring JDBC (`JdbcTemplate`)
+
+## Coding Standards
+
+- Follow clean code and SOLID principles; prioritize readability and maintainability.
+- Use Lombok to reduce boilerplate (`@Log4j2`, `@Data`, `@RequiredArgsConstructor`, etc.).
 - No `throws` declarations — `try-catch` with `throw new RuntimeException(...)`.
-- Lombok used to reduce boilerplate (`@Log4j2`, `@Data`, `@RequiredArgsConstructor`, etc.).
+- No wildcard imports; imports organized by package hierarchy.
+- Do not create code that is not used — avoid Boat Anchor anti-pattern.
+- Code should be self-explanatory; add comments/Javadoc only when explicitly requested.
 - Checkstyle enforced via `codestyle/checkStyle.xml`.
+
+## Naming Conventions
+
+- **Classes**: PascalCase with descriptive names (e.g., `VideoGameService`, `ApiBaseTest`).
+- **Methods**: camelCase with verb prefixes (`prepare*`, `create*`, `validate*`, `get*`, `check*`).
+- **Variables**: camelCase, descriptive names avoiding abbreviations.
+- **Constants**: UPPER_SNAKE_CASE for `static final` fields.
 
 ## CI Pipeline
 

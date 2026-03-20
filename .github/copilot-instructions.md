@@ -1,23 +1,9 @@
-# Project Overview
+# GitHub Copilot Instructions
 
-Test Automation Framework (TAF) for component testing of Spring Boot application
-
-# Module Structure
-
-- `tests/src/main/java` — shared test infrastructure (clients, models, builders, utils, steps)
-- `tests/src/test/java` — test classes and their configuration (`@Configuration` beans)
-
-# Technology Stack
-
-- **JUnit 5** — test engine (`@Test`, `@DisplayName`, `@TestInstance(PER_CLASS)`)
-- **Spring Boot Test** — `@SpringBootTest` with `RANDOM_PORT`, `@ActiveProfiles("test")`
-- **REST Assured** — HTTP client (`HttpClient` singleton, wraps `RequestSpecification`)
-- **AssertJ** — assertions
-- **Allure** — reporting (`AllureSteps` utility class, `allure-junit5` integration)
-- **Log4j2** — logging (`@Log4j2` from Lombok)
-- **Jackson** — JSON deserialization (`ObjectMapper`, `JsonMapper`) and XML (`XmlMapper`, `jackson-dataformat-xml`)
-- **H2** — in-memory database for component tests
-- **Spring JDBC** — `JdbcTemplate` used in `H2DbClient`
+For full project context, module structure, technology stack, and patterns refer to:
+- [`AGENTS.md`](../AGENTS.md) — project overview, shared conventions, build commands
+- [`app/AGENTS.md`](../app/AGENTS.md) — app module layout, endpoints, design decisions
+- [`tests/AGENTS.md`](../tests/AGENTS.md) — test infrastructure, mandatory patterns, test data rules
 
 # Coding Principles
 
@@ -43,4 +29,3 @@ Test Automation Framework (TAF) for component testing of Spring Boot application
 # Final MD files
 
 - Do not create multiple MD files when you need to summarize changes, your steps, etc., unless I ask you to do so.
-

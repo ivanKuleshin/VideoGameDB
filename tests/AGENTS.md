@@ -5,6 +5,18 @@
 Black-box component test suite for the `app` module. Boots the full `App` Spring context at a random port and drives
 it over HTTP. Never calls app internals — interaction is through `HttpClient` (REST Assured) and `H2DbClient` (JDBC).
 
+## Technology Stack
+
+- **JUnit 5** — test engine (`@Test`, `@DisplayName`, `@TestInstance(PER_CLASS)`)
+- **Spring Boot Test** — `@SpringBootTest` with `RANDOM_PORT`, `@ActiveProfiles("test")`
+- **REST Assured** — HTTP client (`HttpClient` singleton, wraps `RequestSpecification`)
+- **AssertJ** — assertions
+- **Allure** — reporting (`AllureSteps` utility class, `allure-junit5` integration)
+- **Log4j2** — logging (`@Log4j2` from Lombok)
+- **Jackson** — JSON deserialization (`ObjectMapper`, `JsonMapper`) and XML (`XmlMapper`, `jackson-dataformat-xml`)
+- **H2** — in-memory database for component tests
+- **Spring JDBC** — `JdbcTemplate` used in `H2DbClient`
+
 ## Source Layout
 
 ```
