@@ -2,10 +2,8 @@
 name: jira-search
 description: >-
   Use this skill whenever the user wants to interact with Jira in any way —
-  searching for issues, finding bugs or tasks by status/assignee/sprint/label,
-  creating new issues, updating fields, transitioning issue status, adding
-  comments, logging work, or linking issues together. Trigger even when the user
-  doesn't say "Jira" explicitly but is clearly talking about tickets, tasks,
+  searching for issues, finding bugs or tasks by status/assignee/sprint/label.
+  Trigger even when the user doesn't say "Jira" explicitly but is clearly talking about tickets, tasks,
   stories, bugs, sprints, or backlogs. Prefer this skill over ad-hoc tool calls
   so that cloudId resolution and JQL construction are handled consistently.
 ---

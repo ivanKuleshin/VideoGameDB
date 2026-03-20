@@ -1,0 +1,1 @@
+Show me from Jira which test cases are not automated yet
