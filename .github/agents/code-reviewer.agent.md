@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
-description: '>-'
-Performs code review for the implemented test cases, ensuring they meet the requirements and adhere to best practices. Provides feedback and suggestions for improvement.: ''
+description: >-
+  Performs code review for the implemented test cases, ensuring they meet the requirements and adhere to best practices. Provides feedback and suggestions for improvement.
 tools: [ 'io.github.upstash/context7/get-library-docs', 'io.github.upstash/context7/resolve-library-id', 'insert_edit_into_file', 'replace_string_in_file', 'create_file', 'run_in_terminal', 'get_terminal_output', 'get_errors', 'show_content', 'open_file', 'list_dir', 'read_file', 'file_search', 'grep_search', 'validate_cves', 'run_subagent' ]
 model: Claude Sonnet 4.6 (copilot)
 ---
@@ -12,7 +12,7 @@ suggestions for improvement.
 
 ## Workflow
 
-## 1. Use appropriate skills to perform a review
+### 1. Use appropriate skills to perform a review
 
 ### 2. Review Phase
 
