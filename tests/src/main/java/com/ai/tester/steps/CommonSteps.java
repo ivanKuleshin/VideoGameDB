@@ -2,6 +2,7 @@ package com.ai.tester.steps;
 
 import com.ai.tester.allure.AllureSteps;
 import com.ai.tester.client.db.DbClient;
+import com.ai.tester.model.db.VideoGameDbModel;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,8 @@ public class CommonSteps {
     @Autowired
     private DbClient dbClient;
 
-    public void verifyGameExistsInDatabase(Logger log, int gameId, String expectedName) {
-        AllureSteps.logStep(log,
+    public VideoGameDbModel verifyGameExistsInDatabase(Logger log, int gameId, String expectedName) {
+        return AllureSteps.logStepAndReturn(log,
             "Verify game with ID " + gameId + " exists in database with name '" + expectedName + "'",
             () -> {
                 var found = dbClient.getVideoGameById(gameId);
@@ -28,6 +29,7 @@ public class CommonSteps {
                 assertThat(found.get().getName())
                     .as("Game name should match")
                     .isEqualTo(expectedName);
+                return found.get();
             });
     }
 

@@ -16,21 +16,68 @@ import static io.restassured.RestAssured.preemptive;
 @Log4j2
 public final class HttpClient {
 
-    private HttpClient() {
-    }
-
     private static final class Holder {
         private static final HttpClient INSTANCE = new HttpClient();
+    }
+
+    private RequestSpecification spec;
+    private RequestSpecification noAuthSpec;
+    private RequestSpecification wrongAuthSpec;
+
+    private HttpClient() {
     }
 
     public static HttpClient getInstance() {
         return Holder.INSTANCE;
     }
 
-    private RequestSpecification spec;
-    private RequestSpecification noAuthSpec;
+    public void init(String baseUri, int port, String basePath,
+                     String username, String password,
+                     String wrongUsername, String wrongPassword) {
+        log.debug("Initialising HttpClient: baseUri={}, port={}, basePath={}", baseUri, port, basePath);
+        PrintStream logStream = createLog4jPrintStream();
+        spec = createAuthSpec(baseUri, port, basePath, username, password, logStream);
+        noAuthSpec = createNoAuthSpec(baseUri, port, basePath, logStream);
+        wrongAuthSpec = createAuthSpec(baseUri, port, basePath, wrongUsername, wrongPassword, logStream);
+    }
 
-    private static PrintStream log4jPrintStream() {
+    public Response get(String path, ContentType contentType, AuthType authType) {
+        checkInitialized();
+        log.debug("GET path={}, contentType={}, authType={}", path, contentType, authType);
+        return given(resolveSpec(authType))
+            .accept(contentType)
+            .get(path);
+    }
+
+    public Response post(String path, Object body, ContentType contentType, AuthType authType) {
+        checkInitialized();
+        log.debug("POST path={}, contentType={}, authType={}", path, contentType, authType);
+        return given(resolveSpec(authType))
+            .contentType(contentType)
+            .accept(contentType)
+            .body(body)
+            .post(path);
+    }
+
+    public Response put(String path, Object body, ContentType contentType, AuthType authType) {
+        checkInitialized();
+        log.debug("PUT path={}, contentType={}, authType={}", path, contentType, authType);
+        return given(resolveSpec(authType))
+            .contentType(contentType)
+            .accept(contentType)
+            .body(body)
+            .put(path);
+    }
+
+    public Response delete(String path, ContentType contentType, AuthType authType) {
+        checkInitialized();
+        log.debug("DELETE path={}, contentType={}, authType={}", path, contentType, authType);
+        return given(resolveSpec(authType))
+            .accept(contentType)
+            .delete(path);
+    }
+
+    private static PrintStream createLog4jPrintStream() {
         return new PrintStream(new OutputStream() {
             private final StringBuilder buffer = new StringBuilder();
 
@@ -47,18 +94,21 @@ public final class HttpClient {
         }, true);
     }
 
-    public void init(String baseUri, int port, String basePath,
-                     String username, String password) {
-        log.debug("Initialising HttpClient: baseUri={}, port={}, basePath={}", baseUri, port, basePath);
-        PrintStream logStream = log4jPrintStream();
-        spec = new RequestSpecBuilder()
+    private static RequestSpecification createAuthSpec(String baseUri, int port, String basePath,
+                                                       String username, String password,
+                                                       PrintStream logStream) {
+        return new RequestSpecBuilder()
             .setBaseUri(baseUri)
             .setPort(port)
             .setBasePath(basePath)
             .setAuth(preemptive().basic(username, password))
             .addFilter(new ErrorLoggingFilter(logStream))
             .build();
-        noAuthSpec = new RequestSpecBuilder()
+    }
+
+    private static RequestSpecification createNoAuthSpec(String baseUri, int port, String basePath,
+                                                         PrintStream logStream) {
+        return new RequestSpecBuilder()
             .setBaseUri(baseUri)
             .setPort(port)
             .setBasePath(basePath)
@@ -67,32 +117,16 @@ public final class HttpClient {
     }
 
     private void checkInitialized() {
-        if (spec == null || noAuthSpec == null) {
+        if (spec == null || noAuthSpec == null || wrongAuthSpec == null) {
             throw new IllegalStateException("HttpClient.init() must be called before use");
         }
     }
 
-    public Response get(String path, ContentType contentType) {
-        checkInitialized();
-        log.debug("GET path={}, contentType={}", path, contentType);
-        return given(spec)
-            .accept(contentType)
-            .get(path);
-    }
-
-    public Response getWithoutAuth(String path, ContentType contentType) {
-        checkInitialized();
-        log.debug("GET without auth path={}, contentType={}", path, contentType);
-        return given(noAuthSpec)
-            .accept(contentType)
-            .get(path);
-    }
-
-    public Response delete(String path, ContentType contentType) {
-        checkInitialized();
-        log.debug("DELETE path={}, contentType={}", path, contentType);
-        return given(spec)
-            .accept(contentType)
-            .delete(path);
+    private RequestSpecification resolveSpec(AuthType authType) {
+        return switch (authType) {
+            case DEFAULT -> spec;
+            case NONE -> noAuthSpec;
+            case WRONG -> wrongAuthSpec;
+        };
     }
 }

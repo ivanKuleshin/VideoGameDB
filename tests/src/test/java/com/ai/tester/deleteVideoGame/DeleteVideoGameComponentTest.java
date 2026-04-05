@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static com.ai.tester.data.Endpoint.VIDEOGAMES;
-import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
@@ -36,7 +34,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Delete video game with ID " + PRIMARY_GAME.getId(),
-                () -> httpClient.delete(String.format(VIDEOGAME_BY_ID.getPath(), PRIMARY_GAME.getId()), ContentType.JSON));
+                () -> apiActions.deleteById(PRIMARY_GAME.getId(), ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 200",
@@ -71,11 +69,11 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
         try {
             // When
             AllureSteps.logStep(log, "Delete video game with ID " + SECONDARY_GAME.getId(),
-                () -> httpClient.delete(String.format(VIDEOGAME_BY_ID.getPath(), SECONDARY_GAME.getId()), ContentType.JSON));
+                () -> apiActions.deleteById(SECONDARY_GAME.getId(), ContentType.JSON));
 
             Response getAllResponse = AllureSteps.logStepAndReturn(log,
                 "Retrieve all video games",
-                () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
+                () -> getAllGamesApiActions.getAllGames(ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 200",

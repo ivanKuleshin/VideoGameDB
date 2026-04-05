@@ -14,10 +14,10 @@ import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static com.ai.tester.data.Endpoint.VIDEOGAMES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
@@ -36,24 +36,22 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
     void getAllVideoGamesPositiveTest() {
         // Given
         List<VideoGameDbModel> allVideoGames =
-            AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
-                List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
-                assertThat(allVideoGamesList)
-                    .as("Response should contain at least one game")
-                    .isNotEmpty();
+            AllureSteps.logStepAndReturn(log, "Get all video games from database",
+                () -> dbClient.getAllVideoGames());
 
-                return allVideoGamesList;
-            });
+        AllureSteps.logStep(log, "Verify response contains at least one game",
+            () -> assertThat(allVideoGames)
+                .as("Response should contain at least one game")
+                .isNotEmpty());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to get all video games",
-            () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
+            () -> apiActions.getAllGames(ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
-            () -> assertThat(response.getStatusCode()).isEqualTo(200));
-
+            () -> assertThat(response.getStatusCode()).as("Status code").isEqualTo(HttpStatus.OK.value()));
 
         AllureSteps.logStep(log, "Verify response list content matches database list content",
             () -> {
@@ -75,25 +73,24 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
     void getAllVideoGamesXmlResponseTest() {
         // Given
         List<VideoGameDbModel> allVideoGames =
-            AllureSteps.logStepAndReturn(log, "Get all video games from database", () -> {
-                List<VideoGameDbModel> allVideoGamesList = dbClient.getAllVideoGames();
-                assertThat(allVideoGamesList)
-                    .as("Response should contain at least one game")
-                    .isNotEmpty();
+            AllureSteps.logStepAndReturn(log, "Get all video games from database",
+                () -> dbClient.getAllVideoGames());
 
-                return allVideoGamesList;
-            });
+        AllureSteps.logStep(log, "Verify response contains at least one game",
+            () -> assertThat(allVideoGames)
+                .as("Response should contain at least one game")
+                .isNotEmpty());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to get games with Accept: application/xml header",
-            () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.XML));
+            () -> apiActions.getAllGames(ContentType.XML));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
             () -> assertThat(response.getStatusCode())
                 .as("Response status code should be 200")
-                .isEqualTo(200));
+                .isEqualTo(HttpStatus.OK.value()));
 
         AllureSteps.logStep(log, "Verify response Content-Type is application/xml",
             () -> assertThat(response.getContentType())
@@ -116,6 +113,43 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
                     .as("XML response list content should match database list content")
                     .containsExactlyInAnyOrderElementsOf(expectedList);
             });
+    }
+
+    @Test
+    @TmsLink("XSP-97")
+    @DisplayName("GetAllGames – Empty database returns HTTP 200 with empty list")
+    void getAllVideoGamesEmptyDatabaseTest() {
+        // Given
+        List<VideoGameDbModel> snapshot = AllureSteps.logStepAndReturn(log,
+            "Take database snapshot for restore",
+            this::prepareDatabaseSnapshot);
+
+        try {
+            AllureSteps.logStep(log, "Delete all video games from database",
+                () -> dbClient.deleteAllVideoGames());
+
+            // When
+            Response response = AllureSteps.logStepAndReturn(log,
+                "Send GET request to retrieve all video games",
+                () -> apiActions.getAllGames(ContentType.JSON));
+
+            // Then
+            AllureSteps.logStep(log, "Verify response status code is 200",
+                () -> assertThat(response.getStatusCode())
+                    .as("Status code")
+                    .isEqualTo(HttpStatus.OK.value()));
+
+            AllureSteps.logStep(log, "Verify response video games list is empty",
+                () -> {
+                    GetAllGamesResponseModel responseModel = response.as(GetAllGamesResponseModel.class);
+                    assertThat(responseModel.getVideoGames())
+                        .as("Video games list should be empty when database is empty")
+                        .isEmpty();
+                });
+        } finally {
+            AllureSteps.logStep(log, "Restore all games from snapshot",
+                () -> snapshot.forEach(game -> dbClient.insertVideoGame(game)));
+        }
     }
 
 }

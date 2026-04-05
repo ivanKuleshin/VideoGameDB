@@ -28,7 +28,6 @@ tests/src/main/java/       ← shared infrastructure (compiled as main sources, 
   model/api/json/          ← Jackson response models (GetAllGamesResponseModel, VideoGameApiModel, …)
   model/api/xml/           ← JAXB/XmlMapper response models (VideoGameXmlModel, …)
   model/db/VideoGameDbModel← DB row model (@JsonProperty for case-insensitive column mapping)
-  builder/VideoGameBuilder ← Fluent builder → Map<String,Object> for REST Assured request bodies
   data/Endpoint            ← Enum of all API paths (VIDEOGAMES, VIDEOGAME_BY_ID, DELETE_EVEN_GAMES)
   data/fixtures/VideoGameTestDataFixtures ← Pre-built test games IDs 101–105 with .getGameData()
   steps/CommonSteps        ← @Component; shared DB verify steps (verifyGameExists/NotExists)
@@ -63,7 +62,7 @@ Every named action in a test body must be wrapped:
 
 ```
 // void step
-AllureSteps.logStep(log, "Step description", () -> assertThat(response.getStatusCode()).isEqualTo(200));
+AllureSteps.logStep(log, "Step description", () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value()));
 
 // step with return value
 Response response = AllureSteps.logStepAndReturn(log, "Send GET /videogames",
@@ -75,7 +74,6 @@ Response response = AllureSteps.logStepAndReturn(log, "Send GET /videogames",
 - H2 is seeded from `schema.sql` on every context start (IDs 1–10 always present as baseline).
 - Tests that insert extra rows must use `VideoGameTestDataFixtures` entries (IDs 101–105) and clean up
   in a `finally` block via `dbClient.deleteVideoGameById(id)`.
-- `VideoGameBuilder` provides custom payloads with safe defaults (id=100); override only what the test needs.
 - `CommonSteps.verifyGameExistsInDatabase()` / `verifyGameNotExistsInDatabase()` for shared DB assertions.
 
 ## Adding a New API Operation

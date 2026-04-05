@@ -14,5 +14,7 @@ public interface DbClient {
     void insertVideoGame(VideoGameDbModel videoGame);
 
     void deleteVideoGameById(int id);
+
+    void deleteAllVideoGames();
 }
 

@@ -20,6 +20,7 @@ public class H2DbClient implements DbClient {
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE ID = ?";
     private static final String INSERT = "INSERT INTO VIDEOGAME VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_BY_ID = "DELETE FROM VIDEOGAME WHERE ID = ?";
+    private static final String DELETE_ALL = "DELETE FROM VIDEOGAME";
 
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
@@ -77,6 +78,17 @@ public class H2DbClient implements DbClient {
         } catch (DataAccessException e) {
             log.error("Database error deleting game id={}", id, e);
             throw new RuntimeException("Failed to delete video game from database", e);
+        }
+    }
+
+    @Override
+    public void deleteAllVideoGames() {
+        try {
+            log.debug("Deleting all video games from DB");
+            jdbcTemplate.update(DELETE_ALL);
+        } catch (DataAccessException e) {
+            log.error("Database error deleting all games", e);
+            throw new RuntimeException("Failed to delete all video games from database", e);
         }
     }
 

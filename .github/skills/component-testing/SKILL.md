@@ -17,8 +17,9 @@ description: >-
 
 ## Class Structure
 
-1. Extend **ApiBaseTest** as parent class by default — provides `httpClient` and `dbClient` via `@Autowired`
-2. Use Additional Base class like **GetAllGamesBaseTest** for each endpoint to reuse some common methods
+1. Extend **ApiBaseTest** as parent class by default — provides `dbClient` and `commonSteps` via `@Autowired`
+2. Use Additional Base class like **GetAllGamesBaseTest** for each endpoint to reuse some common methods;
+   it also holds the `@Autowired *ApiActions` field for that endpoint
 3. Each test class covers the **entire endpoint functionality** regardless of how many Jira tickets describe it.
    When multiple tickets map to the same scenario (e.g., XSP-108 "returns 200" + XSP-109 "record persisted"),
    combine them into a **single test method** annotated with `@TmsLinks({@TmsLink("XSP-108"), @TmsLink("XSP-109")})`.
@@ -27,6 +28,20 @@ description: >-
 4. Annotate every test class with `@Log4j2` to have logger available
 5. Spring Boot context is started with `@SpringBootTest(webEnvironment = RANDOM_PORT)` and `@ActiveProfiles("test")` —
    already inherited from `ApiBaseTest`, do not repeat
+
+## Class Member Ordering
+
+All classes must follow Google Checkstyle member ordering (`ModifierOrder` rule in `codestyle/checkStyle.xml`):
+
+1. Static nested classes
+2. Instance fields
+3. Constructor(s)
+4. Public static methods
+5. Public instance methods
+6. Private static methods
+7. Private instance methods
+
+See [code-patterns.md](references/code-patterns.md) for a full annotated example.
 
 ## Main Rules
 
@@ -57,7 +72,7 @@ This skill adds test-specific rules:
 
 - Follow **Given / When / Then** structure in every test method. Mark these sections with comment
 - **Given** — data preparation: DB calls, expected result builders
-- **When** — action: HTTP request via `httpClient`
+- **When** — action: HTTP request via `*ApiActions` (never `httpClient` directly)
 - **Then** — assertions and verifications via AssertJ
 - This structure should be followed in all test methods, even if it seems a bit redundant for simple
   cases. It helps to maintain consistency and readability across the entire test suite.
@@ -90,11 +105,11 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game by ID",
-            () -> httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), 1), ContentType.JSON));
+            () -> apiActions.getById(expectedGame.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
-            () -> assertThat(response.getStatusCode()).as("Status code").isEqualTo(200));
+            () -> assertThat(response.getStatusCode()).as("Status code").isEqualTo(HttpStatus.OK.value()));
         AllureSteps.logStep(log, "Verify response body matches expected game",
             () -> validateResponse(response, expectedGame));
     }
@@ -118,8 +133,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
       try {
           // When
           Response response = AllureSteps.logStepAndReturn(log, "Send POST request to create video game",
-              () -> httpClient.post(VIDEOGAMES.getPath(), new VideoGameBuilder()
-                  .withId(fixture.getId()).build(), ContentType.JSON));
+              () -> apiActions.post(fixture.toRequestBody(), ContentType.JSON));
 
           // Then
           AllureSteps.logStep(log, "Verify game is persisted in database",
@@ -142,12 +156,13 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
 1. **Repeating `@SpringBootTest` or `@ActiveProfiles`** — both are already inherited from `ApiBaseTest`;
    adding them again creates a second context and slows the suite.
 2. **Inline literals for expected values** — IDs, names, scores, and dates must come from `dbClient` queries
-   or `VideoGameTestDataFixtures` constants. Hardcoded literals make tests fragile and break the no-hardcoded-values
+   or `VideoGameTestDataFixtures` constants or constant/enums for expected results. Hardcoded literals make tests fragile and break the no-hardcoded-values
    rule.
 3. **Assertions outside `AllureSteps.logStep`** — bare `assertThat(...)` calls in the `// Then` block are
    invisible in the Allure report. Every assertion must be wrapped so it appears as a named step.
-4. **Calling app internals directly** — all HTTP interactions must go through `httpClient`; all DB interactions
-   through `dbClient`. Importing or calling `VideoGameResource` or `App` classes from a test breaks black-box isolation.
+4. **Calling app internals directly** — all HTTP interactions must go through `*ApiActions`; all DB interactions
+   through `dbClient`. Tests must never import `HttpClient`, `Endpoint` paths, or `AuthType` — those belong
+   to the Actions layer. Importing or calling `VideoGameResource` or `App` classes from a test breaks black-box isolation.
 5. **Missing `try-finally` cleanup after fixture insert** — rows inserted via `dbClient.insertVideoGame()` persist
    for the life of the Spring context. Always delete in a `finally` block to avoid polluting later tests.
 
@@ -167,4 +182,26 @@ See [code-patterns.md](references/code-patterns.md) for ready-to-copy snippets:
 - `@TmsLink` / `@TmsLinks` annotations
 - AssertJ assertions with `.as()` failure messages
 - Full Given/When/Then skeleton
-- Fixture-based request body construction (`VideoGameBuilder` + `VideoGameTestDataFixtures`)
+- Fixture-based request body construction (`VideoGameTestDataFixtures.toRequestBody()`)
+
+## TAF Layered Architecture
+
+See [taf-pattern.md](references/taf-pattern.md) for the full layered architecture reference:
+
+- Layer diagram and responsibility boundaries (Test → Actions → Driver → Infrastructure)
+- Which layer owns endpoint paths, `AuthType`, and URL building
+- How `*ApiActions` classes are structured and wired into `*BaseTest`
+- Cross-endpoint injection pattern (e.g., `DeleteVideoGameBaseTest` using both `DeleteVideoGameApiActions`
+  and `GetAllGamesApiActions`)
+- Step-by-step guide for adding a new endpoint to the framework
+
+## SOLID Principles
+
+See [solid-patterns.md](references/solid-patterns.md) for how SOLID is applied across every layer of the TAF:
+
+- **S** — why `HttpClient`, `*ApiActions`, `*BaseTest`, and `*ComponentTest` each have exactly one responsibility
+- **O** — how to extend with new auth variants, `AuthType` values, or endpoints without modifying existing classes
+- **L** — what every `*Actions` implementation must honour to be safely substitutable
+- **I** — why each endpoint has its own narrow `*Actions` interface, and how to inject two interfaces when a test spans two endpoints
+- **D** — the mandatory rule: `*BaseTest` always autowires the `*Actions` **interface**, never the concrete `*ApiActions` class
+

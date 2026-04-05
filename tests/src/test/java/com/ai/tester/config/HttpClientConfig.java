@@ -22,6 +22,12 @@ public class HttpClientConfig implements ApplicationListener<WebServerInitialize
     @Value("${http.client.password}")
     private String password;
 
+    @Value("${http.client.wrong-username}")
+    private String wrongUsername;
+
+    @Value("${http.client.wrong-password}")
+    private String wrongPassword;
+
     @Bean
     public HttpClient httpClient() {
         return HttpClient.getInstance();
@@ -30,6 +36,13 @@ public class HttpClientConfig implements ApplicationListener<WebServerInitialize
     @Override
     public void onApplicationEvent(WebServerInitializedEvent event) {
         int port = event.getWebServer().getPort();
-        HttpClient.getInstance().init(baseUrl, port, basePath, username, password);
+        HttpClient.getInstance().init(
+            baseUrl,
+            port,
+            basePath,
+            username,
+            password,
+            wrongUsername,
+            wrongPassword);
     }
 }

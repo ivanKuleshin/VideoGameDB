@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static com.ai.tester.data.Endpoint.DELETE_EVEN_GAMES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
@@ -43,7 +42,7 @@ class DeleteEvenVideoGamesComponentTest extends DeleteEvenVideoGamesBaseTest {
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Send DELETE request to remove even ID games",
-                () -> httpClient.delete(DELETE_EVEN_GAMES.getPath(), ContentType.JSON));
+                () -> apiActions.deleteEvenGames(ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 200",

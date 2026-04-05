@@ -1,12 +1,44 @@
 # Code Patterns
 
+## Class Member Ordering
+
+All classes must follow Google Checkstyle member ordering (`ModifierOrder` rule):
+
+```java
+public final class HttpClient {
+
+    private static final class Holder { ... }          // 1. static nested class
+
+    private RequestSpecification spec;                  // 2. instance fields
+    private RequestSpecification noAuthSpec;
+    private RequestSpecification wrongAuthSpec;
+
+    private HttpClient() { }                            // 3. constructor
+
+    public static HttpClient getInstance() { ... }     // 4. public static method
+
+    public void init(...) { ... }                       // 5. public instance methods
+    public Response get(...) { ... }
+    public Response post(...) { ... }
+    public Response put(...) { ... }
+    public Response delete(...) { ... }
+
+    private static PrintStream createLog4jPrintStream() { ... }    // 6. private static methods
+    private static RequestSpecification createAuthSpec(...) { ... }
+    private static RequestSpecification createNoAuthSpec(...) { ... }
+
+    private void checkInitialized() { ... }            // 7. private instance methods
+    private RequestSpecification resolveSpec(...) { ... }
+}
+```
+
 ## AllureSteps — void step
 
 ```
 AllureSteps.logStep(log, "Verify response status code is 200",
     () -> assertThat(response.getStatusCode())
         .as("Response status code should be 200")
-        .isEqualTo(200));
+        .isEqualTo(HttpStatus.OK.value()));
 ```
 
 ## AllureSteps — step with return value
@@ -14,7 +46,7 @@ AllureSteps.logStep(log, "Verify response status code is 200",
 ```
 Response response = AllureSteps.logStepAndReturn(log,
     "Send GET request to retrieve all video games",
-    () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
+    () -> apiActions.getAllGames(ContentType.JSON));
 ```
 
 ## @TmsLink — single ticket
@@ -62,11 +94,11 @@ void myTest() {
 
     // When
     Response response = AllureSteps.logStepAndReturn(log, "Send GET request to retrieve video game by ID", () ->
-        httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), gameId), ContentType.JSON));
+        apiActions.getVideoGameById(gameId, ContentType.JSON));
 
     // Then
     AllureSteps.logStep(log, "Verify response status code is 200", () ->
-        assertThat(response.getStatusCode()).as("Status code should be 200").isEqualTo(200));
+        assertThat(response.getStatusCode()).as("Status code should be 200").isEqualTo(HttpStatus.OK.value()));
 }
 ```
 
@@ -75,16 +107,14 @@ void myTest() {
 Always use `VideoGameTestDataFixtures` enum constants — never inline literals:
 
 ```
-// ✅ Correct
-Map<String, Object> body = new VideoGameBuilder()
-    .withId(VideoGameTestDataFixtures.ACTION_RPG.getId())
-    .withName(VideoGameTestDataFixtures.ACTION_RPG.getName())
-    .build();
+// ✅ Correct — full request body from fixture
+Map<String, Object> body = VideoGameTestDataFixtures.ACTION_RPG.toRequestBody();
+
+// ✅ Correct — id-only request body from fixture
+Map<String, Object> body = new HashMap<>();
+body.put("id", VideoGameTestDataFixtures.POST_ID_ONLY_GAME.getId());
 
 // ❌ Wrong — hardcoded inline data
-Map<String, Object> body = new VideoGameBuilder()
-    .withId(11)
-    .withName("Half-Life 2")
-    .build();
+Map<String, Object> body = Map.of("id", 11, "name", "Half-Life 2");
 ```
 
