@@ -39,7 +39,8 @@ mvn test -pl tests -Dexec.skip=true
 
 - **Java 21**, **Spring Boot 3.5.3**, **Maven 3.9+**
 - `app`: Spring MVC, Spring Data JPA, H2, springdoc OpenAPI, Spring Security (HTTP Basic)
-- `tests`: JUnit 5, Spring Boot Test (`RANDOM_PORT`), REST Assured, AssertJ, Allure, Log4j2, Jackson (JSON + XML), H2, Spring JDBC (`JdbcTemplate`)
+- `tests`: JUnit 5, Spring Boot Test (`RANDOM_PORT`), REST Assured, AssertJ, Allure, Log4j2, Jackson (JSON + XML), H2,
+  Spring JDBC (`JdbcTemplate`)
 
 ## Coding Standards
 
@@ -63,4 +64,3 @@ mvn test -pl tests -Dexec.skip=true
 - Pull-request CI flow is documented in `CI_PIPELINE.md` (`build -> test -> publish-report`).
 - Build job runs `mvn clean install -DskipTests`; test job runs component tests; report job publishes Allure to GitHub
   Pages.
-

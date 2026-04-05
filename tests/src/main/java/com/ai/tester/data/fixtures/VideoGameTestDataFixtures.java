@@ -21,7 +21,15 @@ public enum VideoGameTestDataFixtures {
     DOOM_ETERNAL(109, "Doom Eternal", "2020-03-20", 88, "Shooter", "Mature"),
     SEKIRO(110, "Sekiro", "2019-03-22", 90, "Action-Adventure", "Mature"),
     POST_ID_ONLY_GAME(111, null, null, null, null, null),
-    DUPLICATE_GAME(1, "Duplicate Test Game", "2024-01-01", 50, "Puzzle", "Universal");
+    DUPLICATE_GAME(1, "Duplicate Test Game", "2024-01-01", 50, "Puzzle", "Universal"),
+    PUT_JSON_INITIAL(112, "Test Game AC1", "2000-01-01", 70, "Action", "Universal"),
+    PUT_JSON_UPDATED(112, "Test Game AC1 Updated", "2023-03-24", 93, "Shooter", "Mature"),
+    PUT_XML_INITIAL(113, "Test Game AC3", "2000-01-01", 70, "Puzzle", "Universal"),
+    PUT_XML_UPDATED(113, "Tetris Effect", "2018-11-09", 91, "Puzzle", "Universal"),
+    PUT_PATH_PRIMARY(114, "Test Game AC4 Primary", "2000-01-01", 70, "Action", "Universal"),
+    PUT_PATH_SECONDARY(115, "Test Game AC4 Secondary", "2000-01-01", 70, "Action", "Universal"),
+    PUT_MISSING_AUTH(116, "Test Game AC5", "2000-01-01", 70, "Action", "Universal"),
+    PUT_WRONG_AUTH(117, "Test Game AC6", "2000-01-01", 70, "Action", "Universal");
 
     private final int id;
     private final String name;

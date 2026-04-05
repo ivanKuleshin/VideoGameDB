@@ -116,3 +116,78 @@ environment variables (e.g. `HTTP_CLIENT_BASE_URL`, `HTTP_CLIENT_USERNAME`, `HTT
 - `VideoGameDbModel` uses `@JsonProperty("RELEASED_ON")` / `@JsonProperty("REVIEW_SCORE")` because
   `H2DbClient` maps column-name keys case-insensitively via Jackson.
 
+## Test Classes Conventions
+
+### Class Hierarchy
+
+- Extend `ApiBaseTest` as parent class — provides `httpClient` and `dbClient` via `@Autowired`
+- Use an additional base class per endpoint (e.g. `GetAllGamesBaseTest`) for shared methods
+- Each test class covers the entire endpoint functionality across multiple Jira tickets
+- Annotate every test class with `@Log4j2`
+- Do not repeat `@SpringBootTest` or `@ActiveProfiles("test")` — already inherited from `ApiBaseTest`
+
+### Assertions
+
+- Use only **AssertJ** — no Hamcrest, no JUnit assertions
+- Always include `.as("Descriptive failure message")` on every assertion
+- Use soft assertions or POJO comparison methods (e.g. `prepareExpectedAllGamesResponseList`) to build expected results
+
+### Test Data
+
+- Declare test data outside the test method — use `@MethodSource`, `@CsvSource`, etc.
+- No hardcoded values in tests — always fetch from DB or use fixtures
+- For POJO classes do not use primitive data types
+
+### Naming
+
+- **Test methods**: descriptive names explaining the scenario (e.g. `getAllVideoGamesPositiveTest`)
+- Use `@DisplayName` for human-readable test descriptions — short summary only, no expected result
+- **Packages**: lowercase, named after the endpoint (e.g. `getAllGames`)
+- Test classes are picked up by Surefire via `**/*ComponentTest.class` pattern
+- Each API endpoint has its own package (e.g. `getAllGames/`) containing a `*BaseTest` and a `*ComponentTest`
+
+### Configuration Beans
+
+- `@Configuration` beans for test infrastructure live in the `config/` package
+- `DbClientConfig` — wires `JdbcTemplate`, `ObjectMapper` (case-insensitive), and `DbClient`
+- `HttpClientConfig` — wires `HttpClient` singleton and initializes it on `WebServerInitializedEvent`
+- `CommonSteps` — reusable verification logic (database, response content checks, etc.)
+
+## Test Infrastructure Conventions
+
+### Client Conventions
+
+- `HttpClient` is a singleton (`HttpClient.getInstance()`) initialized via `HttpClientConfig`
+- HTTP methods: `get(path, contentType)`, `post(path, body, contentType)`, `put(path, body, contentType)`,
+  `delete(path, contentType)`
+- `DbClient` interface is implemented by `H2DbClient` using `JdbcTemplate`
+- DB queries return `VideoGameDbModel`; `getReleaseDateAsString()` converts epoch millis to date string
+
+### Model Conventions
+
+- JSON response models: `model/api/json/` — use `@Data`, `@JsonProperty` where field name differs
+- XML response models: `model/api/xml/` — use `@Data`, `@JacksonXmlRootElement`, `@JacksonXmlProperty`,
+  `@JacksonXmlElementWrapper`
+- DB models: `model/db/` — use `@Data`, `@JsonProperty` matching DB column names (uppercase)
+- Shared canonical model for comparisons is `VideoGameApiModel` — both JSON and XML responses are mapped to it
+
+### Builder Conventions
+
+- Test data builders live in `builder/` package
+- Use fluent `with*()` methods and a terminal `build()` returning `Map<String, Object>`
+- Builders must provide sensible defaults for all fields so tests only override what they need
+
+### Endpoint Conventions
+
+- API endpoints are defined as an enum in `data/Endpoint` with a `@Getter path` field
+- Always reference endpoints via the enum constant (e.g. `VIDEOGAMES.getPath()`)
+
+### Utility Conventions
+
+- Utility classes are `final` with a private constructor (or `@NoArgsConstructor(access = PRIVATE)`)
+- `XmlUtil.parse(String, Class<T>)` — parses XML strings using a shared `XmlMapper`
+- `DateUtil.epochMillisToDateString(long)` — converts epoch millis to `LocalDate.toString()`
+
+### Properties Conventions
+
+- Test properties in `application-test.properties` support env-var overrides (e.g. `${BASE_URL:http://localhost}`)
