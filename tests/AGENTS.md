@@ -25,16 +25,23 @@ tests/src/main/java/       ← shared infrastructure (compiled as main sources, 
   client/db/
     DbClient               ← interface
     H2DbClient             ← JdbcTemplate impl (SELECT/INSERT/DELETE)
-  model/api/json/          ← Jackson response models (GetAllGamesResponseModel, VideoGameApiModel, …)
-  model/api/xml/           ← JAXB/XmlMapper response models (VideoGameXmlModel, …)
-  model/db/VideoGameDbModel← DB row model (@JsonProperty for case-insensitive column mapping)
+  model/api/json/          ← Jackson response models (GetAllGamesResponseModel, VideoGameApiModel,
+                             ErrorResponseModel, DeleteVideoGameResponseModel,
+                             DeleteEvenVideoGamesResponseModel)
+  model/api/xml/           ← Jackson XML models (@JacksonXmlRootElement; VideoGameXmlModel,
+                             GetAllGamesXmlResponseModel, ErrorXmlResponseModel)
+  model/db/VideoGameDbModel← DB row model (@JsonProperty for case-insensitive column mapping);
+                             .getReleaseDateAsString() converts the epoch-millis field to "yyyy-MM-dd"
   builder/VideoGameBuilder ← Fluent builder → Map<String,Object> for REST Assured request bodies
   data/Endpoint            ← Enum of all API paths (VIDEOGAMES, VIDEOGAME_BY_ID, DELETE_EVEN_GAMES)
-  data/fixtures/VideoGameTestDataFixtures ← Pre-built test games IDs 101–105 with .getGameData()
+  data/fixtures/VideoGameTestDataFixtures ← Pre-built test games IDs 101–104 with .getGameData()
+                             and .getGameDataWithId(int) for id-override scenarios
   steps/CommonSteps        ← @Component; shared DB verify steps (verifyGameExists/NotExists)
   allure/AllureSteps       ← Utility; logStep() / logStepAndReturn() wrapping Allure + Log4j2
   util/XmlUtil             ← Parses XML strings via XmlMapper
   util/DateUtil            ← Converts between epoch-millis and "yyyy-MM-dd" strings
+  annotation/KnownIssue    ← @KnownIssue("XSP-NNN") — disables a test linked to a known issue
+  condition/KnownIssueCondition ← JUnit 5 ExecutionCondition backing @KnownIssue
 
 tests/src/test/java/       ← test classes and their Spring @Configuration beans only
   ApiBaseTest              ← @SpringBootTest + @ActiveProfiles("test"); injects httpClient, dbClient, commonSteps
@@ -73,7 +80,7 @@ Response response = AllureSteps.logStepAndReturn(log, "Send GET /videogames",
 ## Test Data Rules
 
 - H2 is seeded from `schema.sql` on every context start (IDs 1–10 always present as baseline).
-- Tests that insert extra rows must use `VideoGameTestDataFixtures` entries (IDs 101–105) and clean up
+- Tests that insert extra rows must use `VideoGameTestDataFixtures` entries (IDs 101–104) and clean up
   in a `finally` block via `dbClient.deleteVideoGameById(id)`.
 - `VideoGameBuilder` provides custom payloads with safe defaults (id=100); override only what the test needs.
 - `CommonSteps.verifyGameExistsInDatabase()` / `verifyGameNotExistsInDatabase()` for shared DB assertions.
@@ -101,7 +108,7 @@ mvn test -pl tests -Dexec.skip=true
 mvn test -pl tests -Dtest=GetAllGamesComponentTest
 
 # Generate and open Allure report
-allure serve tests/target/allure-results
+mvn allure:serve -pl tests
 ```
 
 ## Configuration

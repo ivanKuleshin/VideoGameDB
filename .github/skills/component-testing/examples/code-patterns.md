@@ -70,6 +70,24 @@ void myTest() {
 }
 ```
 
+For cases when Given is not applicable, just put a general comment describing the test setup, no specific data should be
+mentioned:
+
+```
+void myTest() {
+    // Given
+    // Video game is not present in DB
+
+    // When
+    Response response = AllureSteps.logStepAndReturn(log, "Send GET request to retrieve video game by ID", () ->
+        httpClient.get(String.format(VIDEOGAME_BY_ID.getPath(), gameId), ContentType.JSON));
+
+    // Then
+    AllureSteps.logStep(log, "Verify response status code is 200", () ->
+        assertThat(response.getStatusCode()).as("Status code should be 200").isEqualTo(200));
+}
+```
+
 ## Fixture-based test data (for DB inserts)
 
 Always use `VideoGameTestDataFixtures` enum constants — never inline literals:

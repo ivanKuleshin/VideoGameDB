@@ -39,7 +39,8 @@ mvn test -pl tests -Dexec.skip=true
 
 - **Java 21**, **Spring Boot 3.5.3**, **Maven 3.9+**
 - `app`: Spring MVC, Spring Data JPA, H2, springdoc OpenAPI, Spring Security (HTTP Basic)
-- `tests`: JUnit 5, Spring Boot Test (`RANDOM_PORT`), REST Assured, AssertJ, Allure, Log4j2, Jackson (JSON + XML), H2, Spring JDBC (`JdbcTemplate`)
+- `tests`: JUnit 5, Spring Boot Test (`RANDOM_PORT`), REST Assured, AssertJ, Allure, Log4j2, Jackson (JSON + XML), H2,
+  Spring JDBC (`JdbcTemplate`)
 
 ## Coding Standards
 
@@ -50,6 +51,8 @@ mvn test -pl tests -Dexec.skip=true
 - Do not create code that is not used — avoid Boat Anchor anti-pattern.
 - Code should be self-explanatory; add comments/Javadoc only when explicitly requested.
 - Checkstyle enforced via `codestyle/checkStyle.xml`.
+- In tests, mark a known-failing `@Test` with `@KnownIssue("XSP-NNN")` (backed by `KnownIssueCondition`) to disable it
+  instead of deleting or commenting it out.
 
 ## Naming Conventions
 
@@ -57,6 +60,15 @@ mvn test -pl tests -Dexec.skip=true
 - **Methods**: camelCase with verb prefixes (`prepare*`, `create*`, `validate*`, `get*`, `check*`).
 - **Variables**: camelCase, descriptive names avoiding abbreviations.
 - **Constants**: UPPER_SNAKE_CASE for `static final` fields.
+
+## Comments and Javadoc
+
+- Do not add custom comments and Javadoc if not asked
+- Code should be self-explanatory through clear naming and structure
+
+## Final MD files
+
+- Do not create multiple MD files when you need to summarize changes, your steps, etc., unless user asks you to do so.
 
 ## CI Pipeline
 
