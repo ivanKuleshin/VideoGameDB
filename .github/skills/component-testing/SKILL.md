@@ -65,6 +65,8 @@ This skill adds test-specific rules:
     failed test
     runs. Main goal of testing is to verify that the implementation meets the requirements, not to make the test pass by
     changing expected.
+11. Test cases with invalid Jira statuses like Canceled or Duplicate should not be implemented, it means they are not
+    valid.
 
 ## Test Method Structure
 
