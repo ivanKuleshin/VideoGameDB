@@ -68,7 +68,7 @@ def run_single_query(
         command_file.write_text(command_content)
 
         cmd = [
-            "claude",
+            "codemie-claude",
             "-p", query,
             "--output-format", "stream-json",
             "--verbose",
@@ -77,10 +77,7 @@ def run_single_query(
         if model:
             cmd.extend(["--model", model])
 
-        # Remove CLAUDECODE env var to allow nesting claude -p inside a
-        # Claude Code session. The guard is for interactive terminal conflicts;
-        # programmatic subprocess usage is safe.
-        env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+        env = os.environ.copy()
 
         process = subprocess.Popen(
             cmd,

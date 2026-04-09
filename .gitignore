@@ -14,3 +14,6 @@ target
 /app/src/main/resources/swagger-ui/dist/
 /tests/.allure/
 /skills-lock.json
+/.mcp.json
+/.claude/settings.json
+/tests/reports/

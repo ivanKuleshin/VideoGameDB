@@ -1,0 +1,105 @@
+{
+  "skill_name": "fetch-test-context",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "fetch context for XSP-98",
+      "expected_output": "Structured test case overview for XSP-98 (Story): ticket summary, detailed ACs with specific values, all linked issues with correct Jira types, full Xray step tables for every linked Test, and XSP-140 shown as parent/called test inside the XSP-105 section.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "ticket_key_present",
+          "description": "Output mentions XSP-98"
+        },
+        {
+          "name": "has_detailed_acceptance_criteria",
+          "description": "Acceptance Criteria section is present AND each AC includes specific conditions/values (credentials, status codes, field names) — not just one-liner labels like 'AC1: HTTP 200 returned'"
+        },
+        {
+          "name": "linked_issues_show_correct_type",
+          "description": "Each linked issue shows its Jira issue type from issuetype.name: Test issues show Type: Test, Bug issues show Type: Bug"
+        },
+        {
+          "name": "every_linked_test_has_step_table",
+          "description": "Every linked Test issue (XSP-99 through XSP-138) has its own step table with at least 2 rows — not a single summary table covering all"
+        },
+        {
+          "name": "step_tables_have_test_data",
+          "description": "Step tables include populated Data/test data values (SQL queries, credentials, URLs) — not all empty or just dashes"
+        },
+        {
+          "name": "called_test_shown_inside_xsp105",
+          "description": "XSP-140's steps appear as a parent/called subsection within the XSP-105 section specifically"
+        },
+        {
+          "name": "no_automation_notes",
+          "description": "Output does NOT contain an 'Automation Notes', 'Suggested assertions', or 'Edge cases to cover' section"
+        },
+        {
+          "name": "no_raw_api_noise",
+          "description": "Output does not dump raw JSON/API payloads"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "fetch context for XSP-105",
+      "expected_output": "Structured test case overview for XSP-105 (Test): issue type shown as Test, full step table for XSP-105, and XSP-140 (called auth test) shown as a labelled parent/called subsection with its steps before XSP-105's steps.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "ticket_key_present",
+          "description": "Output mentions XSP-105"
+        },
+        {
+          "name": "issue_type_shown_as_test",
+          "description": "Output explicitly identifies XSP-105's issue type as Test"
+        },
+        {
+          "name": "xsp105_step_table_present",
+          "description": "A step table for XSP-105's own steps is present with at least 3 rows"
+        },
+        {
+          "name": "called_test_xsp140_with_steps",
+          "description": "XSP-140 appears as a labelled Parent/Called Test subsection with its own step table, positioned before XSP-105's steps"
+        },
+        {
+          "name": "no_automation_notes",
+          "description": "Output does NOT contain an 'Automation Notes' section"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "fetch context for XSP-9999",
+      "expected_output": "An error message stating the ticket was not found. No test case content should be produced.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "error_message_present",
+          "description": "Output contains an error message indicating the ticket was not found (e.g. '❌ Ticket XSP-9999 not found')"
+        },
+        {
+          "name": "no_test_content_produced",
+          "description": "Output does NOT contain Acceptance Criteria, Test Steps, or Linked Issues sections — no test case content is generated for a non-existent ticket"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "fetch context for XSP-139",
+      "expected_output": "An error message stating the ticket type is unsupported. XSP-139 is a Bug — the skill should stop and report that it only handles Test and Story tickets.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "unsupported_type_error_present",
+          "description": "Output contains an error or notice stating XSP-139 is of an unsupported type (Bug) and that the skill only handles Test and Story tickets"
+        },
+        {
+          "name": "no_test_content_produced",
+          "description": "Output does NOT contain Acceptance Criteria, Test Steps, or Linked Issues sections — no test case content is generated for a Bug ticket"
+        }
+      ]
+    }
+  ]
+}
