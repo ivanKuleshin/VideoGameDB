@@ -11,7 +11,6 @@ infrastructure paths (`/swagger-ui.html`, `/v3/api-docs/**`, `/h2-console`).
 app/src/main/java/com/ai/tester/
   app/
     App.java                 ← @SpringBootApplication entry point
-    WebConfig.java           ← Spring MVC configuration marker
   config/
     OpenApiConfig.java       ← OpenAPI metadata + HTTP Basic security scheme
     SecurityConfig.java      ← HTTP Basic Auth (in-memory user: test/test)

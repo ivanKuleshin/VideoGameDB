@@ -96,9 +96,9 @@ Error body returned by `GlobalExceptionHandler`. Fields match `ErrorResponseXmlM
 @Data
 @XmlRootElement
 public class ErrorResponse {
-    private String timestamp;   // ISO-8601 string, non-blank
+    private String timestamp;
     private int status;
-    private String error;       // e.g. "Not Found", "Bad Request"
+    private String error;
     private String path;
 }
 ```
@@ -116,7 +116,7 @@ public class ErrorResponse {
 Each handler builds an `ErrorResponse` with:
 - `timestamp` — current time as ISO-8601 string
 - `status` — HTTP status code integer
-- `error` — `HttpStatus.getReasonPhrase()` (e.g. `"Not Found"`)
+- `error` — `HttpStatus.getReasonPhrase()`
 - `path` — from `HttpServletRequest.getRequestURI()`
 
 ---
@@ -170,6 +170,12 @@ public void createVideoGame(VideoGameRequest request) {
 ### `app/WebConfig`
 
 Empty `@Configuration` class implementing `WebMvcConfigurer` with no overrides. Spring Boot auto-configuration covers everything it was intended for. Removed per project "no boat anchor" standard.
+
+---
+
+## Code Style
+
+No inline comments or Javadoc in any new or modified code — per project coding standards, code must be self-explanatory.
 
 ---
 

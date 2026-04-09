@@ -2,6 +2,7 @@ package com.ai.tester.service;
 
 import com.ai.tester.model.VideoGame;
 import com.ai.tester.model.VideoGameList;
+import com.ai.tester.model.VideoGameRequest;
 import com.ai.tester.repository.VideoGameRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +25,16 @@ public class VideoGameService {
     }
 
     @Transactional
-    public void createVideoGame(VideoGame videoGame) {
-        videoGameRepository.save(videoGame);
+    public void createVideoGame(VideoGameRequest request) {
+        videoGameRepository.save(toEntity(request));
     }
 
     @Transactional
-    public VideoGame updateVideoGame(VideoGame videoGame, int videoGameId) {
-        videoGameRepository.save(videoGame);
-        return videoGameRepository.findById(videoGameId).orElseThrow();
+    public VideoGame updateVideoGame(VideoGameRequest request, int videoGameId) {
+        videoGameRepository.findById(videoGameId).orElseThrow();
+        VideoGame entity = toEntity(request);
+        entity.setId(videoGameId);
+        return videoGameRepository.save(entity);
     }
 
     @Transactional
@@ -43,5 +46,15 @@ public class VideoGameService {
     public int deleteEvenGames() {
         return videoGameRepository.deleteEvenGamesLimited();
     }
-}
 
+    private VideoGame toEntity(VideoGameRequest request) {
+        VideoGame entity = new VideoGame();
+        entity.setId(request.getId());
+        entity.setName(request.getName());
+        entity.setReleaseDate(request.getReleaseDate());
+        entity.setReviewScore(request.getReviewScore());
+        entity.setCategory(request.getCategory());
+        entity.setRating(request.getRating());
+        return entity;
+    }
+}

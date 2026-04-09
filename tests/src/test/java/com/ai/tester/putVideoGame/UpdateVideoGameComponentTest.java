@@ -6,8 +6,6 @@ import com.ai.tester.model.api.json.UpdateVideoGameRequestModel;
 import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.XmlUtil;
-import com.ai.tester.annotation.KnownIssue;
-import io.qameta.allure.Issue;
 import io.qameta.allure.TmsLink;
 import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
@@ -118,8 +116,6 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
 
     @Test
     @TmsLink("XSP-119")
-    @KnownIssue("XSP-119: app updates record using body ID instead of path param")
-    @Issue("XSP-119")
     @DisplayName("Update video game when path parameter ID differs from request body ID")
     void updateVideoGamePathParamDrivesUpdateTest() {
         // Given
@@ -223,8 +219,6 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
 
     @Test
     @TmsLink("XSP-122")
-    @KnownIssue("XSP-122: app returns 500 instead of 404 for non-existent ID")
-    @Issue("XSP-122")
     @DisplayName("Update non-existent video game")
     void updateVideoGameNonExistentIdReturns404Test() {
         // Given

@@ -1,13 +1,11 @@
 package com.ai.tester.getVideoGameById;
 
 import com.ai.tester.allure.AllureSteps;
-import com.ai.tester.annotation.KnownIssue;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.ErrorResponseXmlModel;
 import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.XmlUtil;
-import io.qameta.allure.Issue;
 import io.qameta.allure.TmsLink;
 import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
@@ -167,8 +165,6 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
 
     @Test
     @TmsLink("XSP-105")
-    @KnownIssue("XSP-139: non-existent ID returns 500 instead of 404")
-    @Issue("XSP-139")
     @DisplayName("GetVideoGameById – Non-existent ID returns 404 Not Found")
     void getVideoGameByNonExistentIdTest() {
         // Given
@@ -204,8 +200,6 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
 
     @Test
     @TmsLink("XSP-138")
-    @KnownIssue("XSP-139: non-existent ID returns 500 instead of 404")
-    @Issue("XSP-139")
     @DisplayName("GetVideoGameById – Non-existent ID with Accept: application/xml returns XML error response")
     void getVideoGameByNonExistentIdXmlErrorResponseTest() {
         // Given

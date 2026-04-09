@@ -17,8 +17,7 @@ app/
 │   │   ├── java/com/ai/tester/
 │   │   │   ├── app/                 # Application entry point and configuration
 │   │   │   │   ├── App.java         # Spring Boot application class
-│   │   │   │   ├── AppResourceConfig.java  # JAX-RS + Swagger configuration
-│   │   │   │   └── WebConfig.java   # Spring MVC web configuration
+│   │   │   │   └── AppResourceConfig.java  # JAX-RS + Swagger configuration
 │   │   │   ├── config/              # Security and infrastructure config
 │   │   │   │   └── SecurityConfig.java     # HTTP Basic Auth configuration
 │   │   │   ├── model/               # Data models
