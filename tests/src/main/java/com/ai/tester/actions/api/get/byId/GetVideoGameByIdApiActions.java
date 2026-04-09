@@ -11,7 +11,7 @@ import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 
 @Component
 @RequiredArgsConstructor
-public class GetVideoGameByIdApiActions implements GetByIdApiActions {
+public class GetVideoGameByIdApiActions implements GetVideoGameByIdActions {
 
     private final HttpClient httpClient;
 

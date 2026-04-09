@@ -3,7 +3,7 @@ package com.ai.tester.actions.api.get.byId;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public interface GetByIdApiActions {
+public interface GetVideoGameByIdActions {
 
     Response getById(int id, ContentType contentType);
 

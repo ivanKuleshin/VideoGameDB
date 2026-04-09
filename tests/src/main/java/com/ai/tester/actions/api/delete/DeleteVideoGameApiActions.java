@@ -11,7 +11,7 @@ import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteVideoGameApiActions implements DeleteByIdActions {
+public class DeleteVideoGameApiActions implements DeleteVideoGameByIdActions {
 
     private final HttpClient httpClient;
 

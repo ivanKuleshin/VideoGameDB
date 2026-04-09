@@ -17,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
 import org.assertj.core.api.SoftAssertions;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -234,20 +233,20 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         AllureSteps.logStep(log, "Verify XML error response body matches expected 404 error response",
             () -> {
                 ErrorResponseXmlModel errorResponse = XmlUtil.parse(response.asString(), ErrorResponseXmlModel.class);
-                SoftAssertions softly = new SoftAssertions();
-                softly.assertThat(errorResponse.getTimestamp())
-                    .as("XML error response timestamp should be present")
-                    .isNotBlank();
-                softly.assertThat(errorResponse.getStatus())
-                    .as("XML error response status should be 404")
-                    .isEqualTo(HttpStatus.NOT_FOUND.value());
-                softly.assertThat(errorResponse.getError())
-                    .as("XML error response error field should be 'Not Found'")
-                    .isEqualTo(HttpStatus.NOT_FOUND.getReasonPhrase());
-                softly.assertThat(errorResponse.getPath())
-                    .as("XML error response path should match the requested resource URL")
-                    .isEqualTo(getVideoGamePathPrefix() + NON_EXISTENT_GAME_ID);
-                softly.assertAll();
+                SoftAssertions.assertSoftly(softly -> {
+                    softly.assertThat(errorResponse.getTimestamp())
+                        .as("XML error response timestamp should be present")
+                        .isNotBlank();
+                    softly.assertThat(errorResponse.getStatus())
+                        .as("XML error response status should be 404")
+                        .isEqualTo(HttpStatus.NOT_FOUND.value());
+                    softly.assertThat(errorResponse.getError())
+                        .as("XML error response error field should be 'Not Found'")
+                        .isEqualTo(HttpStatus.NOT_FOUND.getReasonPhrase());
+                    softly.assertThat(errorResponse.getPath())
+                        .as("XML error response path should match the requested resource URL")
+                        .isEqualTo(getVideoGamePathPrefix() + NON_EXISTENT_GAME_ID);
+                });
             });
     }
 }

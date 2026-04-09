@@ -1,7 +1,7 @@
 package com.ai.tester.getVideoGameById;
 
 import com.ai.tester.ApiBaseTest;
-import com.ai.tester.actions.api.get.byId.GetByIdApiActions;
+import com.ai.tester.actions.api.get.byId.GetVideoGameByIdActions;
 import com.ai.tester.data.Endpoint;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.VideoGameXmlModel;
@@ -21,7 +21,7 @@ public abstract class GetVideoGameByIdBaseTest extends ApiBaseTest {
     private String clientBasePath;
 
     @Autowired
-    protected GetByIdApiActions apiActions;
+    protected GetVideoGameByIdActions apiActions;
 
     protected String getVideoGamePathPrefix() {
         return clientBasePath + Endpoint.VIDEOGAMES.getPath() + "/";
