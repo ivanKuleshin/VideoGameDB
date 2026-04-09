@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication style
+- Be concise and to the point. Use less words to convey the same meaning.
+- Use bullet points and tables to organize information clearly.
+- Avoid unnecessary explanations or justifications. Focus on what needs to be done.
+
 ## Persistent Memory
 
 At the start of every conversation, read [.claude/memory/MEMORY.md](.claude/memory/MEMORY.md) and apply all entries found there.
