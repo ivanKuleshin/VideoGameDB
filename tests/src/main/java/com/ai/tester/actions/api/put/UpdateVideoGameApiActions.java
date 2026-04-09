@@ -1,42 +1,37 @@
 package com.ai.tester.actions.api.put;
 
+import com.ai.tester.actions.api.BaseApiActions;
 import com.ai.tester.client.http.AuthType;
-import com.ai.tester.client.http.HttpClient;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 
 @Component
-@RequiredArgsConstructor
-public class UpdateVideoGameApiActions implements UpdateVideoGameActions {
-
-    private final HttpClient httpClient;
+public class UpdateVideoGameApiActions extends BaseApiActions implements UpdateVideoGameActions {
 
     @Override
     public Response put(int id, Object body, ContentType contentType) {
-        return send(VIDEOGAME_BY_ID.getPath().formatted(id), body, contentType, AuthType.DEFAULT);
+        return sendPut(pathById(id), body, contentType, AuthType.DEFAULT);
     }
 
     @Override
     public Response putWithoutAuth(int id, Object body, ContentType contentType) {
-        return send(VIDEOGAME_BY_ID.getPath().formatted(id), body, contentType, AuthType.NONE);
+        return sendPut(pathById(id), body, contentType, AuthType.NONE);
     }
 
     @Override
     public Response putWithWrongAuth(int id, Object body, ContentType contentType) {
-        return send(VIDEOGAME_BY_ID.getPath().formatted(id), body, contentType, AuthType.WRONG);
+        return sendPut(pathById(id), body, contentType, AuthType.WRONG);
     }
 
     @Override
     public Response putByInvalidId(String invalidId, Object body, ContentType contentType) {
-        return send(VIDEOGAME_BY_ID.getPath().formatted(invalidId), body, contentType, AuthType.DEFAULT);
+        return sendPut(pathById(invalidId), body, contentType, AuthType.DEFAULT);
     }
 
-    private Response send(String path, Object body, ContentType contentType, AuthType authType) {
-        return httpClient.put(path, body, contentType, authType);
+    private String pathById(Object id) {
+        return VIDEOGAME_BY_ID.getPath().formatted(id);
     }
 }
-
