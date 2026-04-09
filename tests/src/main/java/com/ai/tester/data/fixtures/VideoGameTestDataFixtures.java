@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum VideoGameTestDataFixtures {
 
+    RESIDENT_EVIL_4(1, "Resident Evil 4", "2005-10-01", 85, "Shooter", "Universal"),
+    GRAN_TURISMO_3(2, "Gran Turismo 3", "2001-03-10", 91, "Driving", "Universal"),
     SHOOTER_GAME(101, "Doom Test", "1993-02-18", 81, "Shooter", "Mature"),
     PUZZLE_GAME(102, "Minecraft Test", "2011-12-05", 77, "Puzzle", "Universal"),
     ACTION_RPG(103, "Dark Souls Test", "2011-09-22", 89, "Action RPG", "Mature"),

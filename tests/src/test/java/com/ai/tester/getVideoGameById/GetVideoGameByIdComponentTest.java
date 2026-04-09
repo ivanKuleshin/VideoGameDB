@@ -35,12 +35,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         // Given
         VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
             "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS).orElseThrow());
+            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()).orElseThrow());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game by ID",
-            () -> apiActions.getById(GAME_ID_FOR_STATUS_AND_BODY_TESTS, ContentType.JSON));
+            () -> apiActions.getById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -51,7 +51,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         AllureSteps.logStep(log, "Verify response body contains all 6 fields matching the database record",
             () -> assertThat(response.as(VideoGameApiModel.class))
                 .as("Response body should match the database record for game ID %d",
-                    GAME_ID_FOR_STATUS_AND_BODY_TESTS)
+                    GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId())
                 .isEqualTo(prepareExpectedVideoGameResponse(expectedGame)));
     }
 
@@ -62,12 +62,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         // Given
         VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
             "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_CONTENT_TYPE_TESTS).orElseThrow());
+            () -> dbClient.getVideoGameById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId()).orElseThrow());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with Accept: application/json",
-            () -> apiActions.getById(GAME_ID_FOR_CONTENT_TYPE_TESTS, ContentType.JSON));
+            () -> apiActions.getById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -83,7 +83,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         AllureSteps.logStep(log, "Verify response body is a valid flat JSON object matching the database record",
             () -> assertThat(response.as(VideoGameApiModel.class))
                 .as("JSON response body should match the database record for game ID %d",
-                    GAME_ID_FOR_CONTENT_TYPE_TESTS)
+                    GAME_ID_FOR_CONTENT_TYPE_TESTS.getId())
                 .isEqualTo(prepareExpectedVideoGameResponse(expectedGame)));
     }
 
@@ -94,12 +94,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         // Given
         VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
             "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_CONTENT_TYPE_TESTS).orElseThrow());
+            () -> dbClient.getVideoGameById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId()).orElseThrow());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with Accept: application/xml",
-            () -> apiActions.getById(GAME_ID_FOR_CONTENT_TYPE_TESTS, ContentType.XML));
+            () -> apiActions.getById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId(), ContentType.XML));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -118,7 +118,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
                 VideoGameXmlModel xmlResponse = XmlUtil.parse(response.asString(), VideoGameXmlModel.class);
                 assertThat(xmlResponse)
                     .as("XML response body should match the database record for game ID %d",
-                        GAME_ID_FOR_CONTENT_TYPE_TESTS)
+                        GAME_ID_FOR_CONTENT_TYPE_TESTS.getId())
                     .isEqualTo(prepareExpectedVideoGameXmlResponse(expectedGame));
             });
     }
@@ -129,13 +129,13 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     void getVideoGameByIdWithoutAuthTest() {
         // Given
         AllureSteps.logStep(log,
-            String.format("Verify game with ID %d exists in database", GAME_ID_FOR_STATUS_AND_BODY_TESTS),
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS).orElseThrow());
+            String.format("Verify game with ID %d exists in database", GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()),
+            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()).orElseThrow());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game without authentication credentials",
-            () -> apiActions.getByIdWithoutAuth(GAME_ID_FOR_STATUS_AND_BODY_TESTS, ContentType.JSON));
+            () -> apiActions.getByIdWithoutAuth(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 401 Unauthorized",
@@ -150,13 +150,13 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     void getVideoGameByIdWithWrongAuthTest() {
         // Given
         AllureSteps.logStep(log,
-            String.format("Verify game with ID %d exists in database", GAME_ID_FOR_STATUS_AND_BODY_TESTS),
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS).orElseThrow());
+            String.format("Verify game with ID %d exists in database", GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()),
+            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()).orElseThrow());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with wrong credentials",
-            () -> apiActions.getByIdWithWrongAuth(GAME_ID_FOR_STATUS_AND_BODY_TESTS, ContentType.JSON));
+            () -> apiActions.getByIdWithWrongAuth(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 401 Unauthorized",
