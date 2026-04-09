@@ -80,10 +80,10 @@ This skill adds test-specific rules:
 - This structure should be followed in all test methods, even if it seems a bit redundant for simple
   cases. It helps to maintain consistency and readability across the entire test suite.
 - **Given must always contain an explicit DB precondition step** — even for negative-path tests:
-    - For tests using a seeded ID: call `dbClient.getVideoGameById(id)` wrapped in `AllureSteps.logStep` and `Optional`
-      return type handling. Optional handling may be put in some common method or into `CommonSteps` class.
-      to confirm the record exists, OR use `commonSteps.verifyGameExistsInDatabase(log, id, name)` when the name is
-      available.
+    - For tests using a seeded ID: use `commonSteps.verifyGameExistsInDatabase(log, id)` — it fetches the record,
+      asserts it is present, wraps the step in Allure, and returns the `VideoGameDbModel` in one call. This is the
+      **mandatory pattern** for all tests that read a seeded game. Never replace it with a raw `dbClient.getVideoGameById(id)`
+      call wrapped manually in `AllureSteps.logStepAndReturn` — that omits the existence assertion (precondition check).
     - For tests using a non-existing ID: call `commonSteps.verifyGameNotExistsInDatabase(log, id)` to confirm the
       record is absent.
     - Exception: tests where the path parameter is not a valid integer (e.g. `"abc"`) have no DB state to verify and
@@ -120,10 +120,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("Get video game by ID returns correct game data")
     void getVideoGameByIdPositiveTest() {
         // Given
-        VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
-            "Fetch expected game from database",
-            () -> dbClient.getVideoGameById({id_from_db_or_id_from_fixture})
-                .orElseThrow(() -> new TestExecutionException("Expected game not found in DB")));
+        VideoGameDbModel expectedGame = commonSteps.verifyGameExistsInDatabase(log, GAME_1.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -158,6 +155,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
   void createVideoGameDdtTest(VideoGameTestDataFixtures fixture) {
   // Given    
   VideoGameDbModel game = fixture.getGameData();
+  
       try {
   // When
   Response response = AllureSteps.logStepAndReturn(log, "Send POST request to create video game",

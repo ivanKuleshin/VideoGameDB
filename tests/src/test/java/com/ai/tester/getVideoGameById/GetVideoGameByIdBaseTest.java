@@ -10,26 +10,24 @@ import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.VideoGameModelMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
+import static com.ai.tester.data.fixtures.VideoGameTestDataFixtures.GRAN_TURISMO_3;
+import static com.ai.tester.data.fixtures.VideoGameTestDataFixtures.RESIDENT_EVIL_4;
 
 @Log4j2
 public abstract class GetVideoGameByIdBaseTest extends ApiBaseTest {
 
-    protected static final VideoGameTestDataFixtures GAME_ID_FOR_STATUS_AND_BODY_TESTS =
-        VideoGameTestDataFixtures.RESIDENT_EVIL_4;
-    protected static final VideoGameTestDataFixtures GAME_ID_FOR_CONTENT_TYPE_TESTS =
-        VideoGameTestDataFixtures.GRAN_TURISMO_3;
+    protected static final VideoGameTestDataFixtures GAME_1 = RESIDENT_EVIL_4;
+    protected static final VideoGameTestDataFixtures GAME_2 = GRAN_TURISMO_3;
     protected static final int NON_EXISTENT_GAME_ID = 99999;
     protected static final String INVALID_GAME_ID = "abc";
-
-    @Value("${http.client.base-path}")
-    private String clientBasePath;
 
     @Autowired
     protected GetVideoGameByIdActions apiActions;
 
-    protected String getVideoGamePathPrefix() {
-        return clientBasePath + Endpoint.VIDEOGAMES.getPath() + "/";
+    @SuppressWarnings("all")
+    protected String getVideoGamePathPrefix(int gameId) {
+        return clientBasePath + Endpoint.VIDEOGAMES.getPath() + "/" + gameId;
     }
 
     protected VideoGameApiModel prepareExpectedVideoGameResponse(VideoGameDbModel dbModel) {

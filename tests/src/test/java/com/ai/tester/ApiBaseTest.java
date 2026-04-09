@@ -7,6 +7,7 @@ import com.ai.tester.config.HttpClientConfig;
 import com.ai.tester.steps.CommonSteps;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,4 +23,7 @@ public abstract class ApiBaseTest {
 
     @Autowired
     protected CommonSteps commonSteps;
+
+    @Value("${http.client.base-path}")
+    protected String clientBasePath;
 }

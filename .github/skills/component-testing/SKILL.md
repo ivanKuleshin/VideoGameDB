@@ -98,9 +98,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("Get video game by ID returns correct game data")
     void getVideoGameByIdPositiveTest() {
         // Given
-        VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
-            "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(1).orElseThrow());
+        VideoGameDbModel expectedGame = commonSteps.verifyGameExistsInDatabase(log, GAME_1.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,

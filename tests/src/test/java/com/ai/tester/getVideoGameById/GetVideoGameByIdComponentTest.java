@@ -11,11 +11,11 @@ import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.assertj.core.api.SoftAssertions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,14 +31,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Valid credentials and existing ID return 200 with all fields matching DB record")
     void getVideoGameByIdPositiveTest() {
         // Given
-        VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
-            "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()).orElseThrow());
+        VideoGameDbModel expectedGame = commonSteps.verifyGameExistsInDatabase(log, GAME_1.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game by ID",
-            () -> apiActions.getById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId(), ContentType.JSON));
+            () -> apiActions.getById(GAME_1.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -49,7 +47,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         AllureSteps.logStep(log, "Verify response body contains all 6 fields matching the database record",
             () -> assertThat(response.as(VideoGameApiModel.class))
                 .as("Response body should match the database record for game ID %d",
-                    GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId())
+                    GAME_1.getId())
                 .isEqualTo(prepareExpectedVideoGameResponse(expectedGame)));
     }
 
@@ -58,14 +56,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Accept: application/json returns JSON Content-Type and valid flat JSON object")
     void getVideoGameByIdJsonContentTypeTest() {
         // Given
-        VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
-            "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId()).orElseThrow());
+        VideoGameDbModel expectedGame = commonSteps.verifyGameExistsInDatabase(log, GAME_2.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with Accept: application/json",
-            () -> apiActions.getById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId(), ContentType.JSON));
+            () -> apiActions.getById(GAME_2.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -81,7 +77,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
         AllureSteps.logStep(log, "Verify response body is a valid flat JSON object matching the database record",
             () -> assertThat(response.as(VideoGameApiModel.class))
                 .as("JSON response body should match the database record for game ID %d",
-                    GAME_ID_FOR_CONTENT_TYPE_TESTS.getId())
+                    GAME_2.getId())
                 .isEqualTo(prepareExpectedVideoGameResponse(expectedGame)));
     }
 
@@ -90,14 +86,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Accept: application/xml returns XML Content-Type and valid XML with root <videoGame>")
     void getVideoGameByIdXmlContentTypeTest() {
         // Given
-        VideoGameDbModel expectedGame = AllureSteps.logStepAndReturn(log,
-            "Fetch expected game from database",
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId()).orElseThrow());
+        VideoGameDbModel expectedGame = commonSteps.verifyGameExistsInDatabase(log, GAME_2.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with Accept: application/xml",
-            () -> apiActions.getById(GAME_ID_FOR_CONTENT_TYPE_TESTS.getId(), ContentType.XML));
+            () -> apiActions.getById(GAME_2.getId(), ContentType.XML));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 200",
@@ -116,7 +110,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
                 VideoGameXmlModel xmlResponse = XmlUtil.parse(response.asString(), VideoGameXmlModel.class);
                 assertThat(xmlResponse)
                     .as("XML response body should match the database record for game ID %d",
-                        GAME_ID_FOR_CONTENT_TYPE_TESTS.getId())
+                        GAME_2.getId())
                     .isEqualTo(prepareExpectedVideoGameXmlResponse(expectedGame));
             });
     }
@@ -126,14 +120,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Request without Authorization header returns 401 Unauthorized")
     void getVideoGameByIdWithoutAuthTest() {
         // Given
-        AllureSteps.logStep(log,
-            String.format("Verify game with ID %d exists in database", GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()),
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()).orElseThrow());
+        commonSteps.verifyGameExistsInDatabase(log, GAME_1.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game without authentication credentials",
-            () -> apiActions.getByIdWithoutAuth(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId(), ContentType.JSON));
+            () -> apiActions.getByIdWithoutAuth(GAME_1.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 401 Unauthorized",
@@ -147,14 +139,12 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Request with wrong credentials returns 401 Unauthorized")
     void getVideoGameByIdWithWrongAuthTest() {
         // Given
-        AllureSteps.logStep(log,
-            String.format("Verify game with ID %d exists in database", GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()),
-            () -> dbClient.getVideoGameById(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId()).orElseThrow());
+        commonSteps.verifyGameExistsInDatabase(log, GAME_1.getId());
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with wrong credentials",
-            () -> apiActions.getByIdWithWrongAuth(GAME_ID_FOR_STATUS_AND_BODY_TESTS.getId(), ContentType.JSON));
+            () -> apiActions.getByIdWithWrongAuth(GAME_1.getId(), ContentType.JSON));
 
         // Then
         AllureSteps.logStep(log, "Verify response status code is 401 Unauthorized",
@@ -186,7 +176,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @TmsLink("XSP-106")
     @DisplayName("GetVideoGameById – Non-integer path parameter returns 400 Bad Request")
     void getVideoGameByInvalidIdTest() {
-        // Given / When
+        // Given & When
         Response response = AllureSteps.logStepAndReturn(log,
             "Send GET request to retrieve video game with non-integer ID path parameter",
             () -> apiActions.getByInvalidId(INVALID_GAME_ID, ContentType.JSON));
@@ -226,18 +216,22 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
             () -> {
                 ErrorResponseXmlModel errorResponse = XmlUtil.parse(response.asString(), ErrorResponseXmlModel.class);
                 SoftAssertions.assertSoftly(softly -> {
+
                     softly.assertThat(errorResponse.getTimestamp())
                         .as("XML error response timestamp should be present")
                         .isNotBlank();
+
                     softly.assertThat(errorResponse.getStatus())
                         .as("XML error response status should be 404")
                         .isEqualTo(HttpStatus.NOT_FOUND.value());
+
                     softly.assertThat(errorResponse.getError())
                         .as("XML error response error field should be 'Not Found'")
                         .isEqualTo(HttpStatus.NOT_FOUND.getReasonPhrase());
+
                     softly.assertThat(errorResponse.getPath())
                         .as("XML error response path should match the requested resource URL")
-                        .isEqualTo(getVideoGamePathPrefix() + NON_EXISTENT_GAME_ID);
+                        .isEqualTo(getVideoGamePathPrefix(NON_EXISTENT_GAME_ID));
                 });
             });
     }

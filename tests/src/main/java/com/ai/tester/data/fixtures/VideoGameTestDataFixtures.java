@@ -5,13 +5,15 @@ import com.ai.tester.util.DateUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-
 @Getter
 @RequiredArgsConstructor
 public enum VideoGameTestDataFixtures {
 
+    // Existing games
     RESIDENT_EVIL_4(1, "Resident Evil 4", "2005-10-01", 85, "Shooter", "Universal"),
     GRAN_TURISMO_3(2, "Gran Turismo 3", "2001-03-10", 91, "Driving", "Universal"),
+
+    // Non-existing VALID games
     SHOOTER_GAME(101, "Doom Test", "1993-02-18", 81, "Shooter", "Mature"),
     PUZZLE_GAME(102, "Minecraft Test", "2011-12-05", 77, "Puzzle", "Universal"),
     ACTION_RPG(103, "Dark Souls Test", "2011-09-22", 89, "Action RPG", "Mature"),
@@ -22,6 +24,8 @@ public enum VideoGameTestDataFixtures {
     HALO_3(108, "Halo 3", "2007-09-25", 94, "Shooter", "Mature"),
     DOOM_ETERNAL(109, "Doom Eternal", "2020-03-20", 88, "Shooter", "Mature"),
     SEKIRO(110, "Sekiro", "2019-03-22", 90, "Action-Adventure", "Mature"),
+
+    // Non-existing INVALID games
     POST_ID_ONLY_GAME(111, null, null, null, null, null),
     DUPLICATE_GAME(1, "Duplicate Test Game", "2024-01-01", 50, "Puzzle", "Universal"),
     PUT_JSON_INITIAL(112, "Test Game AC1", "2000-01-01", 70, "Action", "Universal"),
