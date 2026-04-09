@@ -34,14 +34,14 @@ app/src/main/resources/
 
 All endpoints are under `/app/videogames` and produce/consume both `application/json` and `application/xml`.
 
-| Method | Path                              | Returns            | Notes                                      |
-|--------|-----------------------------------|--------------------|--------------------------------------------|
-| GET    | `/videogames`                     | `VideoGameList`    |                                            |
-| GET    | `/videogames/{videoGameId}`       | `VideoGame`        | Throws if not found                         |
-| POST   | `/videogames`                     | JSON string        | `{"status": "Record Added Successfully"}`  |
-| PUT    | `/videogames/{videoGameId}`       | `VideoGame`        | Returns updated row                        |
-| DELETE | `/videogames/{videoGameId}`       | JSON string        | `{"status": "Record Deleted Successfully"}`|
-| DELETE | `/videogames/delete-even-games`   | JSON object        | Deletes up to 5 rows with even IDs; returns deleted count |
+| Method | Path                            | Returns         | Notes                                                     |
+|--------|---------------------------------|-----------------|-----------------------------------------------------------|
+| GET    | `/videogames`                   | `VideoGameList` |                                                           |
+| GET    | `/videogames/{videoGameId}`     | `VideoGame`     | Throws if not found                                       |
+| POST   | `/videogames`                   | JSON string     | `{"status": "Record Added Successfully"}`                 |
+| PUT    | `/videogames/{videoGameId}`     | `VideoGame`     | Returns updated row                                       |
+| DELETE | `/videogames/{videoGameId}`     | JSON string     | `{"status": "Record Deleted Successfully"}`               |
+| DELETE | `/videogames/delete-even-games` | JSON object     | Deletes up to 5 rows with even IDs; returns deleted count |
 
 ## Key Design Decisions
 
