@@ -9,10 +9,11 @@ import com.ai.tester.model.api.xml.UpdateVideoGameXmlRequestModel;
 import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.DateUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.ai.tester.util.XmlUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Log4j2
 public abstract class UpdateVideoGameBaseTest extends ApiBaseTest {
 
     protected static final int NON_EXISTING_GAME_ID = 99999;
@@ -26,8 +27,6 @@ public abstract class UpdateVideoGameBaseTest extends ApiBaseTest {
     protected static final VideoGameTestDataFixtures PATH_SECONDARY_FIXTURE = VideoGameTestDataFixtures.PUT_PATH_SECONDARY;
     protected static final VideoGameTestDataFixtures MISSING_AUTH_FIXTURE = VideoGameTestDataFixtures.PUT_MISSING_AUTH;
     protected static final VideoGameTestDataFixtures WRONG_AUTH_FIXTURE = VideoGameTestDataFixtures.PUT_WRONG_AUTH;
-
-    private static final XmlMapper XML_MAPPER = new XmlMapper();
 
     @Autowired
     protected UpdateVideoGameActions apiActions;
@@ -52,11 +51,7 @@ public abstract class UpdateVideoGameBaseTest extends ApiBaseTest {
             .category(fixture.getCategory())
             .rating(fixture.getRating())
             .build();
-        try {
-            return XML_MAPPER.writeValueAsString(xmlRequest);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize XML update request body", e);
-        }
+        return XmlUtil.serialize(xmlRequest);
     }
 
     protected VideoGameApiModel prepareExpectedApiModel(int gameId, VideoGameTestDataFixtures updateFixture) {

@@ -54,7 +54,7 @@ Perform comprehensive review across these dimensions:
 **Spring Boot & Framework Usage**
 
 - Correct use of @SpringBootTest, @ActiveProfiles
-- Proper dependency injection patterns (constructor injection preferred)
+- Proper dependency injection patterns (constructor injection preferred) ONLY for application development
 - Service layer implementation
 - Repository and data access patterns
 - Configuration management

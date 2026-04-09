@@ -7,9 +7,11 @@ import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.VideoGameModelMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+@Log4j2
 public abstract class GetVideoGameByIdBaseTest extends ApiBaseTest {
 
     protected static final int GAME_ID_FOR_STATUS_AND_BODY_TESTS = 1;

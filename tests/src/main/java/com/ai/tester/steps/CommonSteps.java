@@ -15,6 +15,18 @@ public class CommonSteps {
     @Autowired
     private DbClient dbClient;
 
+    public VideoGameDbModel verifyGameExistsInDatabase(Logger log, int gameId) {
+        return AllureSteps.logStepAndReturn(log,
+            "Verify game with ID " + gameId + " exists in database",
+            () -> {
+                var found = dbClient.getVideoGameById(gameId);
+                assertThat(found)
+                    .as("Game with ID %d should exist in the database", gameId)
+                    .isPresent();
+                return found.get();
+            });
+    }
+
     public VideoGameDbModel verifyGameExistsInDatabase(Logger log, int gameId, String expectedName) {
         return AllureSteps.logStepAndReturn(log,
             "Verify game with ID " + gameId + " exists in database with name '" + expectedName + "'",

@@ -9,11 +9,12 @@ import com.ai.tester.model.api.xml.PostVideoGameXmlRequestModel;
 import com.ai.tester.model.api.xml.PostVideoGameXmlResponseModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.DateUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.ai.tester.util.XmlUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+@Log4j2
 public abstract class PostVideoGameBaseTest extends ApiBaseTest {
 
     protected static final String EXPECTED_POST_STATUS = "Record Added Successfully";
@@ -22,8 +23,6 @@ public abstract class PostVideoGameBaseTest extends ApiBaseTest {
     protected static final VideoGameTestDataFixtures XML_FIXTURE = VideoGameTestDataFixtures.HALO_3;
     protected static final VideoGameTestDataFixtures ID_ONLY_FIXTURE = VideoGameTestDataFixtures.POST_ID_ONLY_GAME;
     protected static final VideoGameTestDataFixtures DUPLICATE_GAME_FIXTURE = VideoGameTestDataFixtures.DUPLICATE_GAME;
-
-    private static final XmlMapper XML_MAPPER = new XmlMapper();
 
     @Autowired
     protected PostVideoGameActions apiActions;
@@ -74,14 +73,14 @@ public abstract class PostVideoGameBaseTest extends ApiBaseTest {
     }
 
     protected PostVideoGameRequestModel prepareVideoGameRequest(VideoGameTestDataFixtures fixture) {
-        return new PostVideoGameRequestModel(
-            fixture.getId(),
-            fixture.getName(),
-            fixture.getReleaseDateString(),
-            fixture.getReviewScore(),
-            fixture.getCategory(),
-            fixture.getRating()
-        );
+        return PostVideoGameRequestModel.builder()
+            .id(fixture.getId())
+            .name(fixture.getName())
+            .releaseDate(fixture.getReleaseDateString())
+            .reviewScore(fixture.getReviewScore())
+            .category(fixture.getCategory())
+            .rating(fixture.getRating())
+            .build();
     }
 
     protected PostVideoGameRequestModel prepareIdOnlyVideoGameRequest(VideoGameTestDataFixtures fixture) {
@@ -102,10 +101,6 @@ public abstract class PostVideoGameBaseTest extends ApiBaseTest {
     }
 
     protected String serializeXmlRequest(PostVideoGameXmlRequestModel request) {
-        try {
-            return XML_MAPPER.writeValueAsString(request);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize XML request model", e);
-        }
+        return XmlUtil.serialize(request);
     }
 }

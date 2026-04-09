@@ -4,9 +4,11 @@ import com.ai.tester.ApiBaseTest;
 import com.ai.tester.actions.api.delete.DeleteVideoGameByIdActions;
 import com.ai.tester.actions.api.get.getAll.GetAllGamesActions;
 import com.ai.tester.data.fixtures.VideoGameTestDataFixtures;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DeleteVideoGameBaseTest extends ApiBaseTest {
+@Log4j2
+public abstract class DeleteVideoGameBaseTest extends ApiBaseTest {
 
     protected static final String EXPECTED_DELETE_STATUS = "Record Deleted Successfully";
 

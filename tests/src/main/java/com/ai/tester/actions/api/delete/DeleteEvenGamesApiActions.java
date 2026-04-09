@@ -11,6 +11,7 @@ import static com.ai.tester.data.Endpoint.DELETE_EVEN_GAMES;
 @Component
 public class DeleteEvenGamesApiActions extends BaseApiActions implements DeleteEvenGamesActions {
 
+    @Override
     public Response deleteEvenGames(ContentType contentType) {
         return sendDelete(DELETE_EVEN_GAMES.getPath(), contentType, AuthType.DEFAULT);
     }

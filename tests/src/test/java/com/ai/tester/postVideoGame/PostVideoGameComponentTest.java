@@ -7,12 +7,13 @@ import com.ai.tester.model.api.xml.PostVideoGameXmlRequestModel;
 import com.ai.tester.model.api.xml.PostVideoGameXmlResponseModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.XmlUtil;
+import com.ai.tester.annotation.KnownIssue;
+import io.qameta.allure.Issue;
 import io.qameta.allure.TmsLink;
 import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     void postVideoGameWithJsonPositiveTest() {
         // Given
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare JSON request body for fixture " + JSON_DB_FIXTURE.getName(),
+            "Prepare JSON request body for primary fixture",
             () -> prepareVideoGameRequest(JSON_DB_FIXTURE));
 
         try {
@@ -70,7 +71,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     void postVideoGameWithXmlPositiveTest() {
         // Given
         PostVideoGameXmlRequestModel xmlRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare XML request for fixture " + XML_FIXTURE.getName(),
+            "Prepare XML request body for XML fixture",
             () -> prepareXmlVideoGameRequest(XML_FIXTURE));
 
         try {
@@ -112,7 +113,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     void postVideoGameWithMissingCredentialsTest() {
         // Given
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare request body for fixture " + JSON_DB_FIXTURE.getName(),
+            "Prepare request body for primary fixture",
             () -> prepareVideoGameRequest(JSON_DB_FIXTURE));
 
         // When
@@ -135,7 +136,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     void postVideoGameWithInvalidCredentialsTest() {
         // Given
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare request body for fixture " + JSON_DB_FIXTURE.getName(),
+            "Prepare request body for primary fixture",
             () -> prepareVideoGameRequest(JSON_DB_FIXTURE));
 
         // When
@@ -154,18 +155,15 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
 
     @Test
     @TmsLink("XSP-113")
+    @KnownIssue("XSP-113: app has no duplicate-ID guard — returns 500 instead of 409")
+    @Issue("XSP-113")
     @DisplayName("Create video game with duplicate ID")
-    @Disabled("XSP-113: app has no duplicate-ID guard — 500 expected; enable after app adds unique constraint handling")
     void postVideoGameWithDuplicateIdTest() {
         // Given
-        AllureSteps.logStep(log,
-            "Confirm seed game with ID " + DUPLICATE_GAME_FIXTURE.getId() + " exists in the database",
-            () -> assertThat(dbClient.getVideoGameById(DUPLICATE_GAME_FIXTURE.getId()))
-                .as("Seed game with ID " + DUPLICATE_GAME_FIXTURE.getId() + " must exist in the database")
-                .isPresent());
+        commonSteps.verifyGameExistsInDatabase(log, DUPLICATE_GAME_FIXTURE.getId(), DUPLICATE_GAME_FIXTURE.getName());
 
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare JSON request body with duplicate ID " + DUPLICATE_GAME_FIXTURE.getId(),
+            "Prepare JSON request body with duplicate game ID",
             () -> prepareVideoGameRequest(DUPLICATE_GAME_FIXTURE));
 
         // When
@@ -210,7 +208,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
                 });
 
             VideoGameDbModel savedGame = commonSteps.verifyGameExistsInDatabase(
-                log, ID_ONLY_FIXTURE.getId(), videoGameRequest.getName());
+                log, ID_ONLY_FIXTURE.getId());
 
             AllureSteps.logStep(log, "Verify all fields match expected values",
                 () -> assertThat(savedGame)

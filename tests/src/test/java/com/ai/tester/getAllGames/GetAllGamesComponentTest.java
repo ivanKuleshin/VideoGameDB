@@ -39,7 +39,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
             AllureSteps.logStepAndReturn(log, "Get all video games from database",
                 () -> dbClient.getAllVideoGames());
 
-        AllureSteps.logStep(log, "Verify response contains at least one game",
+        AllureSteps.logStep(log, "Confirm database is not empty (precondition)",
             () -> assertThat(allVideoGames)
                 .as("Response should contain at least one game")
                 .isNotEmpty());
@@ -76,7 +76,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
             AllureSteps.logStepAndReturn(log, "Get all video games from database",
                 () -> dbClient.getAllVideoGames());
 
-        AllureSteps.logStep(log, "Verify response contains at least one game",
+        AllureSteps.logStep(log, "Confirm database is not empty (precondition)",
             () -> assertThat(allVideoGames)
                 .as("Response should contain at least one game")
                 .isNotEmpty());

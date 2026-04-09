@@ -25,6 +25,10 @@ tests/src/main/java/       ← shared infrastructure (compiled as main sources, 
   client/db/
     DbClient               ← interface
     H2DbClient             ← JdbcTemplate impl (SELECT/INSERT/DELETE)
+  actions/api/
+    BaseApiActions         ← abstract base; @Autowired HttpClient + four protected send* helpers
+    <verb>/<Name>Actions   ← per-operation interface (one per endpoint, ISP)
+    <verb>/<Name>ApiActions← @Component concrete class extending BaseApiActions
   model/api/json/          ← Jackson response models (GetAllGamesResponseModel, VideoGameApiModel, …)
   model/api/xml/           ← JAXB/XmlMapper response models (VideoGameXmlModel, …)
   model/db/VideoGameDbModel← DB row model (@JsonProperty for case-insensitive column mapping)
@@ -44,6 +48,54 @@ tests/src/test/java/       ← test classes and their Spring @Configuration bean
   getVideoGameById/…
   deleteVideoGame/…
   deleteEvenGames/…
+```
+
+## Actions Layer (mandatory pattern)
+
+The actions layer is the only HTTP interaction boundary for tests. Test code calls `*Actions` interfaces —
+never `HttpClient`, `AuthType`, or `Endpoint` paths directly.
+
+```
+actions/api/
+  BaseApiActions                ← abstract; @Autowired HttpClient + sendGet/Post/Put/Delete
+  <verb>/<Name>Actions          ← interface per endpoint (ISP: narrow, one per operation)
+  <verb>/<Name>ApiActions       ← @Component; extends BaseApiActions implements <Name>Actions
+```
+
+### Naming
+
+- **Interfaces**: `<EntityVerb>Actions` — entity + operation + `Actions`
+  (e.g., `GetVideoGameByIdActions`, `DeleteEvenGamesActions`)
+- **Implementations**: same prefix + `ApiActions` (e.g., `GetVideoGameByIdApiActions`)
+- **Packages**: `actions/api/<verb>/` — use a sub-package when multiple operation variants exist
+  (e.g., `get/byId/`, `get/getAll/`)
+
+### Implementation pattern
+
+```java
+@Component
+public class GetVideoGameByIdApiActions extends BaseApiActions implements GetVideoGameByIdActions {
+
+    @Override
+    public Response getById(int id, ContentType contentType) {
+        return sendGet(VIDEOGAME_BY_ID.getPath().formatted(id), contentType, AuthType.DEFAULT);
+    }
+    // Auth-variant methods use AuthType.NONE / AuthType.WRONG
+    // Add a private path helper when the same path is repeated: private String pathById(Object id) { ... }
+}
+```
+
+No `@RequiredArgsConstructor`, no `private final HttpClient`, no private `send()` helper — all inherited from
+`BaseApiActions`.
+
+### Injecting into `*BaseTest` (DIP — mandatory)
+
+Always inject the **interface**, never the concrete class:
+
+```java
+@Autowired
+protected GetVideoGameByIdActions apiActions;   // ✅ interface
+// NOT: GetVideoGameByIdApiActions apiActions;  // ❌ concrete class
 ```
 
 ## Test Class Structure (mandatory pattern)
@@ -78,13 +130,17 @@ Response response = AllureSteps.logStepAndReturn(log, "Send GET /videogames",
 
 ## Adding a New API Operation
 
-1. Create `tests/src/test/java/com/ai/tester/<operationName>/`.
-2. Add `<OperationName>BaseTest extends ApiBaseTest` — `prepare*` helpers only, no `@Test`.
-3. Add `<OperationName>ComponentTest extends <OperationName>BaseTest` — `@Test` + `@TmsLink` + `@DisplayName` on every
+1. Add the endpoint path to `Endpoint` enum if not already present.
+2. Create the interface `<Name>Actions` in `tests/src/main/java/com/ai/tester/actions/api/<verb>/`.
+3. Create `<Name>ApiActions extends BaseApiActions implements <Name>Actions` in the same package — annotate with
+   `@Component`, call inherited `sendGet/sendPost/sendPut/sendDelete`.
+4. Create `tests/src/test/java/com/ai/tester/<operationName>/`.
+5. Add `<OperationName>BaseTest extends ApiBaseTest` — `@Autowired <Name>Actions apiActions`; `prepare*` helpers only,
+   no `@Test`.
+6. Add `<OperationName>ComponentTest extends <OperationName>BaseTest` — `@Test` + `@TmsLink` + `@DisplayName` on every
    method.
-4. Add the endpoint to `Endpoint` enum if not already present.
-5. Add new `VideoGameTestDataFixtures` entries if new isolated IDs are needed.
-6. Add response model classes under `model/api/json/` or `model/api/xml/` as required.
+7. Add new `VideoGameTestDataFixtures` entries if new isolated IDs are needed.
+8. Add response model classes under `model/api/json/` or `model/api/xml/` as required.
 
 ## Build & Test Commands
 

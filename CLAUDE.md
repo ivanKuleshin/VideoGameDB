@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Persistent Memory
+
+At the start of every conversation, read [.claude/memory/MEMORY.md](.claude/memory/MEMORY.md) and apply all entries found there.
+
 ## Custom agents usage
 
 Always check available agents before implementing work yourself. Available agents:

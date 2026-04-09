@@ -25,7 +25,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
     @DisplayName("DeleteVideoGame – Happy path delete existing game returns 200 and success JSON body")
     void deleteExistingVideoGamePositiveTest() {
         // Given
-        AllureSteps.logStep(log, "Insert test video game: " + PRIMARY_GAME.getName(),
+        AllureSteps.logStep(log, "Insert primary test game into database",
             () -> dbClient.insertVideoGame(PRIMARY_GAME.getGameData()));
 
         commonSteps.verifyGameExistsInDatabase(log, PRIMARY_GAME.getId(), PRIMARY_GAME.getName());
@@ -33,7 +33,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
         try {
             // When
             Response response = AllureSteps.logStepAndReturn(log,
-                "Delete video game with ID " + PRIMARY_GAME.getId(),
+                "Send DELETE request for primary game",
                 () -> apiActions.deleteById(PRIMARY_GAME.getId(), ContentType.JSON));
 
             // Then
@@ -61,14 +61,14 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
     @DisplayName("DeleteVideoGame – DB record is absent from GET all games list after deletion")
     void deletedVideoGameAbsentFromGetAllGamesTest() {
         // Given
-        AllureSteps.logStep(log, "Insert test video game: " + SECONDARY_GAME.getName(),
+        AllureSteps.logStep(log, "Insert secondary test game into database",
             () -> dbClient.insertVideoGame(SECONDARY_GAME.getGameData()));
 
         commonSteps.verifyGameExistsInDatabase(log, SECONDARY_GAME.getId(), SECONDARY_GAME.getName());
 
         try {
             // When
-            AllureSteps.logStep(log, "Delete video game with ID " + SECONDARY_GAME.getId(),
+            AllureSteps.logStep(log, "Send DELETE request for secondary game",
                 () -> apiActions.deleteById(SECONDARY_GAME.getId(), ContentType.JSON));
 
             Response getAllResponse = AllureSteps.logStepAndReturn(log,
@@ -81,7 +81,7 @@ class DeleteVideoGameComponentTest extends DeleteVideoGameBaseTest {
                     .as("Response status code should be 200")
                     .isEqualTo(HttpStatus.OK.value()));
 
-            AllureSteps.logStep(log, "Verify deleted game with ID " + SECONDARY_GAME.getId() + " is absent from response list",
+            AllureSteps.logStep(log, "Verify deleted game is absent from response list",
                 () -> {
                     GetAllGamesResponseModel allGamesResponse = getAllResponse.as(GetAllGamesResponseModel.class);
                     List<Integer> gameIds = allGamesResponse.getVideoGames().stream()

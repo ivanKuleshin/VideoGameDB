@@ -172,8 +172,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Non-existent ID returns 404 Not Found")
     void getVideoGameByNonExistentIdTest() {
         // Given
-        AllureSteps.logStep(log, "Verify game with ID " + NON_EXISTENT_GAME_ID + " does not exist in database",
-            () -> commonSteps.verifyGameNotExistsInDatabase(log, NON_EXISTENT_GAME_ID));
+        commonSteps.verifyGameNotExistsInDatabase(log, NON_EXISTENT_GAME_ID);
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -210,8 +209,7 @@ class GetVideoGameByIdComponentTest extends GetVideoGameByIdBaseTest {
     @DisplayName("GetVideoGameById – Non-existent ID with Accept: application/xml returns XML error response")
     void getVideoGameByNonExistentIdXmlErrorResponseTest() {
         // Given
-        AllureSteps.logStep(log, "Verify game with ID " + NON_EXISTENT_GAME_ID + " does not exist in database",
-            () -> commonSteps.verifyGameNotExistsInDatabase(log, NON_EXISTENT_GAME_ID));
+        commonSteps.verifyGameNotExistsInDatabase(log, NON_EXISTENT_GAME_ID);
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
