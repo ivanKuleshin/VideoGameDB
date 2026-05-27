@@ -3,6 +3,8 @@ package com.ai.tester.deleteEvenGames;
 import com.ai.tester.allure.AllureSteps;
 import com.ai.tester.model.api.json.DeleteEvenVideoGamesResponseModel;
 import com.ai.tester.model.db.VideoGameDbModel;
+import io.qameta.allure.TmsLink;
+import io.qameta.allure.TmsLinks;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
@@ -19,24 +21,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DeleteEvenVideoGamesComponentTest extends DeleteEvenVideoGamesBaseTest {
 
     @Test
-    @DisplayName("DeleteEvenGames – Even ID games are deleted and odd ID games remain in database")
+    @TmsLinks({@TmsLink("XSP-151"), @TmsLink("XSP-152")})
+    @DisplayName("DeleteEvenGames – Even ID games are deleted, response reports count, and DB state is correct")
     void deleteEvenVideoGamesPositiveTest() {
         // Given
-        List<VideoGameDbModel> gamesToBeDeleted = AllureSteps.logStepAndReturn(log,
-            "Fetch first even ID games to be deleted from database",
-            () -> {
-                List<VideoGameDbModel> games = dbClient.getAllVideoGames().stream()
-                    .filter(game -> game.getId() % 2 == 0)
-                    .limit(DELETE_LIMIT)
-                    .toList();
-                assertThat(games)
-                    .as("Database should contain at least one even ID game before the request")
-                    .isNotEmpty();
-                return games;
-            });
+        List<VideoGameDbModel> allGames = AllureSteps.logStepAndReturn(log,
+            "Fetch all games from database before deletion",
+            () -> dbClient.getAllVideoGames());
 
-        int expectedDeletedCount = gamesToBeDeleted.size();
-        String expectedStatus = String.format(EXPECTED_STATUS_TEMPLATE, expectedDeletedCount);
+        List<VideoGameDbModel> evenGames = allGames.stream()
+            .filter(game -> game.getId() % 2 == 0)
+            .limit(DELETE_LIMIT)
+            .toList();
+
+        AllureSteps.logStep(log,
+            String.format("Verify database contains %d even-ID games before deletion", DELETE_LIMIT),
+            () -> assertThat(evenGames)
+                .as("Database should contain exactly %d even ID games before the request", DELETE_LIMIT)
+                .hasSize(DELETE_LIMIT));
+
+        List<VideoGameDbModel> oddGames = allGames.stream()
+            .filter(game -> game.getId() % 2 != 0)
+            .toList();
+
+        String expectedStatus = String.format(EXPECTED_STATUS_TEMPLATE, evenGames.size());
 
         try {
             // When
@@ -59,13 +67,16 @@ class DeleteEvenVideoGamesComponentTest extends DeleteEvenVideoGamesBaseTest {
                 });
 
             AllureSteps.logStep(log, "Verify deleted even ID games are absent from database",
-                () -> gamesToBeDeleted.forEach(game ->
+                () -> evenGames.forEach(game ->
                     commonSteps.verifyGameNotExistsInDatabase(log, game.getId())));
+
+            AllureSteps.logStep(log, "Verify odd ID games remain in database after deletion",
+                () -> oddGames.forEach(game ->
+                    commonSteps.verifyGameExistsInDatabase(log, game.getId(), game.getName())));
 
         } finally {
             AllureSteps.logStep(log, "Restore deleted even ID games in database",
-                () -> gamesToBeDeleted.forEach(game -> dbClient.insertVideoGame(game)));
+                () -> evenGames.forEach(game -> dbClient.insertVideoGame(game)));
         }
     }
 }
-

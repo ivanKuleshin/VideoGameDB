@@ -11,7 +11,7 @@ import static com.ai.tester.data.Endpoint.DELETE_EVEN_GAMES;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteEvenGamesApiActions {
+public class DeleteEvenGamesApiActions implements DeleteEvenGamesActions {
 
     private final HttpClient httpClient;
 

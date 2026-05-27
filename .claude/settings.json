@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__xray__get_test_case",
+      "mcp__xray__add_test_step",
+      "mcp__xray__search_test_cases",
+      "mcp__com_atlassian_atlassian-mcp-server__getJiraIssue",
+      "mcp__com_atlassian_atlassian-mcp-server__getAccessibleAtlassianResources",
+      "mcp__com_atlassian_atlassian-mcp-server__createJiraIssue",
+      "mcp__com_atlassian_atlassian-mcp-server__editJiraIssue",
+      "mcp__com_atlassian_atlassian-mcp-server__searchJiraIssuesUsingJql",
+      "mcp__com_atlassian_atlassian-mcp-server__createIssueLink"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["xray", "com.atlassian/atlassian-mcp-server"]
+}

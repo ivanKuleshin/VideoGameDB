@@ -1,0 +1,50 @@
+# CLAUDE.md
+
+Project guidance for Claude Code. Keep this file short — link out to existing docs rather than duplicating them.
+
+## Project Pointers
+
+For full project context, module structure, technology stack, and patterns refer to:
+
+- [`AGENTS.md`](AGENTS.md) — project overview, shared conventions, build commands
+- [`app/AGENTS.md`](app/AGENTS.md) — app module layout, endpoints, design decisions
+- [`tests/AGENTS.md`](tests/AGENTS.md) — test infrastructure, mandatory patterns, test data rules
+
+## Coding Principles
+
+- Follow clean code and SOLID principles
+- Prioritize readability and maintainability
+- Use Lombok as much as possible to reduce boilerplate code
+- Never use `throws`, always handle exceptions with try-catch blocks and throw `RuntimeException` in catch block
+- Do not create code if it's not going to be used, avoid Boat Anchor anti-pattern
+
+## Naming Conventions
+
+- **Classes**: PascalCase with descriptive names (e.g., `ApiBaseTest`, `HttpClient`)
+- **Methods**: camelCase with verb prefixes (`prepare*`, `create*`, `validate*`, `get*`, `check*`)
+- **Variables**: camelCase, descriptive names avoiding abbreviations
+- **Constants**: UPPER_SNAKE_CASE for static final fields
+- **Imports**: no wildcard imports, organized by package hierarchy
+
+## Comments and Javadoc
+
+- Do not add custom comments and Javadoc if not asked
+- Code should be self-explanatory through clear naming and structure
+
+## Final MD Files
+
+- Do not create multiple MD files when you need to summarize changes, your steps, etc., unless asked to do so
+
+## Test-Automation Workflow
+
+The Jira-driven test-automation pipeline runs as a sequence of manual slash commands in `.claude/commands/`:
+`/jira-research` → `/test-plan` → `/test-implement` → `/test-review` → `/test-report`.
+
+Five additional Jira/Xray ticket-creation commands live in `tests/.claude/commands/` (run from the `tests/` directory).
+
+See [`README.md`](README.md) for the full workflow table and usage notes.
+
+## MCP Servers
+
+- `xray` and `com.atlassian/atlassian-mcp-server` are declared in `.mcp.json` (project-scoped)
+- `context7` is assumed available from the user-global Claude Code config — it is intentionally **not** declared in `.mcp.json`
