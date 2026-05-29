@@ -1,9 +1,9 @@
 package com.ai.tester.putVideoGame;
 
 import com.ai.tester.allure.AllureSteps;
+import com.ai.tester.data.fixtures.VideoGameTestDataFixtures;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.json.UpdateVideoGameRequestModel;
-import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.XmlUtil;
 import io.qameta.allure.TmsLink;
@@ -27,18 +27,20 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @DisplayName("Update video game with valid JSON request")
     void updateVideoGameJsonPositiveTest() {
         // Given
+        VideoGameTestDataFixtures jsonInitialFixture = getJsonInitialFixture();
+        VideoGameTestDataFixtures jsonUpdateFixture = getJsonUpdateFixture();
         UpdateVideoGameRequestModel updateBody = AllureSteps.logStepAndReturn(log,
-            "Prepare JSON update request body for " + JSON_UPDATE_FIXTURE.getName(),
-            () -> prepareUpdateRequestBody(JSON_UPDATE_FIXTURE));
+            "Prepare JSON update request body for " + jsonUpdateFixture.getName(),
+            () -> prepareUpdateRequestBody(jsonUpdateFixture));
 
         try {
-            AllureSteps.logStep(log, "Insert initial game into database: " + JSON_INITIAL_FIXTURE.getName(),
-                () -> dbClient.insertVideoGame(JSON_INITIAL_FIXTURE.getGameData()));
+            AllureSteps.logStep(log, "Insert initial game into database: " + jsonInitialFixture.getName(),
+                () -> dbClient.insertVideoGame(jsonInitialFixture.getGameData()));
 
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Send PUT request to update video game with JSON body",
-                () -> apiActions.put(JSON_INITIAL_FIXTURE.getId(), updateBody, ContentType.JSON));
+                () -> apiActions.put(jsonInitialFixture.getId(), updateBody, ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 200",
@@ -50,21 +52,21 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
                 () -> {
                     VideoGameApiModel actualResponse = response.as(VideoGameApiModel.class);
                     VideoGameApiModel expectedResponse =
-                        prepareExpectedApiModel(JSON_INITIAL_FIXTURE.getId(), JSON_UPDATE_FIXTURE);
+                        prepareExpectedApiModel(jsonInitialFixture.getId(), jsonUpdateFixture);
                     assertThat(actualResponse)
                         .as("Response body should reflect all updated game fields")
                         .isEqualTo(expectedResponse);
                 });
 
             VideoGameDbModel updatedGame = commonSteps.verifyGameExistsInDatabase(
-                log, JSON_INITIAL_FIXTURE.getId(), JSON_UPDATE_FIXTURE.getName());
+                log, jsonInitialFixture.getId(), jsonUpdateFixture.getName());
 
             AllureSteps.logStep(log, "Verify all updated fields are persisted correctly in database",
                 () -> assertThat(updatedGame)
                     .as("Database record should reflect all updated fields")
-                    .isEqualTo(prepareExpectedUpdatedDbModel(JSON_INITIAL_FIXTURE.getId(), JSON_UPDATE_FIXTURE)));
+                    .isEqualTo(prepareExpectedUpdatedDbModel(jsonInitialFixture.getId(), jsonUpdateFixture)));
         } finally {
-            dbClient.deleteVideoGameById(JSON_INITIAL_FIXTURE.getId());
+            dbClient.deleteVideoGameById(jsonInitialFixture.getId());
         }
     }
 
@@ -73,18 +75,20 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @DisplayName("Update video game with valid XML request")
     void updateVideoGameXmlPositiveTest() {
         // Given
+        VideoGameTestDataFixtures xmlInitialFixture = getXmlInitialFixture();
+        VideoGameTestDataFixtures xmlUpdateFixture = getXmlUpdateFixture();
         String xmlBody = AllureSteps.logStepAndReturn(log,
-            "Prepare serialized XML update request body for " + XML_UPDATE_FIXTURE.getName(),
-            () -> prepareSerializedXmlBody(XML_UPDATE_FIXTURE));
+            "Prepare serialized XML update request body for " + xmlUpdateFixture.getName(),
+            () -> prepareSerializedXmlBody(xmlUpdateFixture));
 
         try {
-            AllureSteps.logStep(log, "Insert initial game into database: " + XML_INITIAL_FIXTURE.getName(),
-                () -> dbClient.insertVideoGame(XML_INITIAL_FIXTURE.getGameData()));
+            AllureSteps.logStep(log, "Insert initial game into database: " + xmlInitialFixture.getName(),
+                () -> dbClient.insertVideoGame(xmlInitialFixture.getGameData()));
 
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Send PUT request to update video game with XML body",
-                () -> apiActions.put(XML_INITIAL_FIXTURE.getId(), xmlBody, ContentType.XML));
+                () -> apiActions.put(xmlInitialFixture.getId(), xmlBody, ContentType.XML));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 200",
@@ -94,24 +98,24 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
 
             AllureSteps.logStep(log, "Verify XML response body reflects all updated game fields",
                 () -> {
-                    VideoGameXmlModel actualXmlResponse =
-                        XmlUtil.parse(response.asString(), VideoGameXmlModel.class);
-                    VideoGameXmlModel expectedXmlResponse =
-                        prepareExpectedXmlModel(XML_INITIAL_FIXTURE.getId(), XML_UPDATE_FIXTURE);
+                    VideoGameApiModel actualXmlResponse =
+                        XmlUtil.parse(response.asString(), VideoGameApiModel.class);
+                    VideoGameApiModel expectedXmlResponse =
+                        prepareExpectedApiModel(xmlInitialFixture.getId(), xmlUpdateFixture);
                     assertThat(actualXmlResponse)
                         .as("XML response body should reflect all updated game fields")
                         .isEqualTo(expectedXmlResponse);
                 });
 
             VideoGameDbModel updatedGame = commonSteps.verifyGameExistsInDatabase(
-                log, XML_INITIAL_FIXTURE.getId(), XML_UPDATE_FIXTURE.getName());
+                log, xmlInitialFixture.getId(), xmlUpdateFixture.getName());
 
             AllureSteps.logStep(log, "Verify all updated fields are persisted correctly in database",
                 () -> assertThat(updatedGame)
                     .as("Database record should reflect all updated fields")
-                    .isEqualTo(prepareExpectedUpdatedDbModel(XML_INITIAL_FIXTURE.getId(), XML_UPDATE_FIXTURE)));
+                    .isEqualTo(prepareExpectedUpdatedDbModel(xmlInitialFixture.getId(), xmlUpdateFixture)));
         } finally {
-            dbClient.deleteVideoGameById(XML_INITIAL_FIXTURE.getId());
+            dbClient.deleteVideoGameById(xmlInitialFixture.getId());
         }
     }
 
@@ -121,21 +125,23 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @Disabled("XSP-119: KNOWN BUG — app updates record with body ID instead of path param ID — enable after app fix")
     void updateVideoGamePathParamDrivesUpdateTest() {
         // Given
+        VideoGameTestDataFixtures pathPrimaryFixture = getPathPrimaryFixture();
+        VideoGameTestDataFixtures pathSecondaryFixture = getPathSecondaryFixture();
         UpdateVideoGameRequestModel updateBody = AllureSteps.logStepAndReturn(log,
-            "Prepare update body containing secondary game ID " + PATH_SECONDARY_FIXTURE.getId(),
-            () -> prepareUpdateRequestBody(PATH_SECONDARY_FIXTURE));
+            "Prepare update body containing secondary game ID " + pathSecondaryFixture.getId(),
+            () -> prepareUpdateRequestBody(pathSecondaryFixture));
 
         try {
             AllureSteps.logStep(log, "Insert primary and secondary test games into database",
                 () -> {
-                    dbClient.insertVideoGame(PATH_PRIMARY_FIXTURE.getGameData());
-                    dbClient.insertVideoGame(PATH_SECONDARY_FIXTURE.getGameData());
+                    dbClient.insertVideoGame(pathPrimaryFixture.getGameData());
+                    dbClient.insertVideoGame(pathSecondaryFixture.getGameData());
                 });
 
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Send PUT request to primary game path with body containing secondary game ID",
-                () -> apiActions.put(PATH_PRIMARY_FIXTURE.getId(), updateBody, ContentType.JSON));
+                () -> apiActions.put(pathPrimaryFixture.getId(), updateBody, ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 200",
@@ -148,12 +154,12 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
                     VideoGameApiModel actualResponse = response.as(VideoGameApiModel.class);
                     assertThat(actualResponse.getId())
                         .as("Response game ID should equal path param ID %d, not body ID %d",
-                            PATH_PRIMARY_FIXTURE.getId(), PATH_SECONDARY_FIXTURE.getId())
-                        .isEqualTo(PATH_PRIMARY_FIXTURE.getId());
+                            pathPrimaryFixture.getId(), pathSecondaryFixture.getId())
+                        .isEqualTo(pathPrimaryFixture.getId());
                 });
         } finally {
-            dbClient.deleteVideoGameById(PATH_PRIMARY_FIXTURE.getId());
-            dbClient.deleteVideoGameById(PATH_SECONDARY_FIXTURE.getId());
+            dbClient.deleteVideoGameById(pathPrimaryFixture.getId());
+            dbClient.deleteVideoGameById(pathSecondaryFixture.getId());
         }
     }
 
@@ -162,18 +168,19 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @DisplayName("Update video game without authentication credentials")
     void updateVideoGameMissingCredentialsReturns401Test() {
         // Given
+        VideoGameTestDataFixtures missingAuthFixture = getMissingAuthFixture();
         UpdateVideoGameRequestModel updateBody = AllureSteps.logStepAndReturn(log,
             "Prepare update request body",
-            () -> prepareUpdateRequestBody(MISSING_AUTH_FIXTURE));
+            () -> prepareUpdateRequestBody(missingAuthFixture));
 
         try {
-            AllureSteps.logStep(log, "Insert test game into database: " + MISSING_AUTH_FIXTURE.getName(),
-                () -> dbClient.insertVideoGame(MISSING_AUTH_FIXTURE.getGameData()));
+            AllureSteps.logStep(log, "Insert test game into database: " + missingAuthFixture.getName(),
+                () -> dbClient.insertVideoGame(missingAuthFixture.getGameData()));
 
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Send PUT request without authentication credentials",
-                () -> apiActions.putWithoutAuth(MISSING_AUTH_FIXTURE.getId(), updateBody, ContentType.JSON));
+                () -> apiActions.putWithoutAuth(missingAuthFixture.getId(), updateBody, ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 401 Unauthorized",
@@ -182,9 +189,9 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
                     .isEqualTo(HttpStatus.UNAUTHORIZED.value()));
 
             commonSteps.verifyGameExistsInDatabase(
-                log, MISSING_AUTH_FIXTURE.getId(), MISSING_AUTH_FIXTURE.getName());
+                log, missingAuthFixture.getId(), missingAuthFixture.getName());
         } finally {
-            dbClient.deleteVideoGameById(MISSING_AUTH_FIXTURE.getId());
+            dbClient.deleteVideoGameById(missingAuthFixture.getId());
         }
     }
 
@@ -193,18 +200,19 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @DisplayName("Update video game with invalid authentication credentials")
     void updateVideoGameInvalidCredentialsReturns401Test() {
         // Given
+        VideoGameTestDataFixtures wrongAuthFixture = getWrongAuthFixture();
         UpdateVideoGameRequestModel updateBody = AllureSteps.logStepAndReturn(log,
             "Prepare update request body",
-            () -> prepareUpdateRequestBody(WRONG_AUTH_FIXTURE));
+            () -> prepareUpdateRequestBody(wrongAuthFixture));
 
         try {
-            AllureSteps.logStep(log, "Insert test game into database: " + WRONG_AUTH_FIXTURE.getName(),
-                () -> dbClient.insertVideoGame(WRONG_AUTH_FIXTURE.getGameData()));
+            AllureSteps.logStep(log, "Insert test game into database: " + wrongAuthFixture.getName(),
+                () -> dbClient.insertVideoGame(wrongAuthFixture.getGameData()));
 
             // When
             Response response = AllureSteps.logStepAndReturn(log,
                 "Send PUT request with wrong authentication credentials",
-                () -> apiActions.putWithWrongAuth(WRONG_AUTH_FIXTURE.getId(), updateBody, ContentType.JSON));
+                () -> apiActions.putWithWrongAuth(wrongAuthFixture.getId(), updateBody, ContentType.JSON));
 
             // Then
             AllureSteps.logStep(log, "Verify response status code is 401 Unauthorized",
@@ -213,9 +221,9 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
                     .isEqualTo(HttpStatus.UNAUTHORIZED.value()));
 
             commonSteps.verifyGameExistsInDatabase(
-                log, WRONG_AUTH_FIXTURE.getId(), WRONG_AUTH_FIXTURE.getName());
+                log, wrongAuthFixture.getId(), wrongAuthFixture.getName());
         } finally {
-            dbClient.deleteVideoGameById(WRONG_AUTH_FIXTURE.getId());
+            dbClient.deleteVideoGameById(wrongAuthFixture.getId());
         }
     }
 
@@ -225,11 +233,12 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @Disabled("XSP-122: KNOWN BUG — app returns 500 for non-existent ID instead of 404 — enable after app fix")
     void updateVideoGameNonExistentIdReturns404Test() {
         // Given
+        VideoGameTestDataFixtures jsonUpdateFixture = getJsonUpdateFixture();
         commonSteps.verifyGameNotExistsInDatabase(log, NON_EXISTING_GAME_ID);
 
         UpdateVideoGameRequestModel updateBody = AllureSteps.logStepAndReturn(log,
             "Prepare update request body for non-existent game",
-            () -> prepareUpdateRequestBody(JSON_UPDATE_FIXTURE));
+            () -> prepareUpdateRequestBody(jsonUpdateFixture));
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -248,9 +257,10 @@ class UpdateVideoGameComponentTest extends UpdateVideoGameBaseTest {
     @DisplayName("Update video game with non-integer path parameter")
     void updateVideoGameNonIntegerIdReturns404Or400Test() {
         // Given
+        VideoGameTestDataFixtures jsonUpdateFixture = getJsonUpdateFixture();
         UpdateVideoGameRequestModel updateBody = AllureSteps.logStepAndReturn(log,
             "Prepare update request body",
-            () -> prepareUpdateRequestBody(JSON_UPDATE_FIXTURE));
+            () -> prepareUpdateRequestBody(jsonUpdateFixture));
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,

@@ -6,7 +6,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -15,23 +14,11 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.preemptive;
 
 @Log4j2
-@Component
 public final class HttpClient {
-
-    private static final class Holder {
-        private static final HttpClient INSTANCE = new HttpClient();
-    }
 
     private RequestSpecification spec;
     private RequestSpecification noAuthSpec;
     private RequestSpecification wrongAuthSpec;
-
-    private HttpClient() {
-    }
-
-    public static HttpClient getInstance() {
-        return Holder.INSTANCE;
-    }
 
     public void init(String baseUri, int port, String basePath,
                      String username, String password,

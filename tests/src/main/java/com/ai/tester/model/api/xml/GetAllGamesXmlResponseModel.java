@@ -1,5 +1,6 @@
 package com.ai.tester.model.api.xml;
 
+import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -13,6 +14,6 @@ public class GetAllGamesXmlResponseModel {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "videoGame")
-    private List<VideoGameXmlModel> videoGames;
+    private List<VideoGameApiModel> videoGames;
 }
 

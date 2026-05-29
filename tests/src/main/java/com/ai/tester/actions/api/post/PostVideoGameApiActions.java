@@ -11,21 +11,18 @@ import static com.ai.tester.data.Endpoint.VIDEOGAMES;
 
 @Component
 @RequiredArgsConstructor
-public class PostVideoGameApiActions implements PostVideoGameActions {
+public class PostVideoGameApiActions {
 
     private final HttpClient httpClient;
 
-    @Override
     public Response post(Object body, ContentType contentType) {
         return send(body, contentType, AuthType.DEFAULT);
     }
 
-    @Override
     public Response postWithoutAuth(Object body, ContentType contentType) {
         return send(body, contentType, AuthType.NONE);
     }
 
-    @Override
     public Response postWithWrongAuth(Object body, ContentType contentType) {
         return send(body, contentType, AuthType.WRONG);
     }

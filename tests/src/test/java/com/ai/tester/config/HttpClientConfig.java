@@ -30,13 +30,13 @@ public class HttpClientConfig implements ApplicationListener<WebServerInitialize
 
     @Bean
     public HttpClient httpClient() {
-        return HttpClient.getInstance();
+        return new HttpClient();
     }
 
     @Override
     public void onApplicationEvent(WebServerInitializedEvent event) {
         int port = event.getWebServer().getPort();
-        HttpClient.getInstance().init(
+        httpClient().init(
             baseUrl,
             port,
             basePath,

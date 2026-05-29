@@ -1,6 +1,7 @@
 package com.ai.tester.postVideoGame;
 
 import com.ai.tester.allure.AllureSteps;
+import com.ai.tester.data.fixtures.VideoGameTestDataFixtures;
 import com.ai.tester.model.api.json.PostVideoGameRequestModel;
 import com.ai.tester.model.api.json.PostVideoGameResponseModel;
 import com.ai.tester.model.api.xml.PostVideoGameXmlRequestModel;
@@ -28,9 +29,10 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     @DisplayName("Create video game with valid JSON request")
     void postVideoGameWithJsonPositiveTest() {
         // Given
+        VideoGameTestDataFixtures jsonDbFixture = getJsonDbFixture();
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare JSON request body for fixture " + JSON_DB_FIXTURE.getName(),
-            () -> prepareVideoGameRequest(JSON_DB_FIXTURE));
+            "Prepare JSON request body for fixture " + jsonDbFixture.getName(),
+            () -> prepareVideoGameRequest(jsonDbFixture));
 
         try {
             // When
@@ -53,14 +55,14 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
                 });
 
             VideoGameDbModel savedGame = commonSteps.verifyGameExistsInDatabase(
-                log, JSON_DB_FIXTURE.getId(), videoGameRequest.getName());
+                log, jsonDbFixture.getId(), videoGameRequest.getName());
 
             AllureSteps.logStep(log, "Verify all fields match expected values",
                 () -> assertThat(savedGame)
                     .as("Saved game should match all fields from the posted fixture")
                     .isEqualTo(prepareExpectedGameDbModel(videoGameRequest)));
         } finally {
-            dbClient.deleteVideoGameById(JSON_DB_FIXTURE.getId());
+            dbClient.deleteVideoGameById(jsonDbFixture.getId());
         }
     }
 
@@ -69,9 +71,10 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     @DisplayName("Create video game with valid XML request")
     void postVideoGameWithXmlPositiveTest() {
         // Given
+        VideoGameTestDataFixtures xmlFixture = getXmlFixture();
         PostVideoGameXmlRequestModel xmlRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare XML request for fixture " + XML_FIXTURE.getName(),
-            () -> prepareXmlVideoGameRequest(XML_FIXTURE));
+            "Prepare XML request for fixture " + xmlFixture.getName(),
+            () -> prepareXmlVideoGameRequest(xmlFixture));
 
         try {
             // When
@@ -95,14 +98,14 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
                 });
 
             VideoGameDbModel savedGame = commonSteps.verifyGameExistsInDatabase(
-                log, XML_FIXTURE.getId(), xmlRequest.getName());
+                log, xmlFixture.getId(), xmlRequest.getName());
 
             AllureSteps.logStep(log, "Verify all fields match expected values",
                 () -> assertThat(savedGame)
                     .as("Saved game should match all fields from the XML request")
                     .isEqualTo(prepareExpectedGameDbModel(xmlRequest)));
         } finally {
-            dbClient.deleteVideoGameById(XML_FIXTURE.getId());
+            dbClient.deleteVideoGameById(xmlFixture.getId());
         }
     }
 
@@ -111,9 +114,10 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     @DisplayName("Create video game without authentication")
     void postVideoGameWithMissingCredentialsTest() {
         // Given
+        VideoGameTestDataFixtures jsonDbFixture = getJsonDbFixture();
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare request body for fixture " + JSON_DB_FIXTURE.getName(),
-            () -> prepareVideoGameRequest(JSON_DB_FIXTURE));
+            "Prepare request body for fixture " + jsonDbFixture.getName(),
+            () -> prepareVideoGameRequest(jsonDbFixture));
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -126,7 +130,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
                 .as("Response status code should be 401 Unauthorized when credentials are missing")
                 .isEqualTo(HttpStatus.UNAUTHORIZED.value()));
 
-        commonSteps.verifyGameNotExistsInDatabase(log, JSON_DB_FIXTURE.getId());
+        commonSteps.verifyGameNotExistsInDatabase(log, jsonDbFixture.getId());
     }
 
     @Test
@@ -134,9 +138,10 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     @DisplayName("Create video game with wrong credentials")
     void postVideoGameWithInvalidCredentialsTest() {
         // Given
+        VideoGameTestDataFixtures jsonDbFixture = getJsonDbFixture();
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare request body for fixture " + JSON_DB_FIXTURE.getName(),
-            () -> prepareVideoGameRequest(JSON_DB_FIXTURE));
+            "Prepare request body for fixture " + jsonDbFixture.getName(),
+            () -> prepareVideoGameRequest(jsonDbFixture));
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -149,7 +154,7 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
                 .as("Response status code should be 401 Unauthorized when credentials are wrong")
                 .isEqualTo(HttpStatus.UNAUTHORIZED.value()));
 
-        commonSteps.verifyGameNotExistsInDatabase(log, JSON_DB_FIXTURE.getId());
+        commonSteps.verifyGameNotExistsInDatabase(log, jsonDbFixture.getId());
     }
 
     @Test
@@ -158,15 +163,16 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     @Disabled("XSP-113: app has no duplicate-ID guard — 500 expected; enable after app adds unique constraint handling")
     void postVideoGameWithDuplicateIdTest() {
         // Given
+        VideoGameTestDataFixtures duplicateGameFixture = getDuplicateGameFixture();
         AllureSteps.logStep(log,
-            "Confirm seed game with ID " + DUPLICATE_GAME_FIXTURE.getId() + " exists in the database",
-            () -> assertThat(dbClient.getVideoGameById(DUPLICATE_GAME_FIXTURE.getId()))
-                .as("Seed game with ID " + DUPLICATE_GAME_FIXTURE.getId() + " must exist in the database")
+            "Confirm seed game with ID " + duplicateGameFixture.getId() + " exists in the database",
+            () -> assertThat(dbClient.getVideoGameById(duplicateGameFixture.getId()))
+                .as("Seed game with ID " + duplicateGameFixture.getId() + " must exist in the database")
                 .isPresent());
 
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
-            "Prepare JSON request body with duplicate ID " + DUPLICATE_GAME_FIXTURE.getId(),
-            () -> prepareVideoGameRequest(DUPLICATE_GAME_FIXTURE));
+            "Prepare JSON request body with duplicate ID " + duplicateGameFixture.getId(),
+            () -> prepareVideoGameRequest(duplicateGameFixture));
 
         // When
         Response response = AllureSteps.logStepAndReturn(log,
@@ -185,9 +191,10 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
     @DisplayName("Create video game with only id field")
     void postVideoGameWithIdOnlyFieldTest() {
         // Given
+        VideoGameTestDataFixtures idOnlyFixture = getIdOnlyFixture();
         PostVideoGameRequestModel videoGameRequest = AllureSteps.logStepAndReturn(log,
             "Prepare request body containing only the id field",
-            () -> prepareIdOnlyVideoGameRequest(ID_ONLY_FIXTURE));
+            () -> prepareIdOnlyVideoGameRequest(idOnlyFixture));
 
         try {
             // When
@@ -210,14 +217,14 @@ class PostVideoGameComponentTest extends PostVideoGameBaseTest {
                 });
 
             VideoGameDbModel savedGame = commonSteps.verifyGameExistsInDatabase(
-                log, ID_ONLY_FIXTURE.getId(), videoGameRequest.getName());
+                log, idOnlyFixture.getId(), videoGameRequest.getName());
 
             AllureSteps.logStep(log, "Verify all fields match expected values",
                 () -> assertThat(savedGame)
                     .as("Saved game should have empty name and null optional fields")
                     .isEqualTo(prepareExpectedIdOnlyDbModel(videoGameRequest)));
         } finally {
-            dbClient.deleteVideoGameById(ID_ONLY_FIXTURE.getId());
+            dbClient.deleteVideoGameById(idOnlyFixture.getId());
         }
     }
 }

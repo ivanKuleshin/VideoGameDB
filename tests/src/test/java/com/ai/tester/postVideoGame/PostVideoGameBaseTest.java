@@ -1,7 +1,7 @@
 package com.ai.tester.postVideoGame;
 
 import com.ai.tester.ApiBaseTest;
-import com.ai.tester.actions.api.post.PostVideoGameActions;
+import com.ai.tester.actions.api.post.PostVideoGameApiActions;
 import com.ai.tester.data.fixtures.VideoGameTestDataFixtures;
 import com.ai.tester.model.api.json.PostVideoGameRequestModel;
 import com.ai.tester.model.api.json.PostVideoGameResponseModel;
@@ -9,8 +9,7 @@ import com.ai.tester.model.api.xml.PostVideoGameXmlRequestModel;
 import com.ai.tester.model.api.xml.PostVideoGameXmlResponseModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.DateUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.ai.tester.util.XmlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -18,15 +17,24 @@ public abstract class PostVideoGameBaseTest extends ApiBaseTest {
 
     protected static final String EXPECTED_POST_STATUS = "Record Added Successfully";
 
-    protected static final VideoGameTestDataFixtures JSON_DB_FIXTURE = VideoGameTestDataFixtures.PORTAL_2;
-    protected static final VideoGameTestDataFixtures XML_FIXTURE = VideoGameTestDataFixtures.HALO_3;
-    protected static final VideoGameTestDataFixtures ID_ONLY_FIXTURE = VideoGameTestDataFixtures.POST_ID_ONLY_GAME;
-    protected static final VideoGameTestDataFixtures DUPLICATE_GAME_FIXTURE = VideoGameTestDataFixtures.DUPLICATE_GAME;
-
-    private static final XmlMapper XML_MAPPER = new XmlMapper();
-
     @Autowired
-    protected PostVideoGameActions apiActions;
+    protected PostVideoGameApiActions apiActions;
+
+    protected VideoGameTestDataFixtures getJsonDbFixture() {
+        return VideoGameTestDataFixtures.PORTAL_2;
+    }
+
+    protected VideoGameTestDataFixtures getXmlFixture() {
+        return VideoGameTestDataFixtures.HALO_3;
+    }
+
+    protected VideoGameTestDataFixtures getIdOnlyFixture() {
+        return VideoGameTestDataFixtures.POST_ID_ONLY_GAME;
+    }
+
+    protected VideoGameTestDataFixtures getDuplicateGameFixture() {
+        return VideoGameTestDataFixtures.DUPLICATE_GAME;
+    }
 
     protected PostVideoGameResponseModel prepareExpectedPostJsonResponse() {
         PostVideoGameResponseModel expectedResponse = new PostVideoGameResponseModel();
@@ -102,10 +110,6 @@ public abstract class PostVideoGameBaseTest extends ApiBaseTest {
     }
 
     protected String serializeXmlRequest(PostVideoGameXmlRequestModel request) {
-        try {
-            return XML_MAPPER.writeValueAsString(request);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize XML request model", e);
-        }
+        return XmlUtil.serialize(request);
     }
 }

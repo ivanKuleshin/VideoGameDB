@@ -8,8 +8,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.ai.tester")
-@EntityScan(basePackages = "com.ai.tester")
+@ComponentScan(basePackages = {
+    "com.ai.tester.app",
+    "com.ai.tester.controller",
+    "com.ai.tester.service",
+    "com.ai.tester.config"
+})
+@EntityScan(basePackages = "com.ai.tester.model")
 @EnableJpaRepositories(basePackages = "com.ai.tester.repository")
 public class App extends SpringBootServletInitializer {
 

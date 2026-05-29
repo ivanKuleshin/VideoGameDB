@@ -11,11 +11,10 @@ import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteVideoGameApiActions implements DeleteByIdActions {
+public class DeleteVideoGameApiActions {
 
     private final HttpClient httpClient;
 
-    @Override
     public Response deleteById(int id, ContentType contentType) {
         return sendDelete(VIDEOGAME_BY_ID.getPath().formatted(id), contentType);
     }

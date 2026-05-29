@@ -11,26 +11,22 @@ import static com.ai.tester.data.Endpoint.VIDEOGAME_BY_ID;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateVideoGameApiActions implements UpdateVideoGameActions {
+public class UpdateVideoGameApiActions {
 
     private final HttpClient httpClient;
 
-    @Override
     public Response put(int id, Object body, ContentType contentType) {
         return send(VIDEOGAME_BY_ID.getPath().formatted(id), body, contentType, AuthType.DEFAULT);
     }
 
-    @Override
     public Response putWithoutAuth(int id, Object body, ContentType contentType) {
         return send(VIDEOGAME_BY_ID.getPath().formatted(id), body, contentType, AuthType.NONE);
     }
 
-    @Override
     public Response putWithWrongAuth(int id, Object body, ContentType contentType) {
         return send(VIDEOGAME_BY_ID.getPath().formatted(id), body, contentType, AuthType.WRONG);
     }
 
-    @Override
     public Response putByInvalidId(String invalidId, Object body, ContentType contentType) {
         return send(VIDEOGAME_BY_ID.getPath().formatted(invalidId), body, contentType, AuthType.DEFAULT);
     }

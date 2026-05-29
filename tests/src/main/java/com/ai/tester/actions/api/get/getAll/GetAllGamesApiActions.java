@@ -11,11 +11,10 @@ import static com.ai.tester.data.Endpoint.VIDEOGAMES;
 
 @Component
 @RequiredArgsConstructor
-public class GetAllGamesApiActions implements GetAllGamesActions {
+public class GetAllGamesApiActions {
 
     private final HttpClient httpClient;
 
-    @Override
     public Response getAllGames(ContentType contentType) {
         return httpClient.get(VIDEOGAMES.getPath(), contentType, AuthType.DEFAULT);
     }

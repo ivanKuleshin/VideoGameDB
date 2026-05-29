@@ -1,7 +1,7 @@
 package com.ai.tester.deleteVideoGame;
 
 import com.ai.tester.ApiBaseTest;
-import com.ai.tester.actions.api.delete.DeleteByIdActions;
+import com.ai.tester.actions.api.delete.DeleteVideoGameApiActions;
 import com.ai.tester.actions.api.get.getAll.GetAllGamesApiActions;
 import com.ai.tester.data.fixtures.VideoGameTestDataFixtures;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ public class DeleteVideoGameBaseTest extends ApiBaseTest {
     protected static final VideoGameTestDataFixtures SECONDARY_GAME = VideoGameTestDataFixtures.PUZZLE_GAME;
 
     @Autowired
-    protected DeleteByIdActions apiActions;
+    protected DeleteVideoGameApiActions apiActions;
 
     @Autowired
     protected GetAllGamesApiActions getAllGamesApiActions;

@@ -14,7 +14,15 @@ public final class XmlUtil {
         try {
             return XML_MAPPER.readValue(xml, type);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to parse XML", e);
+        }
+    }
+
+    public static String serialize(Object object) {
+        try {
+            return XML_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize to XML", e);
         }
     }
 }

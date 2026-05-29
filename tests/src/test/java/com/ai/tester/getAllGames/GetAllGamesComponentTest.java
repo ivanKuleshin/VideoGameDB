@@ -4,7 +4,6 @@ import com.ai.tester.allure.AllureSteps;
 import com.ai.tester.model.api.json.GetAllGamesResponseModel;
 import com.ai.tester.model.api.json.VideoGameApiModel;
 import com.ai.tester.model.api.xml.GetAllGamesXmlResponseModel;
-import com.ai.tester.model.api.xml.VideoGameXmlModel;
 import com.ai.tester.model.db.VideoGameDbModel;
 import com.ai.tester.util.XmlUtil;
 import io.qameta.allure.TmsLink;
@@ -107,7 +106,7 @@ class GetAllGamesComponentTest extends GetAllGamesBaseTest {
                     .as("XML <videoGames> should contain at least one <videoGame> child element")
                     .isNotEmpty();
 
-                List<VideoGameXmlModel> expectedList = prepareExpectedAllGamesXmlResponseList(allVideoGames);
+                List<VideoGameApiModel> expectedList = prepareExpectedAllGamesResponseList(allVideoGames);
 
                 assertThat(xmlResponse.getVideoGames())
                     .as("XML response list content should match database list content")

@@ -9,7 +9,7 @@ it over HTTP. Never calls app internals — interaction is through `HttpClient` 
 
 - **JUnit 5** — test engine (`@Test`, `@DisplayName`, `@TestInstance(PER_CLASS)`)
 - **Spring Boot Test** — `@SpringBootTest` with `RANDOM_PORT`, `@ActiveProfiles("test")`
-- **REST Assured** — HTTP client (`HttpClient` singleton, wraps `RequestSpecification`)
+- **REST Assured** — HTTP client (`HttpClient` Spring bean, wraps `RequestSpecification`)
 - **AssertJ** — assertions
 - **Allure** — reporting (`AllureSteps` utility class, `allure-junit5` integration)
 - **Log4j2** — logging (`@Log4j2` from Lombok)
@@ -21,12 +21,15 @@ it over HTTP. Never calls app internals — interaction is through `HttpClient` 
 
 ```
 tests/src/main/java/       ← shared infrastructure (compiled as main sources, reusable across modules)
-  client/http/HttpClient   ← Bill-Pugh singleton; wraps REST Assured RequestSpecification
+  actions/api/             ← per-operation HTTP action beans (@Component); concrete *ApiActions, no interfaces
+    get/getAll/GetAllGamesApiActions, post/PostVideoGameApiActions, put/UpdateVideoGameApiActions,
+    delete/DeleteVideoGameApiActions, delete/DeleteEvenGamesApiActions
+  client/http/HttpClient   ← plain Spring bean built by HttpClientConfig; wraps REST Assured RequestSpecification
   client/db/
     DbClient               ← interface
     H2DbClient             ← JdbcTemplate impl (SELECT/INSERT/DELETE)
   model/api/json/          ← Jackson response models (GetAllGamesResponseModel, VideoGameApiModel, …)
-  model/api/xml/           ← JAXB/XmlMapper response models (VideoGameXmlModel, …)
+  model/api/xml/           ← XmlMapper wrapper/request/response models (GetAllGamesXmlResponseModel, …)
   model/db/VideoGameDbModel← DB row model (@JsonProperty for case-insensitive column mapping)
   data/Endpoint            ← Enum of all API paths (VIDEOGAMES, VIDEOGAME_BY_ID, DELETE_EVEN_GAMES)
   data/fixtures/VideoGameTestDataFixtures ← Pre-built test games IDs 101–105 with .getGameData()
@@ -38,8 +41,9 @@ tests/src/main/java/       ← shared infrastructure (compiled as main sources, 
 tests/src/test/java/       ← test classes and their Spring @Configuration beans only
   ApiBaseTest              ← @SpringBootTest + @ActiveProfiles("test"); injects httpClient, dbClient, commonSteps
   config/
-    HttpClientConfig       ← @Configuration; initialises HttpClient singleton on WebServerInitializedEvent
+    HttpClientConfig       ← @Configuration; builds the HttpClient bean and calls init() on WebServerInitializedEvent
     DbClientConfig         ← @Configuration; creates JdbcTemplate + H2DbClient beans
+    TestSupportConfig      ← @Configuration; @ComponentScan of actions + steps (test-context-only scan boundary)
   getAllGames/…
   getVideoGameById/…
   deleteVideoGame/…
@@ -50,8 +54,9 @@ tests/src/test/java/       ← test classes and their Spring @Configuration bean
 
 ```
 <operationName>/
-  <OperationName>BaseTest.java       ← extends ApiBaseTest; prepare*() helpers only
-  <OperationName>ComponentTest.java  ← @Test methods only; extends *BaseTest
+  <OperationName>BaseTest.java       ← extends ApiBaseTest; injects the operation's *ApiActions bean, exposes fixtures
+                                       via protected getter methods (e.g. getJsonFixture()), prepare*() helpers only
+  <OperationName>ComponentTest.java  ← @Test methods only; extends *BaseTest; calls getters to resolve fixtures locally
 ```
 
 Surefire includes **only** `**/*ComponentTest.class`. All `@Test` methods must live in `*ComponentTest` classes.
@@ -66,7 +71,7 @@ AllureSteps.logStep(log, "Step description", () -> assertThat(response.getStatus
 
 // step with return value
 Response response = AllureSteps.logStepAndReturn(log, "Send GET /videogames",
-    () -> httpClient.get(VIDEOGAMES.getPath(), ContentType.JSON));
+    () -> apiActions.getAllGames(ContentType.JSON));
 ```
 
 ## Test Data Rules
@@ -74,17 +79,21 @@ Response response = AllureSteps.logStepAndReturn(log, "Send GET /videogames",
 - H2 is seeded from `schema.sql` on every context start (IDs 1–10 always present as baseline).
 - Tests that insert extra rows must use `VideoGameTestDataFixtures` entries (IDs 101–105) and clean up
   in a `finally` block via `dbClient.deleteVideoGameById(id)`.
-- `CommonSteps.verifyGameExistsInDatabase()` / `verifyGameNotExistsInDatabase()` for shared DB assertions.
+- `CommonSteps.verifyGameExistsInDatabase()` for shared DB assertions; `verifyGameNotExistsInDatabase()` returns
+  `Optional<VideoGameDbModel>` (empty on success).
 
 ## Adding a New API Operation
 
 1. Create `tests/src/test/java/com/ai/tester/<operationName>/`.
-2. Add `<OperationName>BaseTest extends ApiBaseTest` — `prepare*` helpers only, no `@Test`.
-3. Add `<OperationName>ComponentTest extends <OperationName>BaseTest` — `@Test` + `@TmsLink` + `@DisplayName` on every
+2. Add a concrete `<OperationName>ApiActions` `@Component` under `actions/api/...` that wraps `HttpClient` for the
+   operation (no interface — inject the concrete type).
+3. Add `<OperationName>BaseTest extends ApiBaseTest` — `@Autowired` the `*ApiActions` bean, expose fixtures via
+   protected getter methods returning `VideoGameTestDataFixtures`, add `prepare*` helpers, no `@Test`.
+4. Add `<OperationName>ComponentTest extends <OperationName>BaseTest` — `@Test` + `@TmsLink` + `@DisplayName` on every
    method.
-4. Add the endpoint to `Endpoint` enum if not already present.
-5. Add new `VideoGameTestDataFixtures` entries if new isolated IDs are needed.
-6. Add response model classes under `model/api/json/` or `model/api/xml/` as required.
+5. Add the endpoint to `Endpoint` enum if not already present.
+6. Add new `VideoGameTestDataFixtures` entries if new isolated IDs are needed.
+7. Add response model classes under `model/api/json/` or `model/api/xml/` as required.
 
 ## Build & Test Commands
 
@@ -150,32 +159,32 @@ environment variables (e.g. `HTTP_CLIENT_BASE_URL`, `HTTP_CLIENT_USERNAME`, `HTT
 
 - `@Configuration` beans for test infrastructure live in the `config/` package
 - `DbClientConfig` — wires `JdbcTemplate`, `ObjectMapper` (case-insensitive), and `DbClient`
-- `HttpClientConfig` — wires `HttpClient` singleton and initializes it on `WebServerInitializedEvent`
-- `CommonSteps` — reusable verification logic (database, response content checks, etc.)
+- `HttpClientConfig` — builds the `HttpClient` bean and initializes it on `WebServerInitializedEvent`
+- `TestSupportConfig` — `@ComponentScan` of `actions` + `steps`; keeps test beans out of the production `App` scan
+- `CommonSteps` — reusable verification logic; `verifyGameExistsInDatabase(log, id)` (existence),
+  `verifyGameNameMatches(...)`, and a combined `verifyGameExistsInDatabase(log, id, name)` overload;
+  `verifyGameNotExistsInDatabase(log, id)` returns `Optional<VideoGameDbModel>` (empty on success)
 
 ## Test Infrastructure Conventions
 
 ### Client Conventions
 
-- `HttpClient` is a singleton (`HttpClient.getInstance()`) initialized via `HttpClientConfig`
-- HTTP methods: `get(path, contentType)`, `post(path, body, contentType)`, `put(path, body, contentType)`,
-  `delete(path, contentType)`
+- `HttpClient` is a plain Spring bean created and `init()`-ed by `HttpClientConfig` on the `WebServerInitializedEvent`
+  (no static `getInstance()` singleton); inject it where needed
+- HTTP methods take an `AuthType` (`DEFAULT`/`NONE`/`WRONG`): `get(path, contentType, authType)`,
+  `post(path, body, contentType, authType)`, `put(path, body, contentType, authType)`,
+  `delete(path, contentType, authType)` — usually called via the `*ApiActions` beans, not directly
 - `DbClient` interface is implemented by `H2DbClient` using `JdbcTemplate`
 - DB queries return `VideoGameDbModel`; `getReleaseDateAsString()` converts epoch millis to date string
 
 ### Model Conventions
 
-- JSON response models: `model/api/json/` — use `@Data`, `@JsonProperty` where field name differs
-- XML response models: `model/api/xml/` — use `@Data`, `@JacksonXmlRootElement`, `@JacksonXmlProperty`,
-  `@JacksonXmlElementWrapper`
+- Canonical model: `VideoGameApiModel` (`model/api/json/`) is the single model for both JSON and XML — it carries
+  `@JsonProperty` and `@JacksonXmlRootElement(localName = "videoGame")`, and `XmlUtil.parse(...)` deserializes XML into
+  it. There is no separate XML game model.
+- XML wrapper/request models: `model/api/xml/` — use `@Data`, `@JacksonXmlRootElement`, `@JacksonXmlProperty`,
+  `@JacksonXmlElementWrapper`; list children are typed as `VideoGameApiModel`
 - DB models: `model/db/` — use `@Data`, `@JsonProperty` matching DB column names (uppercase)
-- Shared canonical model for comparisons is `VideoGameApiModel` — both JSON and XML responses are mapped to it
-
-### Builder Conventions
-
-- Test data builders live in `builder/` package
-- Use fluent `with*()` methods and a terminal `build()` returning `Map<String, Object>`
-- Builders must provide sensible defaults for all fields so tests only override what they need
 
 ### Endpoint Conventions
 
@@ -186,8 +195,9 @@ environment variables (e.g. `HTTP_CLIENT_BASE_URL`, `HTTP_CLIENT_USERNAME`, `HTT
 
 - Utility classes are `final` with a private constructor (or `@NoArgsConstructor(access = PRIVATE)`)
 - `XmlUtil.parse(String, Class<T>)` — parses XML strings using a shared `XmlMapper`
+- `XmlUtil.serialize(Object)` — serializes an object to an XML string using the same `XmlMapper`
 - `DateUtil.epochMillisToDateString(long)` — converts epoch millis to `LocalDate.toString()`
 
 ### Properties Conventions
 
-- Test properties in `application-test.properties` support env-var overrides (e.g. `${BASE_URL:http://localhost}`)
+- Test properties in `application-test.properties` support env-var overrides (e.g. `${HTTP_CLIENT_BASE_URL:http://localhost}`)
