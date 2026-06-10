@@ -161,3 +161,4 @@ Review code against these project standards:
 |-------------------------------|-----------------------------------------------------------------------------------------------------------|
 | `references/checklist.md`     | Running through the review — use the quick scan for a fast pass, comprehensive checklist for a full audit |
 | `references/common-issues.md` | Identifying anti-patterns — has good/bad code examples for the most frequent violations                   |
+| `references/report-schema.md` | Writing the `last-review.md` state file — canonical section order, Decision values, and a full template   |

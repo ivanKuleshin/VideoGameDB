@@ -47,7 +47,7 @@ How would you like to proceed?
 
 ## State File
 
-Write `.claude/state/last-review.md` per the schema in `test-code-reviewer.md §State File`. Include all iterations, all finding decisions, and all app-level blockers.
+Write `.claude/state/last-review.md` per the schema in `.claude/skills/code-review/references/report-schema.md`. Include the Jira number and a quick description of changes in the summary, all iterations, all finding decisions, and all app-level blockers.
 
 ## Summary
 
